@@ -125,7 +125,7 @@ const CategoriesPage = () => {
             {/* Logo and Brand */}
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => navigate('/admin')}
+                onClick={() => navigate('/admin/dashboard')}
                 className="flex items-center space-x-2 text-primary-cream hover:opacity-80 transition-opacity"
               >
                 <ArrowLeft size={20} />
