@@ -18,8 +18,8 @@
   },
   "homepage": "https://eventhubble.netlify.app",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite app.html",
+    "build": "vite build app.html",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx"
   },

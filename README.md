@@ -79,10 +79,16 @@ EventHubble is a modern, responsive web application that helps users discover an
 4. **Open in browser**
    Navigate to `http://localhost:5173`
 
+### Build for Production
+```bash
+npm run build
+```
+
 ## 🏗️ Project Structure
 
 ```
 eventhubble/
+├── app.html                # Main application entry point
 ├── src/
 │   ├── components/          # Reusable UI components
 │   │   ├── ui/             # Shadcn/ui components
@@ -100,8 +106,11 @@ eventhubble/
 │   ├── hooks/              # Custom React hooks
 │   ├── lib/                # Utility functions
 │   └── services/           # API services
-├── public/                 # Public assets
-├── backend/                # Backend services (if applicable)
+├── public/                 # Public assets and favicons
+├── assets/                 # Design assets
+│   └── logos/              # Logo files and guides
+├── backend/                # Backend services
+├── backups/                # Project backups
 └── docs/                   # Documentation
 ```
 

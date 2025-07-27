@@ -105,8 +105,11 @@ backend/data/processed/
 # Backup files
 *.backup
 *.bak
-*.zip
 *.tar.gz
 
 # Local development
 .local
+
+# Asset organization
+assets/logos/
+backups/

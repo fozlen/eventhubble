@@ -11,5 +11,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false
-  }
+  },
+  // Custom HTML entry point
+  root: '.',
+  publicDir: 'public'
 })
