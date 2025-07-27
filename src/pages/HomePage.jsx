@@ -31,6 +31,7 @@ const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
   const [showMap, setShowMap] = useState(false)
+  const [language, setLanguage] = useState('EN')
   const navigate = useNavigate()
 
   // Dark mode effect - no longer needed
@@ -38,19 +39,27 @@ const HomePage = () => {
     document.documentElement.classList.remove('dark')
   }, [])
 
-  // Update page title
+  // Update page title based on language
   useEffect(() => {
-    document.title = 'Event Hubble | Discover Amazing Events Worldwide'
+    document.title = language === 'TR' ? 'Event Hubble | Dünya Çapında Harika Etkinlikleri Keşfet' : 'Event Hubble | Discover Amazing Events Worldwide'
+  }, [language])
+
+  // Load language preference from localStorage
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('language')
+    if (savedLanguage) {
+      setLanguage(savedLanguage)
+    }
   }, [])
 
   // Categories - with modern icons
   const categories = [
-    { id: 'music', name: 'Music', icon: Music, subtitle: 'Concerts & Festivals', count: 3, total: '2.5K+' },
-    { id: 'theater', name: 'Theater', icon: Film, subtitle: 'Plays & Shows', count: 1, total: '1.2K+' },
-    { id: 'sports', name: 'Sports', icon: Trophy, subtitle: 'Matches & Tournaments', count: 1, total: '3.8K+' },
-    { id: 'art', name: 'Art', icon: Palette, subtitle: 'Exhibitions & Workshops', count: 1, total: '1.8K+' },
-    { id: 'gastronomy', name: 'Gastronomy', icon: ChefHat, subtitle: 'Tastings & Workshops', count: 1, total: '950+' },
-    { id: 'education', name: 'Education', icon: GraduationCap, subtitle: 'Seminars & Courses', count: 1, total: '720+' }
+    { id: 'music', name: language === 'TR' ? 'Müzik' : 'Music', icon: Music, subtitle: language === 'TR' ? 'Konserler & Festivaller' : 'Concerts & Festivals', count: 3, total: '2.5K+' },
+    { id: 'theater', name: language === 'TR' ? 'Tiyatro' : 'Theater', icon: Film, subtitle: language === 'TR' ? 'Oyunlar & Gösteriler' : 'Plays & Shows', count: 1, total: '1.2K+' },
+    { id: 'sports', name: language === 'TR' ? 'Spor' : 'Sports', icon: Trophy, subtitle: language === 'TR' ? 'Maçlar & Turnuvalar' : 'Matches & Tournaments', count: 1, total: '3.8K+' },
+    { id: 'art', name: language === 'TR' ? 'Sanat' : 'Art', icon: Palette, subtitle: language === 'TR' ? 'Sergiler & Atölyeler' : 'Exhibitions & Workshops', count: 1, total: '1.8K+' },
+    { id: 'gastronomy', name: language === 'TR' ? 'Gastronomi' : 'Gastronomy', icon: ChefHat, subtitle: language === 'TR' ? 'Tatma & Atölyeler' : 'Tastings & Workshops', count: 1, total: '950+' },
+    { id: 'education', name: language === 'TR' ? 'Eğitim' : 'Education', icon: GraduationCap, subtitle: language === 'TR' ? 'Seminerler & Kurslar' : 'Seminars & Courses', count: 1, total: '720+' }
   ]
 
   // Cities
@@ -155,9 +164,9 @@ const HomePage = () => {
 
   // Dil değiştirme
   const toggleLanguage = () => {
-    const newLanguage = 'EN' // No language toggle in this version
-    // setLanguage(newLanguage) // This line is removed
-    // localStorage.setItem('language', newLanguage) // This line is removed
+    const newLanguage = language === 'EN' ? 'TR' : 'EN'
+    setLanguage(newLanguage)
+    localStorage.setItem('language', newLanguage)
   }
 
   // Get logo
@@ -207,19 +216,19 @@ const HomePage = () => {
                 href="/"
                 className="text-sm font-medium transition-colors text-white hover:text-primary-light whitespace-nowrap"
               >
-                Home
+                {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
                 className="text-sm font-medium transition-colors text-white/80 hover:text-white whitespace-nowrap"
               >
-                About
+                {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
               <a
                 href="/world-news"
                 className="text-sm font-medium transition-colors text-white/80 hover:text-white whitespace-nowrap"
               >
-                World News
+                {language === 'TR' ? 'Dünya Haberleri' : 'World News'}
               </a>
             </nav>
             
@@ -231,7 +240,7 @@ const HomePage = () => {
                 title="Language"
               >
                 <Globe size={16} />
-                <span className="hidden sm:inline">EN</span>
+                <span className="hidden sm:inline">{language.toUpperCase()}</span>
               </button>
             </div>
           </div>
@@ -242,10 +251,10 @@ const HomePage = () => {
       <section className="bg-gradient-to-br from-primary/10 to-primary-light/20 py-12 md:py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-text">
-            Discover the Best <span className="text-primary">Events Worldwide</span>
+            {language === 'TR' ? 'Dünya Çapında En İyi' : 'Discover the Best'} <span className="text-primary">{language === 'TR' ? 'Etkinlikleri Keşfet' : 'Events Worldwide'}</span>
           </h1>
           <p className="text-lg md:text-xl mb-8 text-text/70 px-2 sm:px-4">
-            Find your dream events with smart search and advanced filters.
+            {language === 'TR' ? 'Akıllı arama ve gelişmiş filtrelerle hayalinizdeki etkinlikleri bulun.' : 'Find your dream events with smart search and advanced filters.'}
           </p>
           
           {/* Search Box */}
@@ -255,7 +264,7 @@ const HomePage = () => {
                 <Search className="mr-2 sm:mr-3 text-text/50 flex-shrink-0" size={18} />
                 <input
                   type="text"
-                  placeholder="What event are you looking for?"
+                  placeholder={language === 'TR' ? 'Hangi etkinliği arıyorsunuz?' : 'What event are you looking for?'}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-1 outline-none text-text text-sm sm:text-base min-w-0"
@@ -267,7 +276,7 @@ const HomePage = () => {
                 className="bg-primary text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center space-x-1.5 sm:space-x-2 mt-1.5 sm:mt-0 whitespace-nowrap"
               >
                 <Search size={14} />
-                <span className="text-xs sm:text-sm">Search</span>
+                <span className="text-xs sm:text-sm">{language === 'TR' ? 'Ara' : 'Search'}</span>
               </button>
             </div>
           </div>
@@ -280,8 +289,8 @@ const HomePage = () => {
       <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-text">Popular Categories</h2>
-            <p className="text-text/70 px-4">Discover events by your interests</p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-text">{language === 'TR' ? 'Popüler Kategoriler' : 'Popular Categories'}</h2>
+            <p className="text-text/70 px-4">{language === 'TR' ? 'İlgi alanlarınıza göre etkinlikleri keşfedin' : 'Discover events by your interests'}</p>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
@@ -303,9 +312,9 @@ const HomePage = () => {
                   <h3 className="font-bold mb-1 text-text text-sm md:text-base">{category.name}</h3>
                   <p className="text-xs md:text-sm mb-2 md:mb-3 text-text/70">{category.subtitle}</p>
                   <button className="bg-primary text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm hover:bg-primary/90 transition-colors">
-                    {category.count} events
+                    {category.count} {language === 'TR' ? 'etkinlik' : 'events'}
                   </button>
-                  <p className="text-xs mt-2 text-text/60">{category.total} total</p>
+                  <p className="text-xs mt-2 text-text/60">{category.total} {language === 'TR' ? 'toplam' : 'total'}</p>
                 </div>
               )
             })}
@@ -318,13 +327,13 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 space-y-4 sm:space-y-0">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-2 text-text">Featured Events</h2>
-              <p className="text-text/70">{filteredEvents.length} events found</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2 text-text">{language === 'TR' ? 'Öne Çıkan Etkinlikler' : 'Featured Events'}</h2>
+              <p className="text-text/70">{filteredEvents.length} {language === 'TR' ? 'etkinlik bulundu' : 'events found'}</p>
             </div>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
               <button className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text text-sm">
                 <Calendar size={16} />
-                <span>By Date</span>
+                <span>{language === 'TR' ? 'Tarihe Göre' : 'By Date'}</span>
                 <ChevronDown size={14} />
               </button>
               <button 
@@ -332,7 +341,7 @@ const HomePage = () => {
                 className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text text-sm"
               >
                 <Map size={16} />
-                <span>{showMap ? 'Hide Map' : 'Show on Map'}</span>
+                <span>{showMap ? (language === 'TR' ? 'Haritayı Gizle' : 'Hide Map') : (language === 'TR' ? 'Haritada Göster' : 'Show on Map')}</span>
               </button>
             </div>
           </div>
@@ -342,7 +351,7 @@ const HomePage = () => {
               <div className="flex justify-center mb-4">
                 <Clock className="text-text/50" size={48} />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-text">Loading events...</h3>
+              <h3 className="text-xl font-semibold mb-2 text-text">{language === 'TR' ? 'Etkinlikler yükleniyor...' : 'Loading events...'}</h3>
             </div>
           ) : filteredEvents.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

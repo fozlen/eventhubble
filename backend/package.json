@@ -7,12 +7,18 @@
     "start": "node scheduler.js",
     "scrape": "node scraper.js",
     "dev": "nodemon scheduler.js",
-    "test": "node scraper.js"
+    "test": "node scraper.js",
+    "upload-server": "node uploadServer.js",
+    "upload-dev": "nodemon uploadServer.js"
   },
   "dependencies": {
-    "puppeteer": "^21.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "fs-extra": "^11.1.1",
+    "multer": "^2.0.2",
     "node-cron": "^3.0.3",
-    "express": "^4.18.2"
+    "path": "^0.12.7",
+    "puppeteer": "^21.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
@@ -25,4 +31,4 @@
   ],
   "author": "EventHubble",
   "license": "MIT"
-} 
+}

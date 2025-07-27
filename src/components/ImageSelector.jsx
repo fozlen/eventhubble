@@ -112,36 +112,47 @@ const ImageSelector = ({
     setIsUploading(true)
 
     try {
-      // Simulate upload to CDN
+      // FormData oluştur
       const formData = new FormData()
       formData.append('image', file)
 
-      // In a real app, you would upload to your CDN here
-      // For now, we'll create a local URL and simulate CDN upload
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        // Simulate CDN URL generation
-        const fileName = `uploaded_${Date.now()}_${file.name}`
-        const cdnUrl = `https://cdn.eventhubble.com/images/${fileName}`
-        
-        // For demo purposes, we'll use the local URL
-        const localUrl = e.target.result
-        
+      // Upload API endpoint
+      const uploadUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://your-production-upload-server.com/upload'
+        : 'http://localhost:3001/upload'
+
+      // Upload request
+      const response = await fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText}`)
+      }
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Upload başarılı
         setUploadedImage({
-          name: fileName,
-          url: localUrl,
-          cdnUrl: cdnUrl
+          name: result.data.fileName,
+          url: result.data.cdnUrl,
+          cdnUrl: result.data.cdnUrl,
+          originalName: result.data.originalName,
+          fileSize: result.data.fileSize
         })
         
-        // Set the CDN URL as the selected value
-        onChange(cdnUrl)
-        setIsUploading(false)
+        // CDN URL'ini seçili değer olarak ayarla
+        onChange(result.data.cdnUrl)
+      } else {
+        throw new Error(result.error || 'Upload failed')
       }
-      reader.readAsDataURL(file)
 
     } catch (error) {
-      console.error('Upload failed:', error)
-      alert('Upload failed. Please try again.')
+      console.error('Upload error:', error)
+      alert(`Upload failed: ${error.message}`)
+    } finally {
       setIsUploading(false)
     }
   }
