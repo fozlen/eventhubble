@@ -118,7 +118,7 @@ const ImageSelector = ({
 
       // Upload API endpoint
       const uploadUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://your-production-upload-server.com/upload'
+        ? 'https://eventhubble-backend.onrender.com/upload'
         : 'http://localhost:3001/upload'
 
       // Upload request

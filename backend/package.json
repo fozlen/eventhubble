@@ -2,11 +2,11 @@
   "name": "eventhubble-backend",
   "version": "1.0.0",
   "description": "EventHubble Backend - Otomatik Etkinlik Scraper",
-  "main": "scheduler.js",
+  "main": "uploadServer.js",
   "scripts": {
-    "start": "node scheduler.js",
+    "start": "node uploadServer.js",
     "scrape": "node scraper.js",
-    "dev": "nodemon scheduler.js",
+    "dev": "nodemon uploadServer.js",
     "test": "node scraper.js",
     "upload-server": "node uploadServer.js",
     "upload-dev": "nodemon uploadServer.js"
