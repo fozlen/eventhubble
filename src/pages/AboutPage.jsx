@@ -65,7 +65,12 @@ const AboutPage = () => {
                 onClick={() => navigate('/')}
                 className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
               >
-                <img src={getLogo()} alt="EventHubble" className="h-10 w-auto" />
+                <img 
+                  src={getLogo()} 
+                  alt="EventHubble" 
+                  className="h-10 w-auto bg-transparent border-none shadow-none block" 
+                  style={{ mixBlendMode: 'multiply' }}
+                />
                 <span className="text-xl font-bold">
                   <span className={isDarkMode ? 'text-white' : 'text-black'}>Event</span>
                   <span className="text-blue-600">Hubble</span>
@@ -223,7 +228,12 @@ const AboutPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2">
-                <img src={newLogo} alt="EventHubble" className="h-10 w-auto" />
+                <img 
+                  src={newLogo} 
+                  alt="EventHubble" 
+                  className="h-10 w-auto bg-transparent border-none shadow-none block" 
+                  style={{ mixBlendMode: 'multiply' }}
+                />
                 <span className="text-xl font-bold">
                   <span className="text-white">Event</span>
                   <span className="text-blue-600">Hubble</span>

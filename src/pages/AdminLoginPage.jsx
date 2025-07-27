@@ -47,9 +47,10 @@ const AdminLoginPage = () => {
         {/* Logo and Header */}
         <div className="text-center">
           <img
-            className="mx-auto h-16 w-auto"
+            className="mx-auto h-16 w-auto bg-transparent border-none shadow-none block"
             src={newLogo}
             alt="EventHubble"
+            style={{ mixBlendMode: 'multiply' }}
           />
           <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
             Admin Panel
@@ -159,7 +160,12 @@ const AdminLoginPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2">
-                <img src={newLogo} alt="EventHubble" className="h-10 w-auto" />
+                <img 
+                  src={newLogo} 
+                  alt="EventHubble" 
+                  className="h-10 w-auto bg-transparent border-none shadow-none block" 
+                  style={{ mixBlendMode: 'multiply' }}
+                />
                 <span className="text-xl font-bold">
                   <span className="text-white">Event</span>
                   <span className="text-blue-600">Hubble</span>
