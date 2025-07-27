@@ -198,7 +198,7 @@ const AdminDashboardPage = () => {
           </div>
           <button
             onClick={handleAddPost}
-            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+            className="flex items-center space-x-2 bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-md transition-colors"
           >
             <Plus className="h-4 w-4" />
             <span>{language === 'TR' ? 'Yeni Yazı Ekle' : 'Add New Post'}</span>
@@ -219,8 +219,8 @@ const AdminDashboardPage = () => {
               />
               <div className="p-6">
                 <div className="flex items-center space-x-2 mb-2">
-                  <Tag className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                  <Tag className="h-4 w-4 text-primary" />
+                  <span className="text-sm text-primary font-medium">
                     {post.category}
                   </span>
                 </div>
@@ -239,14 +239,14 @@ const AdminDashboardPage = () => {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleEditPost(post)}
-                    className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
+                    className="flex items-center space-x-1 text-primary hover:text-primary-light text-sm"
                   >
                     <Edit className="h-4 w-4" />
                     <span>{language === 'TR' ? 'Düzenle' : 'Edit'}</span>
                   </button>
                   <button
                     onClick={() => handleDeletePost(post.id)}
-                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm"
+                    className="flex items-center space-x-1 text-text-accent hover:text-primary-light text-sm"
                   >
                     <Trash2 className="h-4 w-4" />
                     <span>{language === 'TR' ? 'Sil' : 'Delete'}</span>
@@ -272,7 +272,7 @@ const AdminDashboardPage = () => {
             <div className="mt-6">
               <button
                 onClick={handleAddPost}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-light"
               >
                 <Plus className="-ml-1 mr-2 h-5 w-5" />
                 {language === 'TR' ? 'Yeni Yazı Ekle' : 'Add New Post'}
@@ -352,7 +352,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text mb-1">
                 {language === 'TR' ? 'Başlık' : 'Title'}
               </label>
               <input
@@ -360,12 +360,12 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text mb-1">
                 {language === 'TR' ? 'Özet' : 'Excerpt'}
               </label>
               <textarea
@@ -373,12 +373,12 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 rows="3"
                 value={formData.excerpt}
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text mb-1">
                 {language === 'TR' ? 'İçerik' : 'Content'}
               </label>
               <textarea
@@ -386,18 +386,18 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 rows="8"
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text mb-1">
                 {language === 'TR' ? 'Kategori' : 'Category'}
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
               >
                 {categories.map(category => (
                   <option key={category} value={category}>{category}</option>
@@ -406,7 +406,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text mb-1">
                 {language === 'TR' ? 'Resim URL' : 'Image URL'}
               </label>
               <input
@@ -414,19 +414,19 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 required
                 value={formData.image}
                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-text mb-1">
                 {language === 'TR' ? 'Etiketler (virgülle ayrılmış)' : 'Tags (comma-separated)'}
               </label>
               <input
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
                 placeholder={language === 'TR' ? 'festival, müzik, 2024' : 'festival, music, 2024'}
               />
             </div>
@@ -435,13 +435,13 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="px-4 py-2 text-text border border-gray-300 rounded-md hover:bg-background-secondary transition-colors"
               >
                 {language === 'TR' ? 'İptal' : 'Cancel'}
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-light transition-colors"
               >
                 {post 
                   ? (language === 'TR' ? 'Yazıyı Güncelle' : 'Update Post')
