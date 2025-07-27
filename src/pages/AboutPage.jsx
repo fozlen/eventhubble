@@ -7,34 +7,25 @@ import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
 
 const AboutPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
-  const [language, setLanguage] = useState(() => {
-    // Load language preference from localStorage
-    return localStorage.getItem('language') || 'EN'
-  })
+  const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
   const navigate = useNavigate()
 
-  // Dark mode effect - artık gerekli değil
+  // Dark mode effect - no longer needed
   useEffect(() => {
     document.documentElement.classList.remove('dark')
   }, [])
 
-  // Update page title based on language
+  // Update page title
   useEffect(() => {
-    const title = language === 'TR' 
-      ? 'Event Hubble | Hakkımızda'
-      : 'Event Hubble | About Us'
-    document.title = title
-  }, [language])
+    document.title = 'Event Hubble | About Us'
+  }, [])
 
   const toggleDarkMode = () => {
-    // Artık dark mode yok, bu fonksiyon kullanılmıyor
+    // No dark mode anymore, this function is not used
   }
 
   const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
+    // No language toggle in this version
   }
 
   const handleLogin = () => {
@@ -44,7 +35,7 @@ const AboutPage = () => {
 
   // Get logo
   const getLogo = () => {
-    return logo // Yeni logo kullanıyoruz
+    return logo // New logo
   }
 
   return (
@@ -77,19 +68,19 @@ const AboutPage = () => {
                 href="/"
                 className="text-sm font-medium transition-colors text-white hover:text-primary-light whitespace-nowrap"
               >
-                {language === 'TR' ? 'Ana Sayfa' : 'Home'}
+                Home
               </a>
               <a
                 href="/about"
                 className="text-sm font-medium transition-colors text-primary-light whitespace-nowrap"
               >
-                {language === 'TR' ? 'Hakkımızda' : 'About'}
+                About
               </a>
               <a
                 href="/world-news"
                 className="text-sm font-medium transition-colors text-white/80 hover:text-white whitespace-nowrap"
               >
-                {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
+                World News
               </a>
             </nav>
             
@@ -98,10 +89,10 @@ const AboutPage = () => {
               <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
-                title={language === 'TR' ? 'Language' : 'Dil'}
+                title="Language"
               >
                 <Globe size={16} />
-                <span className="hidden sm:inline">{language}</span>
+                <span className="hidden sm:inline">EN</span>
               </button>
             </div>
           </div>
@@ -112,45 +103,36 @@ const AboutPage = () => {
       <main className="max-w-4xl mx-auto px-4 py-8 md:py-12">
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-4 text-text">
-            {language === 'TR' ? 'Hakkımızda' : 'About Us'}
+            About Us
           </h1>
           <p className="text-lg md:text-xl text-text/70 px-4">
-            {language === 'TR' 
-              ? 'Dünyanın en iyi etkinliklerini keşfetmenizi sağlayan platform' 
-              : 'The platform that helps you discover the world\'s best events'
-            }
+            The platform that helps you discover the world's best events
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
           <div className="p-4 md:p-6 rounded-lg bg-background-secondary">
             <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-text">
-              {language === 'TR' ? 'Misyonumuz' : 'Our Mission'}
+              Our Mission
             </h2>
             <p className="text-sm md:text-base text-text/70">
-              {language === 'TR' 
-                ? 'İnsanları dünyanın en muhteşem etkinlikleriyle buluşturmak ve unutulmaz deneyimler yaşamalarını sağlamak.'
-                : 'To connect people with the world\'s most amazing events and help them create unforgettable experiences.'
-              }
+              To connect people with the world's most amazing events and help them create unforgettable experiences.
             </p>
           </div>
 
           <div className="p-4 md:p-6 rounded-lg bg-background-secondary">
             <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-text">
-              {language === 'TR' ? 'Vizyonumuz' : 'Our Vision'}
+              Our Vision
             </h2>
             <p className="text-sm md:text-base text-text/70">
-              {language === 'TR' 
-                ? 'Dünya çapında etkinlik keşfi için en güvenilir ve kullanıcı dostu platform olmak.'
-                : 'To become the most reliable and user-friendly platform for event discovery worldwide.'
-              }
+              To become the most reliable and user-friendly platform for event discovery worldwide.
             </p>
           </div>
         </div>
 
         <div className="p-6 md:p-8 rounded-lg bg-background-secondary">
           <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-center text-text">
-            {language === 'TR' ? 'Neden EventHubble?' : 'Why EventHubble?'}
+            Why EventHubble?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             <div className="text-center">
@@ -158,13 +140,10 @@ const AboutPage = () => {
                 <span className="text-2xl">🌍</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                {language === 'TR' ? 'Küresel Erişim' : 'Global Access'}
+                Global Access
               </h3>
               <p className="text-sm text-text/70">
-                {language === 'TR' 
-                  ? 'Dünyanın her yerinden etkinliklere erişim'
-                  : 'Access to events from around the world'
-                }
+                Access to events from around the world
               </p>
             </div>
 
@@ -173,13 +152,10 @@ const AboutPage = () => {
                 <span className="text-2xl">🔍</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                {language === 'TR' ? 'Akıllı Arama' : 'Smart Search'}
+                Smart Search
               </h3>
               <p className="text-sm text-text/70">
-                {language === 'TR' 
-                  ? 'Gelişmiş filtrelerle mükemmel etkinliği bulun'
-                  : 'Find the perfect event with advanced filters'
-                }
+                Find the perfect event with advanced filters
               </p>
             </div>
 
@@ -188,13 +164,10 @@ const AboutPage = () => {
                 <span className="text-2xl">🎯</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                {language === 'TR' ? 'Kişiselleştirme' : 'Personalization'}
+                Personalization
               </h3>
               <p className="text-sm text-text/70">
-                {language === 'TR' 
-                  ? 'Size özel etkinlik önerileri'
-                  : 'Personalized event recommendations'
-                }
+                Personalized event recommendations
               </p>
             </div>
           </div>
@@ -223,9 +196,9 @@ const AboutPage = () => {
             {/* Company Links - Center Section */}
             <div className="flex justify-center w-full sm:w-auto">
               <div className="text-center">
-                <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
+                <h3 className="font-semibold mb-4">Company</h3>
                 <ul className="space-y-2 text-white/80">
-                  <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
+                  <li><a href="/about" className="hover:text-white transition-colors">About</a></li>
                 </ul>
               </div>
             </div>
@@ -235,7 +208,7 @@ const AboutPage = () => {
               <div className="text-center">
                 <h3 className="font-semibold mb-4">Blog</h3>
                 <ul className="space-y-2 text-white/80">
-                  <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
+                  <li><a href="/world-news" className="hover:text-white transition-colors">World News</a></li>
                 </ul>
               </div>
             </div>

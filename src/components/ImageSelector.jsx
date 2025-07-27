@@ -4,13 +4,13 @@ import { ChevronDown, Image as ImageIcon } from 'lucide-react'
 const ImageSelector = ({ 
   value, 
   onChange, 
-  placeholder = "Resim seçin...", 
+  placeholder = "Select image...", 
   label = "Image URL",
   className = "" 
 }) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  // Public klasöründeki resimler
+  // Images in public folder
   const publicImages = [
     {
       name: "EventHubble Logo",
@@ -120,11 +120,11 @@ const ImageSelector = ({
       {isOpen && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
           <div className="p-2">
-            <div className="text-xs font-medium text-gray-500 mb-2 px-2">Public Klasöründeki Resimler</div>
+            <div className="text-xs font-medium text-gray-500 mb-2 px-2">Images in Public Folder</div>
             
-            {/* Logo Kategorisi */}
+            {/* Logo Category */}
             <div className="mb-3">
-              <div className="text-xs font-medium text-gray-700 mb-1 px-2">Logolar</div>
+              <div className="text-xs font-medium text-gray-700 mb-1 px-2">Logos</div>
               {publicImages.filter(img => img.category === 'logo').map((image) => (
                 <button
                   key={image.url}
@@ -139,9 +139,9 @@ const ImageSelector = ({
               ))}
             </div>
 
-            {/* Icon Kategorisi */}
+            {/* Icon Category */}
             <div className="mb-3">
-              <div className="text-xs font-medium text-gray-700 mb-1 px-2">İkonlar</div>
+              <div className="text-xs font-medium text-gray-700 mb-1 px-2">Icons</div>
               {publicImages.filter(img => img.category === 'icon').map((image) => (
                 <button
                   key={image.url}
@@ -156,16 +156,16 @@ const ImageSelector = ({
               ))}
             </div>
 
-            {/* Özel URL Seçeneği */}
+            {/* Custom URL Option */}
             <div className="border-t pt-2">
-              <div className="text-xs font-medium text-gray-700 mb-1 px-2">Özel URL</div>
+              <div className="text-xs font-medium text-gray-700 mb-1 px-2">Custom URL</div>
               <button
                 onClick={() => handleImageSelect('')}
                 className={`w-full text-left px-2 py-1.5 rounded text-sm hover:bg-gray-100 transition-colors ${
                   !value || !publicImages.find(img => img.url === value) ? 'bg-primary/10 text-primary' : 'text-gray-700'
                 }`}
               >
-                Manuel URL girin...
+                Enter manual URL...
               </button>
             </div>
           </div>
@@ -175,7 +175,7 @@ const ImageSelector = ({
       {/* Preview */}
       {selectedImage && (
         <div className="mt-2 p-2 bg-gray-50 rounded-md">
-          <div className="text-xs text-gray-600 mb-1">Seçilen: {selectedImage.name}</div>
+          <div className="text-xs text-gray-600 mb-1">Selected: {selectedImage.name}</div>
           <div className="flex items-center space-x-2">
             <img 
               src={selectedImage.url} 

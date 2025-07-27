@@ -530,8 +530,8 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
               <ImageSelector
                 value={formData.image}
                 onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
-                placeholder={language === 'TR' ? 'Resim URL girin veya seçin...' : 'Enter image URL or select from dropdown...'}
-                label={language === 'TR' ? 'Resim URL' : 'Image URL'}
+                placeholder="Enter image URL or select from dropdown..."
+                label="Image URL"
               />
             </div>
 
