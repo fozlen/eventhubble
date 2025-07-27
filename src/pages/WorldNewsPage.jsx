@@ -4,11 +4,7 @@ import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users } from 'luci
 import newLogo from '../assets/eventhubble_new_logo.png'
 
 const WorldNewsPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Load dark mode preference from localStorage
-    const saved = localStorage.getItem('isDarkMode')
-    return saved ? JSON.parse(saved) : false
-  })
+  const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
   const [language, setLanguage] = useState(() => {
     // Load language preference from localStorage
     return localStorage.getItem('language') || 'EN'
@@ -16,14 +12,10 @@ const WorldNewsPage = () => {
   const [newsData, setNewsData] = useState([])
   const navigate = useNavigate()
 
-  // Dark mode effect
+  // Dark mode effect - artık gerekli değil
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [isDarkMode])
+    document.documentElement.classList.remove('dark')
+  }, [])
 
   // Load blog posts from localStorage or use mock data
   useEffect(() => {
@@ -154,9 +146,9 @@ const WorldNewsPage = () => {
   }
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
+      <header className="bg-white border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">

@@ -5,7 +5,25 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#473B73', // Koyu mor/indigo
+          light: '#6FB5D3',   // Mavi
+          accent: '#EF88AE',  // Pembe
+          cream: '#EDE9D8',   // Krem
+        },
+        background: {
+          DEFAULT: '#EDE9D8', // Krem arka plan
+          secondary: '#F8F6F0', // Açık krem
+        },
+        text: {
+          DEFAULT: '#473B73', // Koyu mor metin
+          secondary: '#6FB5D3', // Mavi metin
+          accent: '#EF88AE',  // Pembe metin
+        }
+      },
+    },
   },
   plugins: [],
 } 

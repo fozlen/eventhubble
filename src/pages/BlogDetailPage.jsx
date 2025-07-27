@@ -4,11 +4,7 @@ import { Sun, Moon, Globe, User, ArrowLeft, Calendar, Tag, Share2, Clock } from 
 import newLogo from '../assets/eventhubble_new_logo.png'
 
 const BlogDetailPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Load dark mode preference from localStorage
-    const saved = localStorage.getItem('isDarkMode')
-    return saved ? JSON.parse(saved) : false
-  })
+  const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
   const [language, setLanguage] = useState(() => {
     // Load language preference from localStorage
     return localStorage.getItem('language') || 'EN'
@@ -18,14 +14,10 @@ const BlogDetailPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  // Dark mode effect
+  // Dark mode effect - artık gerekli değil
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [isDarkMode])
+    document.documentElement.classList.remove('dark')
+  }, [])
 
   // Update page title based on language
   useEffect(() => {

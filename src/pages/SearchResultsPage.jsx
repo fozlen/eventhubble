@@ -9,11 +9,7 @@ const SearchResultsPage = () => {
   const [events, setEvents] = useState([])
   const [filteredEvents, setFilteredEvents] = useState([])
   const [loading, setLoading] = useState(true)
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Load dark mode preference from localStorage
-    const saved = localStorage.getItem('isDarkMode')
-    return saved ? JSON.parse(saved) : false
-  })
+  const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
   const [language, setLanguage] = useState(() => {
     // Load language preference from localStorage
     return localStorage.getItem('language') || 'EN'
@@ -31,14 +27,10 @@ const SearchResultsPage = () => {
     return newLogo
   }
 
-  // Dark mode effect
+  // Dark mode effect - artık gerekli değil
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [isDarkMode])
+    document.documentElement.classList.remove('dark')
+  }, [])
 
   // Update page title based on language
   useEffect(() => {
