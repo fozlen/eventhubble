@@ -8,7 +8,10 @@ const AdminDashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPost, setEditingPost] = useState(null)
-  const [language, setLanguage] = useState('EN')
+  const [language, setLanguage] = useState(() => {
+    // Load language preference from localStorage
+    return localStorage.getItem('language') || 'EN'
+  })
   const navigate = useNavigate()
 
   // Check authentication

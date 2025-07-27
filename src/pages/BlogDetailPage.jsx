@@ -5,8 +5,15 @@ import lightLogo from '../assets/eventhubble_light_transparent_logo.png'
 import darkLogo from '../assets/eventhubble_dark_transparent_logo.png'
 
 const BlogDetailPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [language, setLanguage] = useState('EN')
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Load dark mode preference from localStorage
+    const saved = localStorage.getItem('isDarkMode')
+    return saved ? JSON.parse(saved) : false
+  })
+  const [language, setLanguage] = useState(() => {
+    // Load language preference from localStorage
+    return localStorage.getItem('language') || 'EN'
+  })
   const [blogPost, setBlogPost] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const { id } = useParams()
@@ -88,11 +95,15 @@ const BlogDetailPage = () => {
   }
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
+    const newDarkMode = !isDarkMode
+    setIsDarkMode(newDarkMode)
+    localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
   }
 
   const toggleLanguage = () => {
-    setLanguage(language === 'TR' ? 'EN' : 'TR')
+    const newLanguage = language === 'TR' ? 'EN' : 'TR'
+    setLanguage(newLanguage)
+    localStorage.setItem('language', newLanguage)
   }
 
   const handleLogin = () => {
