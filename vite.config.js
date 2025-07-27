@@ -10,7 +10,10 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false
+    sourcemap: false,
+    rollupOptions: {
+      input: 'app.html'
+    }
   },
   // Custom HTML entry point
   root: '.',
