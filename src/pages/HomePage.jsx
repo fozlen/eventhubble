@@ -45,8 +45,8 @@ const HomePage = () => {
   // Update page title based on language
   useEffect(() => {
     const title = language === 'TR' 
-      ? 'EventHubble | Dünyanın En Muhteşem Etkinliklerini Keşfet'
-      : 'EventHubble | Discover Amazing Events Worldwide'
+      ? 'Event Hubble | Dünyanın En Muhteşem Etkinliklerini Keşfet'
+      : 'Event Hubble | Discover Amazing Events Worldwide'
     document.title = title
   }, [language])
 

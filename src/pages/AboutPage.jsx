@@ -22,8 +22,8 @@ const AboutPage = () => {
   // Update page title based on language
   useEffect(() => {
     const title = language === 'TR' 
-      ? 'EventHubble | Hakkımızda'
-      : 'EventHubble | About Us'
+      ? 'Event Hubble | Hakkımızda'
+      : 'Event Hubble | About Us'
     document.title = title
   }, [language])
 

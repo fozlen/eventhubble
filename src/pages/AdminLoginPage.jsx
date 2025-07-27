@@ -91,12 +91,12 @@ const AdminLoginPage = () => {
               <h1 className="text-2xl font-bold text-text mb-2">
                 {language === 'TR' ? 'Admin Girişi' : 'Admin Login'}
               </h1>
-              <p className="text-text/60">
-                {language === 'TR' 
-                  ? 'EventHubble Blog Yönetim Paneli'
-                  : 'EventHubble Blog Management Panel'
-                }
-              </p>
+                              <p className="text-text/60">
+                  {language === 'TR' 
+                    ? 'Event Hubble Blog Yönetim Paneli'
+                    : 'Event Hubble Blog Management Panel'
+                  }
+                </p>
             </div>
 
             {/* Login Form */}

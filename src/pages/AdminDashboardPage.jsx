@@ -55,6 +55,28 @@ const AdminDashboardPage = () => {
             image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
             author: 'Admin',
             tags: ['festival', 'music', 'coachella', '2024']
+          },
+          {
+            id: 2,
+            title: 'Istanbul Jazz Festival 2024',
+            excerpt: 'The most prestigious jazz festival in Turkey returns with world-class artists.',
+            content: 'The Istanbul Jazz Festival, one of the most prestigious music events in Turkey, is back for its 2024 edition. This year\'s festival will feature an impressive lineup of international and local jazz artists, promising unforgettable performances across various venues in Istanbul.\n\nThe festival will take place over two weeks in July, offering jazz enthusiasts the opportunity to experience world-class performances in some of Istanbul\'s most beautiful and historic venues. From intimate club performances to grand outdoor concerts, the festival caters to all jazz lovers.\n\nIn addition to the main performances, the festival will include workshops, masterclasses, and special events that celebrate the rich history and future of jazz music.',
+            date: '2024-03-20',
+            category: 'Music',
+            image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&h=300&fit=crop',
+            author: 'Admin',
+            tags: ['jazz', 'istanbul', 'festival', 'music']
+          },
+          {
+            id: 3,
+            title: 'Turkish Football League Championship Race',
+            excerpt: 'The most exciting championship race in Turkish football history continues.',
+            content: 'The Turkish Süper Lig is witnessing one of the most exciting championship races in its history. With only a few weeks remaining in the season, multiple teams are still in contention for the title, making every match crucial.\n\nThe race for the championship has been incredibly tight, with the top teams separated by just a few points. This has created an atmosphere of intense competition and excitement among football fans across Turkey.\n\nAs the season reaches its climax, fans can expect dramatic matches, unexpected results, and unforgettable moments that will be remembered for years to come.',
+            date: '2024-03-25',
+            category: 'Sports',
+            image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
+            author: 'Admin',
+            tags: ['football', 'turkish league', 'championship', 'sports']
           }
         ]
         setBlogPosts(samplePosts)
@@ -108,6 +130,21 @@ const AdminDashboardPage = () => {
       month: 'long',
       day: 'numeric'
     })
+  }
+
+  // Helper function to get default images by category
+  const getDefaultImageByCategory = (category) => {
+    const imageMap = {
+      'Music': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
+      'Sports': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
+      'Art': 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop',
+      'Technology': 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop',
+      'Film': 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=300&fit=crop',
+      'Theater': 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=400&h=300&fit=crop',
+      'Festival': 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop',
+      'Other': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
+    }
+    return imageMap[category] || imageMap['Other']
   }
 
   const handleSavePost = (postData) => {
@@ -495,8 +532,31 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 value={formData.image}
                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                placeholder="https://example.com/image.jpg"
+                placeholder="https://images.unsplash.com/photo-..."
               />
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, image: getDefaultImageByCategory(formData.category) })}
+                  className="text-xs text-primary hover:text-primary-light underline"
+                >
+                  {language === 'TR' ? 'Kategori için varsayılan resim kullan' : 'Use default image for category'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop' })}
+                  className="text-xs text-primary hover:text-primary-light underline"
+                >
+                  {language === 'TR' ? 'Müzik resmi' : 'Music image'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop' })}
+                  className="text-xs text-primary hover:text-primary-light underline"
+                >
+                  {language === 'TR' ? 'Spor resmi' : 'Sports image'}
+                </button>
+              </div>
             </div>
 
             <div className="flex justify-end space-x-3 pt-6 border-t border-gray-100">

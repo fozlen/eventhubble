@@ -31,8 +31,8 @@ const EventDetailPage = () => {
   useEffect(() => {
     if (event) {
       const title = language === 'TR' 
-        ? `EventHubble | ${event.title}`
-        : `EventHubble | ${event.title}`
+        ? `Event Hubble | ${event.title}`
+        : `Event Hubble | ${event.title}`
       document.title = title
     }
   }, [language, event])

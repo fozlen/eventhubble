@@ -118,8 +118,8 @@ const WorldNewsPage = () => {
   // Update page title based on language
   useEffect(() => {
     const title = language === 'TR' 
-      ? 'EventHubble | Dünyadan Gelişmeler'
-      : 'EventHubble | World News'
+      ? 'Event Hubble | Dünyadan Gelişmeler'
+      : 'Event Hubble | World News'
     document.title = title
   }, [language])
 

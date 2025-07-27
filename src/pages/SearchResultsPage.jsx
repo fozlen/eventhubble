@@ -38,8 +38,8 @@ const SearchResultsPage = () => {
   // Update page title based on language
   useEffect(() => {
     const title = language === 'TR' 
-      ? `EventHubble | "${searchTerm}" Arama Sonuçları`
-      : `EventHubble | Search Results for "${searchTerm}"`
+      ? `Event Hubble | "${searchTerm}" Arama Sonuçları`
+      : `Event Hubble | Search Results for "${searchTerm}"`
     document.title = title
   }, [language, searchTerm])
 
