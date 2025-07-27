@@ -112,47 +112,34 @@ const ImageSelector = ({
     setIsUploading(true)
 
     try {
-      // FormData oluştur
-      const formData = new FormData()
-      formData.append('image', file)
-
-      // Upload API endpoint
-      const uploadUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://eventhubble-backend.onrender.com/upload'
-        : 'http://localhost:3001/upload'
-
-      // Upload request
-      const response = await fetch(uploadUrl, {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`)
-      }
-
-      const result = await response.json()
-
-      if (result.success) {
-        // Upload başarılı
+      // Simple Base64 Solution (No Backend Required)
+      const reader = new FileReader()
+      
+      reader.onload = (e) => {
+        const dataUrl = e.target.result
+        const fileName = `uploaded_${Date.now()}_${file.name}`
+        
         setUploadedImage({
-          name: result.data.fileName,
-          url: result.data.cdnUrl,
-          cdnUrl: result.data.cdnUrl,
-          originalName: result.data.originalName,
-          fileSize: result.data.fileSize
+          name: fileName,
+          url: dataUrl,
+          cdnUrl: dataUrl, // For now, use data URL as CDN URL
+          originalName: file.name,
+          fileSize: file.size
         })
         
-        // CDN URL'ini seçili değer olarak ayarla
-        onChange(result.data.cdnUrl)
-      } else {
-        throw new Error(result.error || 'Upload failed')
+        onChange(dataUrl)
+        setIsUploading(false)
       }
+      
+      reader.onerror = () => {
+        throw new Error('Failed to read file')
+      }
+      
+      reader.readAsDataURL(file)
 
     } catch (error) {
       console.error('Upload error:', error)
       alert(`Upload failed: ${error.message}`)
-    } finally {
       setIsUploading(false)
     }
   }
