@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon, Tag, FileText, Settings, BarChart3 } from 'lucide-react'
 import newLogo from '../assets/eventhubble_new_logo.png'
 import logo from '../assets/Logo.png'
+import ImageSelector from '../components/ImageSelector'
 
 const AdminDashboardPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
@@ -526,37 +527,12 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
               <label className="block text-sm font-medium text-text mb-2">
                 {language === 'TR' ? 'Resim URL' : 'Image URL'}
               </label>
-              <input
-                type="url"
-                required
+              <ImageSelector
                 value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                placeholder="https://images.unsplash.com/photo-..."
+                onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
+                placeholder={language === 'TR' ? 'Resim URL girin veya seçin...' : 'Enter image URL or select from dropdown...'}
+                label={language === 'TR' ? 'Resim URL' : 'Image URL'}
               />
-              <div className="mt-2 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, image: getDefaultImageByCategory(formData.category) })}
-                  className="text-xs text-primary hover:text-primary-light underline"
-                >
-                  {language === 'TR' ? 'Kategori için varsayılan resim kullan' : 'Use default image for category'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop' })}
-                  className="text-xs text-primary hover:text-primary-light underline"
-                >
-                  {language === 'TR' ? 'Müzik resmi' : 'Music image'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop' })}
-                  className="text-xs text-primary hover:text-primary-light underline"
-                >
-                  {language === 'TR' ? 'Spor resmi' : 'Sports image'}
-                </button>
-              </div>
             </div>
 
             <div className="flex justify-end space-x-3 pt-6 border-t border-gray-100">
