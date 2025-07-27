@@ -298,19 +298,13 @@ const EventDetailPage = () => {
             </nav>
             
             <div className="flex items-center space-x-4">
-              <button
+              <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
+                title={language === 'TR' ? 'Language' : 'Dil'}
               >
                 <Globe size={16} />
                 <span className="hidden sm:inline">{language}</span>
-              </button>
-              <button
-                onClick={handleLogin}
-                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
-              >
-                <User size={16} />
-                <span className="hidden sm:inline">{language === 'TR' ? 'Giriş' : 'Login'}</span>
               </button>
             </div>
           </div>

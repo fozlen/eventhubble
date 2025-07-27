@@ -8,11 +8,9 @@ import {
   Search, 
   Calendar, 
   MapPin, 
-  Filter, 
   Sun, 
   Moon,
   Globe, 
-  User, 
   ChevronDown,
   Music,
   Film,
@@ -25,22 +23,12 @@ import {
   Users,
   Map
 } from 'lucide-react'
-import { 
-  DateRangePicker, 
-  CountryCitySelector, 
-  AdvancedFilters 
-} from '../components/ModernDropdowns'
 
 const HomePage = () => {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
-  const [selectedDates, setSelectedDates] = useState({ startDate: null, endDate: null })
-  const [selectedCountry, setSelectedCountry] = useState('')
-  const [selectedCities, setSelectedCities] = useState([])
-  const [advancedFilters, setAdvancedFilters] = useState({})
-  const [showAdvancedFilter, setShowAdvancedFilter] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
   const [language, setLanguage] = useState(() => {
     // Load language preference from localStorage
@@ -48,18 +36,6 @@ const HomePage = () => {
   })
   const [showMap, setShowMap] = useState(false)
   const navigate = useNavigate()
-
-  // Click outside handler for advanced filters
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest('.advanced-filter')) {
-        setShowAdvancedFilter(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
 
   // Dark mode effect - artık gerekli değil
   useEffect(() => {
@@ -165,7 +141,6 @@ const HomePage = () => {
       const searchParams = new URLSearchParams()
       searchParams.set('q', searchTerm)
       if (selectedCategory) searchParams.set('category', selectedCategory)
-      if (selectedDates.startDate) searchParams.set('dateRange', 'custom')
       navigate(`/search?${searchParams.toString()}`)
     }
   }
@@ -190,12 +165,6 @@ const HomePage = () => {
     const newLanguage = language === 'EN' ? 'TR' : 'EN'
     setLanguage(newLanguage)
     localStorage.setItem('language', newLanguage)
-  }
-
-  // Login işlemi
-  const handleLogin = () => {
-    console.log('Login clicked')
-    // Login modal veya sayfası açılacak
   }
 
   // Get logo
@@ -264,18 +233,10 @@ const HomePage = () => {
               <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
-                title="Change language"
+                title={language === 'TR' ? 'Language' : 'Dil'}
               >
                 <Globe size={16} />
                 <span className="hidden sm:inline">{language}</span>
-              </button>
-              <button 
-                onClick={handleLogin}
-                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
-                title="Login"
-              >
-                <User size={16} />
-                <span className="hidden sm:inline">{language === 'TR' ? 'Giriş' : 'Login'}</span>
               </button>
             </div>
           </div>
@@ -314,35 +275,6 @@ const HomePage = () => {
                 <span className="text-sm sm:text-base">{language === 'TR' ? 'Ara' : 'Search'}</span>
               </button>
             </div>
-          </div>
-
-          {/* Filter Options */}
-          <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4 mt-6 px-4">
-            <DateRangePicker
-              selectedDates={selectedDates}
-              onChange={setSelectedDates}
-              placeholder={language === 'TR' ? 'Tüm Tarihler' : 'All Dates'}
-              icon={Calendar}
-              className="bg-white text-text hover:shadow-md border-primary/20 w-full sm:w-auto"
-            />
-            
-            <CountryCitySelector
-              selectedCountry={selectedCountry}
-              selectedCities={selectedCities}
-              onCountryChange={setSelectedCountry}
-              onCitiesChange={setSelectedCities}
-              placeholder={language === 'TR' ? 'Tüm Şehirler' : 'All Cities'}
-              icon={MapPin}
-              className="bg-white text-text hover:shadow-md border-primary/20 w-full sm:w-auto"
-            />
-            
-            <AdvancedFilters
-              filters={advancedFilters}
-              onFiltersChange={setAdvancedFilters}
-              isOpen={showAdvancedFilter}
-              onToggle={setShowAdvancedFilter}
-              className="bg-white text-text hover:shadow-md border-primary/20 w-full sm:w-auto"
-            />
           </div>
 
 

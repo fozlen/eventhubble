@@ -237,23 +237,13 @@ const BlogDetailPage = () => {
             </nav>
             
             <div className="flex items-center space-x-4">
-              <button
+              <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
+                title={language === 'TR' ? 'Language' : 'Dil'}
               >
-                <Globe className="h-4 w-4" />
-                <span className="text-sm font-medium">
-                  {language}
-                </span>
-              </button>
-              <button
-                onClick={handleLogin}
-                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
-              >
-                <User className="h-4 w-4" />
-                <span className="text-sm font-medium">
-                  {language === 'TR' ? 'Giriş' : 'Login'}
-                </span>
+                <Globe size={16} />
+                <span className="hidden sm:inline">{language}</span>
               </button>
             </div>
           </div>
