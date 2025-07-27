@@ -313,49 +313,49 @@ const SearchResultsPage = () => {
       {/* Header */}
       <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="grid grid-cols-3 items-center">
+          <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-4 sm:gap-0">
             {/* Logo and Brand - Left Section */}
-            <div className="flex justify-start">
+            <div className="flex justify-center sm:justify-start w-full sm:w-auto">
               <button
                 onClick={() => navigate('/')}
-                className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
+                className="flex items-center space-x-2 md:space-x-4 hover:opacity-80 transition-opacity duration-200"
               >
                 <img 
                   src={getLogo()} 
                   alt="EventHubble" 
-                  className="h-10 w-auto" 
+                  className="h-8 md:h-10 w-auto" 
                 />
-                <span className="text-xl font-bold">
+                <span className="text-lg md:text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light">Hubble</span>
+                  <span className="text-primary-light"> Hubble</span>
                 </span>
               </button>
             </div>
             
             {/* Navigation Menu - Center Section */}
-            <nav className="flex justify-center items-center space-x-8">
+            <nav className="flex justify-center items-center space-x-4 sm:space-x-8 flex-wrap">
               <a
                 href="/"
-                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light whitespace-nowrap"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
-                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white whitespace-nowrap"
               >
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
               <a
                 href="/world-news"
-                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white whitespace-nowrap"
               >
                 {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
               </a>
             </nav>
             
             {/* Language Toggle - Right Section */}
-            <div className="flex justify-end">
+            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
               <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
@@ -577,9 +577,9 @@ const SearchResultsPage = () => {
       {/* Footer */}
       <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-3 gap-8 items-center">
+          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-8 items-center">
             {/* Logo and Brand - Left Section */}
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full sm:w-auto">
               <div className="flex items-center space-x-2">
                 <img 
                   src={logo} 
@@ -588,13 +588,13 @@ const SearchResultsPage = () => {
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light">Hubble</span>
+                  <span className="text-primary-light"> Hubble</span>
                 </span>
               </div>
             </div>
             
             {/* Company Links - Center Section */}
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full sm:w-auto">
               <div className="text-center">
                 <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
                 <ul className="space-y-2 text-white/80">
@@ -604,7 +604,7 @@ const SearchResultsPage = () => {
             </div>
             
             {/* Blog Links - Right Section */}
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full sm:w-auto">
               <div className="text-center">
                 <h3 className="font-semibold mb-4">Blog</h3>
                 <ul className="space-y-2 text-white/80">

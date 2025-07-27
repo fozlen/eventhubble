@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile responsive optimizations */
+@media (max-width: 640px) {
+  /* Prevent horizontal scrolling */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Ensure proper text wrapping */
+  .whitespace-nowrap {
+    white-space: normal;
+  }
+  
+  /* Optimize search box for mobile */
+  .search-box-mobile {
+    padding: 0.5rem;
+  }
+  
+  /* Ensure proper spacing in mobile headers */
+  .mobile-header-spacing {
+    gap: 0.75rem;
+  }
+}
+
 /* Line clamp utilities for text truncation */
 .line-clamp-2 {
   display: -webkit-box;

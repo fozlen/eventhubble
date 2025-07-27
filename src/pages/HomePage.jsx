@@ -189,9 +189,9 @@ const HomePage = () => {
       {/* Header */}
       <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="grid grid-cols-3 items-center">
+          <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-4 sm:gap-0">
             {/* Logo and Brand - Left Section */}
-            <div className="flex justify-start">
+            <div className="flex justify-center sm:justify-start w-full sm:w-auto">
               <button
                 onClick={() => navigate('/')}
                 className="flex items-center space-x-2 md:space-x-4 hover:opacity-80 transition-opacity duration-200"
@@ -203,35 +203,35 @@ const HomePage = () => {
                 />
                 <span className="text-lg md:text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light">Hubble</span>
+                  <span className="text-primary-light"> Hubble</span>
                 </span>
               </button>
             </div>
             
             {/* Navigation Menu - Center Section */}
-            <nav className="flex justify-center items-center space-x-8">
+            <nav className="flex justify-center items-center space-x-4 sm:space-x-8 flex-wrap">
               <a
                 href="/"
-                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light whitespace-nowrap"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
-                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white whitespace-nowrap"
               >
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
               <a
                 href="/world-news"
-                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white whitespace-nowrap"
               >
                 {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
               </a>
             </nav>
             
             {/* Language Toggle - Right Section */}
-            <div className="flex justify-end">
+            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
               <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
@@ -251,27 +251,27 @@ const HomePage = () => {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-text">
             {language === 'TR' ? 'Dünyanın En İyi' : 'Discover the Best'} <span className="text-primary">{language === 'TR' ? 'Etkinliklerini' : 'Events Worldwide'}</span>
           </h1>
-          <p className="text-lg md:text-xl mb-8 text-text/70 px-4">
+          <p className="text-lg md:text-xl mb-8 text-text/70 px-2 sm:px-4">
             {language === 'TR' ? 'Akıllı arama ve gelişmiş filtrelerle hayalinizdeki etkinlikleri bulun.' : 'Find your dream events with smart search and advanced filters.'}
           </p>
           
           {/* Search Box */}
-          <div className="max-w-2xl mx-auto px-4">
+          <div className="max-w-2xl mx-auto px-2 sm:px-4">
             <div className="flex flex-col sm:flex-row rounded-full shadow-lg p-2 bg-white">
-              <div className="flex-1 flex items-center px-4 py-3 sm:py-0">
-                <Search className="mr-3 text-text/50 flex-shrink-0" size={20} />
+              <div className="flex-1 flex items-center px-3 sm:px-4 py-3 sm:py-0">
+                <Search className="mr-2 sm:mr-3 text-text/50 flex-shrink-0" size={20} />
                 <input
                   type="text"
                   placeholder={language === 'TR' ? 'Hangi etkinliği arıyorsunuz?' : 'What event are you looking for?'}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="flex-1 outline-none text-text text-sm sm:text-base"
+                  className="flex-1 outline-none text-text text-sm sm:text-base min-w-0"
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 />
               </div>
               <button
                 onClick={handleSearch}
-                className="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center space-x-2 mt-2 sm:mt-0"
+                className="bg-primary text-white px-4 sm:px-6 py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center space-x-2 mt-2 sm:mt-0 whitespace-nowrap"
               >
                 <Search size={16} />
                 <span className="text-sm sm:text-base">{language === 'TR' ? 'Ara' : 'Search'}</span>
@@ -443,9 +443,9 @@ const HomePage = () => {
       {/* Footer */}
       <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-3 gap-8 items-center">
+          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-8 items-center">
             {/* Logo and Brand - Left Section */}
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full sm:w-auto">
               <div className="flex items-center space-x-2">
                 <img 
                   src={logo} 
@@ -454,13 +454,13 @@ const HomePage = () => {
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light">Hubble</span>
+                  <span className="text-primary-light"> Hubble</span>
                 </span>
               </div>
             </div>
             
             {/* Company Links - Center Section */}
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full sm:w-auto">
               <div className="text-center">
                 <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
                 <ul className="space-y-2 text-white/80">
@@ -470,7 +470,7 @@ const HomePage = () => {
             </div>
             
             {/* Blog Links - Right Section */}
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full sm:w-auto">
               <div className="text-center">
                 <h3 className="font-semibold mb-4">Blog</h3>
                 <ul className="space-y-2 text-white/80">

@@ -56,7 +56,7 @@ const AdminLoginPage = () => {
               <div className="text-white">
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light">Hubble</span>
+                  <span className="text-primary-light"> Hubble</span>
                 </span>
                 <span className="ml-2 text-sm text-primary-cream/80">Admin Panel</span>
               </div>
