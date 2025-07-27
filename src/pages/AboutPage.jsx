@@ -61,7 +61,7 @@ const AboutPage = () => {
                 <img 
                   src={getLogo()} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
@@ -214,7 +214,7 @@ const AboutPage = () => {
                 <img 
                   src={logo} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>

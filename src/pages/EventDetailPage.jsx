@@ -243,7 +243,7 @@ const EventDetailPage = () => {
           </h3>
           <button
             onClick={() => navigate('/')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
           >
             {language === 'TR' ? 'Ana Sayfaya Dön' : 'Go Back Home'}
           </button>
@@ -266,7 +266,7 @@ const EventDetailPage = () => {
                 <img 
                   src={getLogo()} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
@@ -452,7 +452,7 @@ const EventDetailPage = () => {
               <div className="space-y-4">
                 <button
                   onClick={() => window.open(event.url, '_blank')}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center"
+                  className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   <ExternalLink size={16} className="mr-2" />
                   {language === 'TR' ? 'Bilet Al' : 'Buy Ticket Now'}
@@ -493,7 +493,7 @@ const EventDetailPage = () => {
                 <img 
                   src={logo} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>

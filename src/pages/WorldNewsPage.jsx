@@ -162,7 +162,7 @@ const WorldNewsPage = () => {
                 <img 
                   src={getLogo()} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
@@ -262,7 +262,7 @@ const WorldNewsPage = () => {
                 </p>
                 <button
                   onClick={() => handleReadMore(news.id)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+                  className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
                 >
                   {language === 'TR' ? 'Devamını Oku' : 'Read More'}
                 </button>
@@ -299,7 +299,7 @@ const WorldNewsPage = () => {
                 <img 
                   src={logo} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>

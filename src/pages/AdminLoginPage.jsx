@@ -85,7 +85,7 @@ const AdminLoginPage = () => {
           {/* Logo and Header */}
           <div className="text-center">
             <img
-              className="mx-auto h-16 w-auto bg-white rounded-lg p-2 shadow-sm"
+              className="mx-auto h-16 w-auto"
               src={logo}
               alt="EventHubble"
             />
@@ -201,7 +201,7 @@ const AdminLoginPage = () => {
                 <img 
                   src={logo} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>

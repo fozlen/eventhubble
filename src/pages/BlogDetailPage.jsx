@@ -161,22 +161,28 @@ const BlogDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4 text-gray-400">📖</div>
+          <h3 className="text-xl font-semibold text-text">
+            {language === 'TR' ? 'Blog yazısı yükleniyor...' : 'Loading blog post...'}
+          </h3>
+        </div>
       </div>
     )
   }
 
   if (!blogPost) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="text-6xl mb-4 text-gray-400">❌</div>
+          <h3 className="text-xl font-semibold mb-2 text-text">
             {language === 'TR' ? 'Blog Yazısı Bulunamadı' : 'Blog Post Not Found'}
-          </h1>
+          </h3>
           <button
             onClick={() => navigate('/world-news')}
-            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            className="text-primary hover:text-primary/80"
           >
             {language === 'TR' ? '← Dünya Haberlerine Dön' : '← Back to World News'}
           </button>
@@ -199,7 +205,7 @@ const BlogDetailPage = () => {
                 <img 
                   src={getLogo()} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
@@ -270,8 +276,8 @@ const BlogDetailPage = () => {
             {/* Category and Date */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
-                <Tag className="h-4 w-4 text-blue-600" />
-                <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                <Tag className="h-4 w-4 text-primary" />
+                <span className="text-sm text-primary font-medium">
                   {getCategoryTranslation(blogPost.category)}
                 </span>
               </div>
@@ -323,7 +329,7 @@ const BlogDetailPage = () => {
             <div className="mb-8">
               <button
                 onClick={handleShare}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
               >
                 <Share2 className="h-4 w-4" />
                 <span>{language === 'TR' ? 'Yazıyı Paylaş' : 'Share Article'}</span>
@@ -362,7 +368,7 @@ const BlogDetailPage = () => {
                 <img 
                   src={logo} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>

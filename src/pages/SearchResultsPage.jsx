@@ -298,10 +298,9 @@ const SearchResultsPage = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className={`text-6xl mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`}>⏳</div>
-          <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <h3 className="text-xl font-semibold text-text">
             {language === 'TR' ? 'Arama sonuçları yükleniyor...' : 'Loading search results...'}
           </h3>
         </div>
@@ -323,7 +322,7 @@ const SearchResultsPage = () => {
                 <img 
                   src={getLogo()} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
@@ -385,16 +384,11 @@ const SearchResultsPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h1 className="text-3xl font-bold mb-2 text-text">
               {language === 'TR' ? 'Arama Sonuçları' : 'Search Results'}
             </h1>
-            <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              {language === 'TR' ? 'Bulunan etkinlikler' : 'Found events'}: <span className="font-semibold text-blue-600">{filteredEvents.length}</span>
-              {searchTerm && (
-                <span className="ml-2">
-                  {language === 'TR' ? 'için' : 'for'} "<span className="font-semibold">{searchTerm}</span>"
-                </span>
-              )}
+            <p className="text-text/70 mb-6">
+              {language === 'TR' ? 'Bulunan etkinlikler' : 'Found events'}: <span className="font-semibold text-primary">{filteredEvents.length}</span>
             </p>
           </div>
           
@@ -492,37 +486,37 @@ const SearchResultsPage = () => {
                     {/* Event Info Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                       <div className="flex items-center">
-                        <Calendar className={`mr-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} size={16} />
+                        <Calendar className="mr-2 text-primary" size={16} />
                         <div>
-                          <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          <p className="text-xs font-medium text-text/70">
                             {language === 'TR' ? 'Tarih' : 'Date'}
                           </p>
-                          <p className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                          <p className="text-sm text-text">
                             {formatDate(event.date)}
                           </p>
                         </div>
                       </div>
                       
                       <div className="flex items-center">
-                        <MapPin className={`mr-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} size={16} />
+                        <MapPin className="mr-2 text-primary" size={16} />
                         <div>
-                          <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          <p className="text-xs font-medium text-text/70">
                             {language === 'TR' ? 'Konum' : 'Location'}
                           </p>
-                          <p className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                          <p className="text-sm text-text">
                             {event.city}
                           </p>
                         </div>
                       </div>
                       
                       <div className="flex items-center">
-                        <Users className={`mr-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} size={16} />
+                        <Users className="mr-2 text-primary" size={16} />
                         <div>
-                          <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          <p className="text-xs font-medium text-text/70">
                             {language === 'TR' ? 'Katılımcı' : 'Attendees'}
                           </p>
-                          <p className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {event.attendees?.toLocaleString()}
+                          <p className="text-sm text-text">
+                            {event.attendees?.toLocaleString() || 'N/A'}
                           </p>
                         </div>
                       </div>
@@ -552,7 +546,7 @@ const SearchResultsPage = () => {
                         
                         <button
                           onClick={() => handleBuyTicket(event)}
-                          className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center"
+                          className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center"
                         >
                           <ExternalLink size={16} className="mr-1" />
                           {language === 'TR' ? 'Bilet Al' : 'Buy Ticket'}
@@ -578,11 +572,14 @@ const SearchResultsPage = () => {
                 : 'Try adjusting your search criteria or use different keywords.'
               }
             </p>
+            <h3 className="text-xl font-semibold mb-2 text-text">
+              {language === 'TR' ? 'Filtreler' : 'Filters'}
+            </h3>
             <button
               onClick={() => navigate('/')}
-              className="mt-4 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-4 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
             >
-              {language === 'TR' ? 'Ana Sayfaya Dön' : 'Back to Home'}
+              {language === 'TR' ? 'Yeni Arama Yap' : 'New Search'}
             </button>
           </div>
         )}
@@ -597,7 +594,7 @@ const SearchResultsPage = () => {
                 <img 
                   src={logo} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-10 w-auto" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
