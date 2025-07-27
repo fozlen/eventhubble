@@ -264,7 +264,7 @@ const AdminDashboardPage = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center">
               <div className="p-3 bg-primary/10 rounded-lg">
@@ -278,26 +278,22 @@ const AdminDashboardPage = () => {
           </div>
           
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-primary-light/10 rounded-lg">
-                <Eye className="h-6 w-6 text-primary-light" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="p-3 bg-text-accent/10 rounded-lg">
+                  <Tag className="h-6 w-6 text-text-accent" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Kategoriler' : 'Categories'}</p>
+                  <p className="text-2xl font-bold text-text">8</p>
+                </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Görüntülenme' : 'Views'}</p>
-                <p className="text-2xl font-bold text-text">1,234</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-text-accent/10 rounded-lg">
-                <Tag className="h-6 w-6 text-text-accent" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Kategoriler' : 'Categories'}</p>
-                <p className="text-2xl font-bold text-text">8</p>
-              </div>
+              <button
+                onClick={() => navigate('/admin/categories')}
+                className="text-primary hover:text-primary-light transition-colors text-sm font-medium"
+              >
+                {language === 'TR' ? 'Yönet' : 'Manage'} →
+              </button>
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import WorldNewsPage from './pages/WorldNewsPage'
 import SearchResultsPage from './pages/SearchResultsPage'
 import AdminLoginPage from './pages/AdminLoginPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import CategoriesPage from './pages/CategoriesPage'
 import BlogDetailPage from './pages/BlogDetailPage'
 import './App.css'
 
@@ -23,8 +24,9 @@ function App() {
           <Route path="/blog/:id" element={<BlogDetailPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          <Route path="/admin/categories" element={<CategoriesPage />} />
         </Routes>
-            </div>
+      </div>
     </Router>
   )
 }
