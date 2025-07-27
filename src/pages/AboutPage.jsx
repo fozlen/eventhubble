@@ -112,12 +112,12 @@ const AboutPage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-text">
+      <main className="max-w-4xl mx-auto px-4 py-8 md:py-12">
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-text">
             {language === 'TR' ? 'Hakkımızda' : 'About Us'}
           </h1>
-          <p className="text-xl text-text/70">
+          <p className="text-lg md:text-xl text-text/70 px-4">
             {language === 'TR' 
               ? 'Dünyanın en iyi etkinliklerini keşfetmenizi sağlayan platform' 
               : 'The platform that helps you discover the world\'s best events'
@@ -125,12 +125,12 @@ const AboutPage = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="p-6 rounded-lg bg-background-secondary">
-            <h2 className="text-2xl font-semibold mb-4 text-text">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
+          <div className="p-4 md:p-6 rounded-lg bg-background-secondary">
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-text">
               {language === 'TR' ? 'Misyonumuz' : 'Our Mission'}
             </h2>
-            <p className="text-text/70">
+            <p className="text-sm md:text-base text-text/70">
               {language === 'TR' 
                 ? 'İnsanları dünyanın en muhteşem etkinlikleriyle buluşturmak ve unutulmaz deneyimler yaşamalarını sağlamak.'
                 : 'To connect people with the world\'s most amazing events and help them create unforgettable experiences.'
@@ -138,11 +138,11 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className="p-6 rounded-lg bg-background-secondary">
-            <h2 className="text-2xl font-semibold mb-4 text-text">
+          <div className="p-4 md:p-6 rounded-lg bg-background-secondary">
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-text">
               {language === 'TR' ? 'Vizyonumuz' : 'Our Vision'}
             </h2>
-            <p className="text-text/70">
+            <p className="text-sm md:text-base text-text/70">
               {language === 'TR' 
                 ? 'Dünya çapında etkinlik keşfi için en güvenilir ve kullanıcı dostu platform olmak.'
                 : 'To become the most reliable and user-friendly platform for event discovery worldwide.'
@@ -151,11 +151,11 @@ const AboutPage = () => {
           </div>
         </div>
 
-        <div className="p-8 rounded-lg bg-background-secondary">
-          <h2 className="text-2xl font-semibold mb-6 text-center text-text">
+        <div className="p-6 md:p-8 rounded-lg bg-background-secondary">
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-center text-text">
             {language === 'TR' ? 'Neden EventHubble?' : 'Why EventHubble?'}
           </h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-primary/10">
                 <span className="text-2xl">🌍</span>

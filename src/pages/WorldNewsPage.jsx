@@ -225,13 +225,13 @@ const WorldNewsPage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 py-6 md:py-8">
         {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text mb-4">
             {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-text/70 max-w-3xl mx-auto px-4">
             {language === 'TR' 
               ? 'Dünyadan en son etkinlik haberleri ve gelişmeler'
               : 'Latest event news and developments from around the world'
@@ -240,7 +240,7 @@ const WorldNewsPage = () => {
         </div>
 
         {/* News Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
           {newsData.map((news) => (
             <article
               key={news.id}

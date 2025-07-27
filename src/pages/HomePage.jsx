@@ -218,17 +218,17 @@ const HomePage = () => {
       <header className="bg-white border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <button
                 onClick={() => navigate('/')}
-                className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
+                className="flex items-center space-x-2 md:space-x-4 hover:opacity-80 transition-opacity duration-200"
               >
                 <img 
                   src={getLogo()} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
+                  className="h-8 md:h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
-                <span className="text-xl font-bold">
+                <span className="text-lg md:text-xl font-bold">
                   <span className="text-text">Event</span>
                   <span className="text-primary">Hubble</span>
                 </span>
@@ -257,22 +257,22 @@ const HomePage = () => {
               </a>
             </nav>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <button 
                 onClick={toggleLanguage}
-                className="flex items-center space-x-1 text-text/70 hover:text-text transition-colors"
+                className="flex items-center space-x-1 text-text/70 hover:text-text transition-colors p-1 md:p-0"
                 title="Change language"
               >
                 <Globe size={16} />
-                <span>{language}</span>
+                <span className="hidden sm:inline">{language}</span>
               </button>
               <button 
                 onClick={handleLogin}
-                className={`flex items-center space-x-1 ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
+                className="flex items-center space-x-1 text-text/70 hover:text-text transition-colors p-1 md:p-0"
                 title="Login"
               >
                 <User size={16} />
-                <span>{language === 'TR' ? 'Giriş' : 'Login'}</span>
+                <span className="hidden sm:inline">{language === 'TR' ? 'Giriş' : 'Login'}</span>
               </button>
             </div>
           </div>
@@ -280,47 +280,47 @@ const HomePage = () => {
       </header>
 
       {/* Hero Section with Search */}
-      <section className="bg-gradient-to-br from-primary/10 to-primary-light/20 py-20">
+      <section className="bg-gradient-to-br from-primary/10 to-primary-light/20 py-12 md:py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4 text-text">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-text">
             {language === 'TR' ? 'Dünyanın En İyi' : 'Discover the Best'} <span className="text-primary">{language === 'TR' ? 'Etkinliklerini' : 'Events Worldwide'}</span>
           </h1>
-          <p className="text-xl mb-8 text-text/70">
+          <p className="text-lg md:text-xl mb-8 text-text/70 px-4">
             {language === 'TR' ? 'Akıllı arama ve gelişmiş filtrelerle hayalinizdeki etkinlikleri bulun.' : 'Find your dream events with smart search and advanced filters.'}
           </p>
           
           {/* Search Box */}
-          <div className="max-w-2xl mx-auto">
-            <div className="flex rounded-full shadow-lg p-2 bg-white">
-              <div className="flex-1 flex items-center px-4">
-                <Search className="mr-3 text-text/50" size={20} />
+          <div className="max-w-2xl mx-auto px-4">
+            <div className="flex flex-col sm:flex-row rounded-full shadow-lg p-2 bg-white">
+              <div className="flex-1 flex items-center px-4 py-3 sm:py-0">
+                <Search className="mr-3 text-text/50 flex-shrink-0" size={20} />
                 <input
                   type="text"
                   placeholder={language === 'TR' ? 'Hangi etkinliği arıyorsunuz?' : 'What event are you looking for?'}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="flex-1 outline-none text-text"
+                  className="flex-1 outline-none text-text text-sm sm:text-base"
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 />
               </div>
               <button
                 onClick={handleSearch}
-                className="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center space-x-2"
+                className="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center space-x-2 mt-2 sm:mt-0"
               >
                 <Search size={16} />
-                <span>{language === 'TR' ? 'Ara' : 'Search'}</span>
+                <span className="text-sm sm:text-base">{language === 'TR' ? 'Ara' : 'Search'}</span>
               </button>
             </div>
           </div>
 
           {/* Filter Options */}
-          <div className="flex justify-center space-x-4 mt-6">
+          <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4 mt-6 px-4">
             <DateRangePicker
               selectedDates={selectedDates}
               onChange={setSelectedDates}
               placeholder={language === 'TR' ? 'Tüm Tarihler' : 'All Dates'}
               icon={Calendar}
-              className="bg-white text-text hover:shadow-md border-primary/20"
+              className="bg-white text-text hover:shadow-md border-primary/20 w-full sm:w-auto"
             />
             
             <CountryCitySelector
@@ -330,7 +330,7 @@ const HomePage = () => {
               onCitiesChange={setSelectedCities}
               placeholder={language === 'TR' ? 'Tüm Şehirler' : 'All Cities'}
               icon={MapPin}
-              className="bg-white text-text hover:shadow-md border-primary/20"
+              className="bg-white text-text hover:shadow-md border-primary/20 w-full sm:w-auto"
             />
             
             <AdvancedFilters
@@ -338,7 +338,7 @@ const HomePage = () => {
               onFiltersChange={setAdvancedFilters}
               isOpen={showAdvancedFilter}
               onToggle={setShowAdvancedFilter}
-              className="bg-white text-text hover:shadow-md border-primary/20"
+              className="bg-white text-text hover:shadow-md border-primary/20 w-full sm:w-auto"
             />
           </div>
 
@@ -347,35 +347,35 @@ const HomePage = () => {
       </section>
 
       {/* Popular Categories */}
-      <section className="py-16 bg-white">
+      <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-text">{language === 'TR' ? 'Popüler Kategoriler' : 'Popular Categories'}</h2>
-            <p className="text-text/70">{language === 'TR' ? 'İlgi alanlarınıza göre etkinlikleri keşfedin' : 'Discover events by your interests'}</p>
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-text">{language === 'TR' ? 'Popüler Kategoriler' : 'Popular Categories'}</h2>
+            <p className="text-text/70 px-4">{language === 'TR' ? 'İlgi alanlarınıza göre etkinlikleri keşfedin' : 'Discover events by your interests'}</p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
             {categories.map((category) => {
               const IconComponent = category.icon
               return (
                 <div
                   key={category.id}
-                  className={`text-center p-6 rounded-xl border-2 cursor-pointer transition-all hover:shadow-lg hover:scale-105 ${
+                  className={`text-center p-4 md:p-6 rounded-xl border-2 cursor-pointer transition-all hover:shadow-lg hover:scale-105 ${
                     selectedCategory === category.id 
                       ? 'border-primary bg-primary/5' 
                       : 'border-primary/20 bg-white hover:border-primary/40'
                   }`}
                   onClick={() => handleCategoryFilter(category.id)}
                 >
-                  <div className="flex justify-center mb-3">
-                    <IconComponent size={32} className="text-primary" />
+                  <div className="flex justify-center mb-2 md:mb-3">
+                    <IconComponent size={24} className="md:w-8 md:h-8 text-primary" />
                   </div>
-                  <h3 className="font-bold mb-1 text-text">{category.name}</h3>
-                  <p className="text-sm mb-3 text-text/70">{category.subtitle}</p>
-                  <button className="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-primary/90 transition-colors">
+                  <h3 className="font-bold mb-1 text-text text-sm md:text-base">{category.name}</h3>
+                  <p className="text-xs md:text-sm mb-2 md:mb-3 text-text/70">{category.subtitle}</p>
+                  <button className="bg-primary text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm hover:bg-primary/90 transition-colors">
                     {category.count} {language === 'TR' ? 'etkinlik' : 'events'}
                   </button>
-                  <p className={`text-xs mt-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{category.total} {language === 'TR' ? 'toplam' : 'total'}</p>
+                  <p className="text-xs mt-2 text-text/60">{category.total} {language === 'TR' ? 'toplam' : 'total'}</p>
                 </div>
               )
             })}
@@ -384,22 +384,22 @@ const HomePage = () => {
       </section>
 
       {/* Featured Events */}
-      <section className="py-16 bg-background-secondary">
+      <section className="py-12 md:py-16 bg-background-secondary">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 space-y-4 sm:space-y-0">
             <div>
-              <h2 className="text-3xl font-bold mb-2 text-text">{language === 'TR' ? 'Öne Çıkan Etkinlikler' : 'Featured Events'}</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2 text-text">{language === 'TR' ? 'Öne Çıkan Etkinlikler' : 'Featured Events'}</h2>
               <p className="text-text/70">{filteredEvents.length} {language === 'TR' ? 'etkinlik bulundu' : 'events found'}</p>
             </div>
-            <div className="flex space-x-4">
-              <button className="flex items-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+              <button className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text text-sm">
                 <Calendar size={16} />
                 <span>{language === 'TR' ? 'Tarihe Göre' : 'By Date'}</span>
                 <ChevronDown size={14} />
               </button>
               <button 
                 onClick={() => setShowMap(!showMap)}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text"
+                className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text text-sm"
               >
                 <Map size={16} />
                 <span>{showMap ? (language === 'TR' ? 'Haritayı Gizle' : 'Hide Map') : (language === 'TR' ? 'Haritada Göster' : 'Show on Map')}</span>
@@ -415,7 +415,7 @@ const HomePage = () => {
               <h3 className="text-xl font-semibold mb-2 text-text">{language === 'TR' ? 'Etkinlikler yükleniyor...' : 'Loading events...'}</h3>
             </div>
           ) : filteredEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {filteredEvents.map((event) => (
                 <div key={event.id} className="rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
                   {/* Event Image */}
