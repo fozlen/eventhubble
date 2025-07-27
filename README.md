@@ -34,6 +34,12 @@ EventHubble is a modern, responsive web application that helps users discover an
 - **Accessibility**: Keyboard navigation and screen reader support
 - **Performance**: Optimized loading and smooth interactions
 
+### 🔐 Admin Panel
+- **Secure Authentication**: Protected admin login with environment variables
+- **Blog Management**: Create, edit, and delete blog posts
+- **Content Management**: Manage categories, tags, and media
+- **Local Storage**: Blog data stored locally for fast access
+
 ## 🚀 Tech Stack
 
 ### Frontend
@@ -71,18 +77,56 @@ EventHubble is a modern, responsive web application that helps users discover an
    npm install
    ```
 
-3. **Start development server**
+3. **Set up admin credentials (optional)**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env.local
+   
+   # Edit .env.local with your admin credentials
+   VITE_ADMIN_USERNAME=your_admin_username
+   VITE_ADMIN_PASSWORD=your_admin_password
+   ```
+
+4. **Start development server**
    ```bash
    npm run dev
    ```
 
-4. **Open in browser**
+5. **Open in browser**
    Navigate to `http://localhost:5173`
 
 ### Build for Production
 ```bash
 npm run build
 ```
+
+## 🔐 Admin Panel Usage
+
+### Access Admin Panel
+1. Navigate to `/admin/login` in your browser
+2. Use the credentials from your `.env.local` file
+3. Default credentials (if no .env.local):
+   - Username: `admin`
+   - Password: `eventhubble2024`
+
+### Blog Management
+- **Add New Post**: Click "Add New Post" button
+- **Edit Post**: Click "Edit" on any existing post
+- **Delete Post**: Click "Delete" to remove a post
+- **Categories**: Choose from Music, Sports, Art, Technology, Film, Theater, Festival, Other
+
+### Blog Post Fields
+- **Title**: Main headline of the blog post
+- **Excerpt**: Short description (shown in cards)
+- **Content**: Full blog post content
+- **Category**: Post category for organization
+- **Image URL**: Featured image for the post
+- **Tags**: Comma-separated tags for SEO
+
+### Security Notes
+- Admin credentials are stored in `.env.local` (not committed to git)
+- Session expires after 24 hours
+- Blog data is stored in browser localStorage
 
 ## 🏗️ Project Structure
 
