@@ -241,6 +241,28 @@ const HomePage = () => {
               </button>
             </div>
             
+            {/* Navigation Menu */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a
+                href="/"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}
+              >
+                {language === 'TR' ? 'Ana Sayfa' : 'Home'}
+              </a>
+              <a
+                href="/about"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                {language === 'TR' ? 'Hakkımızda' : 'About'}
+              </a>
+              <a
+                href="/world-news"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
+              </a>
+            </nav>
+            
             <div className="flex items-center space-x-4">
               <button 
                 onClick={toggleDarkMode}

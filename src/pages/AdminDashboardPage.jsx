@@ -114,15 +114,44 @@ const AdminDashboardPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+      <header className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <img src={lightLogo} alt="EventHubble" className="h-8 w-auto" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Admin Dashboard
-              </h1>
+              <button
+                onClick={() => navigate('/')}
+                className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
+              >
+                <img src={newLogo} alt="EventHubble" className="h-10 w-auto" />
+                <span className="text-xl font-bold">
+                  <span className={isDarkMode ? 'text-white' : 'text-black'}>Event</span>
+                  <span className="text-blue-600">Hubble</span>
+                </span>
+              </button>
             </div>
+            
+            {/* Navigation Menu */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a
+                href="/"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                {language === 'TR' ? 'Ana Sayfa' : 'Home'}
+              </a>
+              <a
+                href="/about"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                {language === 'TR' ? 'Hakkımızda' : 'About'}
+              </a>
+              <a
+                href="/world-news"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
+              </a>
+            </nav>
+            
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {language === 'TR' ? 'Hoş geldiniz, Admin' : 'Welcome, Admin'}

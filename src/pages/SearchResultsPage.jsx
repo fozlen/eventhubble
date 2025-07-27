@@ -323,13 +323,6 @@ const SearchResultsPage = () => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/')}
-                className={`p-2 rounded-lg ${isDarkMode ? 'text-gray-300 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} transition-colors`}
-                title={language === 'TR' ? 'Ana Sayfaya Dön' : 'Back to Home'}
-              >
-                <ArrowLeft size={20} />
-              </button>
-              <button
-                onClick={() => navigate('/')}
                 className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
               >
                 <img src={getLogo()} alt="EventHubble" className="h-10 w-auto" />
@@ -339,6 +332,28 @@ const SearchResultsPage = () => {
                 </span>
               </button>
             </div>
+            
+            {/* Navigation Menu */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a
+                href="/"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                {language === 'TR' ? 'Ana Sayfa' : 'Home'}
+              </a>
+              <a
+                href="/about"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                {language === 'TR' ? 'Hakkımızda' : 'About'}
+              </a>
+              <a
+                href="/world-news"
+                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
+              </a>
+            </nav>
             
             <div className="flex items-center space-x-4">
               <button 
@@ -577,7 +592,7 @@ const SearchResultsPage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-16">
+      <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
