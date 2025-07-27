@@ -256,10 +256,10 @@ const HomePage = () => {
           </p>
           
           {/* Search Box */}
-          <div className="max-w-2xl mx-auto px-2 sm:px-4">
-            <div className="flex flex-col sm:flex-row rounded-full shadow-lg p-2 bg-white">
-              <div className="flex-1 flex items-center px-3 sm:px-4 py-3 sm:py-0">
-                <Search className="mr-2 sm:mr-3 text-text/50 flex-shrink-0" size={20} />
+          <div className="max-w-xl sm:max-w-2xl mx-auto px-2 sm:px-4">
+            <div className="flex flex-col sm:flex-row rounded-full shadow-lg p-1.5 sm:p-2 bg-white">
+              <div className="flex-1 flex items-center px-2.5 sm:px-4 py-2.5 sm:py-0">
+                <Search className="mr-2 sm:mr-3 text-text/50 flex-shrink-0" size={18} />
                 <input
                   type="text"
                   placeholder={language === 'TR' ? 'Hangi etkinliği arıyorsunuz?' : 'What event are you looking for?'}
@@ -271,10 +271,10 @@ const HomePage = () => {
               </div>
               <button
                 onClick={handleSearch}
-                className="bg-primary text-white px-4 sm:px-6 py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center space-x-2 mt-2 sm:mt-0 whitespace-nowrap"
+                className="bg-primary text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center space-x-1.5 sm:space-x-2 mt-1.5 sm:mt-0 whitespace-nowrap"
               >
-                <Search size={16} />
-                <span className="text-sm sm:text-base">{language === 'TR' ? 'Ara' : 'Search'}</span>
+                <Search size={14} />
+                <span className="text-xs sm:text-sm">{language === 'TR' ? 'Ara' : 'Search'}</span>
               </button>
             </div>
           </div>
