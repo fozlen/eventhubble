@@ -1,0 +1,28 @@
+{
+  "name": "eventhubble-backend",
+  "version": "1.0.0",
+  "description": "EventHubble Backend - Otomatik Etkinlik Scraper",
+  "main": "scheduler.js",
+  "scripts": {
+    "start": "node scheduler.js",
+    "scrape": "node scraper.js",
+    "dev": "nodemon scheduler.js",
+    "test": "node scraper.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0",
+    "node-cron": "^3.0.3",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "scraper",
+    "events",
+    "cron",
+    "puppeteer"
+  ],
+  "author": "EventHubble",
+  "license": "MIT"
+} 

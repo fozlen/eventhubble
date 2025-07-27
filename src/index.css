@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* DatePicker Custom Styles */
+.react-datepicker {
+  @apply bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg !important;
+}
+
+.react-datepicker__header {
+  @apply bg-gray-50 dark:bg-gray-600 border-b border-gray-200 dark:border-gray-500 rounded-t-lg !important;
+}
+
+.react-datepicker__current-month {
+  @apply text-gray-900 dark:text-white font-semibold !important;
+}
+
+.react-datepicker__day-name {
+  @apply text-gray-500 dark:text-gray-400 !important;
+}
+
+.react-datepicker__day {
+  @apply text-gray-900 dark:text-white hover:bg-blue-100 dark:hover:bg-blue-900/30 !important;
+}
+
+.react-datepicker__day--selected {
+  @apply bg-blue-600 text-white hover:bg-blue-700 !important;
+}
+
+.react-datepicker__day--in-range {
+  @apply bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100 !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  @apply bg-blue-600 text-white !important;
+}
+
+.react-datepicker__navigation {
+  @apply text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 !important;
+}
+
+.react-datepicker__input-container input {
+  @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-600 text-gray-900 dark:text-white !important;
+}
+
+/* DatePicker Popper Styles */
+.react-datepicker-popper {
+  @apply z-50 !important;
+}
+
+.react-datepicker-calendar {
+  @apply bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg !important;
+}
+
+/* DatePicker Wrapper */
+.datepicker-wrapper {
+  @apply w-full;
+}
+
+/* Force light theme for DatePicker in light mode */
+:not(.dark) .react-datepicker,
+:not(.dark) .react-datepicker-popper .react-datepicker {
+  background-color: white !important;
+  border-color: #d1d5db !important;
+  color: #111827 !important;
+}
+
+:not(.dark) .react-datepicker__header,
+:not(.dark) .react-datepicker-popper .react-datepicker__header {
+  background-color: #f9fafb !important;
+  border-bottom-color: #e5e7eb !important;
+}
+
+:not(.dark) .react-datepicker__current-month,
+:not(.dark) .react-datepicker-popper .react-datepicker__current-month {
+  color: #111827 !important;
+}
+
+:not(.dark) .react-datepicker__day,
+:not(.dark) .react-datepicker-popper .react-datepicker__day {
+  color: #111827 !important;
+}
+
+:not(.dark) .react-datepicker__day:hover,
+:not(.dark) .react-datepicker-popper .react-datepicker__day:hover {
+  background-color: #dbeafe !important;
+}
+
+:not(.dark) .react-datepicker__day-name,
+:not(.dark) .react-datepicker-popper .react-datepicker__day-name {
+  color: #6b7280 !important;
+}
+
+:not(.dark) .react-datepicker__navigation,
+:not(.dark) .react-datepicker-popper .react-datepicker__navigation {
+  color: #9ca3af !important;
+}
+
+/* Force dark theme for DatePicker in dark mode */
+.dark .react-datepicker,
+.dark .react-datepicker-popper .react-datepicker {
+  background-color: #374151 !important;
+  border-color: #4b5563 !important;
+  color: white !important;
+}
+
+.dark .react-datepicker__header,
+.dark .react-datepicker-popper .react-datepicker__header {
+  background-color: #4b5563 !important;
+  border-bottom-color: #6b7280 !important;
+}
+
+.dark .react-datepicker__current-month,
+.dark .react-datepicker-popper .react-datepicker__current-month {
+  color: white !important;
+}
+
+.dark .react-datepicker__day,
+.dark .react-datepicker-popper .react-datepicker__day {
+  color: white !important;
+}
+
+.dark .react-datepicker__day:hover,
+.dark .react-datepicker-popper .react-datepicker__day:hover {
+  background-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark .react-datepicker__day-name,
+.dark .react-datepicker-popper .react-datepicker__day-name {
+  color: #9ca3af !important;
+}
+
+.dark .react-datepicker__navigation,
+.dark .react-datepicker-popper .react-datepicker__navigation {
+  color: #9ca3af !important;
+}
+
+/* Radix UI Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-out {
+  animation: fadeOut 0.15s ease-in;
+}
+
+.fade-in-0 {
+  opacity: 0;
+}
+
+.fade-in-0.animate-in {
+  opacity: 1;
+}
+
+.zoom-in-95 {
+  transform: scale(0.95);
+}
+
+.zoom-in-95.animate-in {
+  transform: scale(1);
+}
+
+.fade-out-0 {
+  opacity: 1;
+}
+
+.fade-out-0.animate-out {
+  opacity: 0;
+}
+
+.zoom-out-95 {
+  transform: scale(1);
+}
+
+.zoom-out-95.animate-out {
+  transform: scale(0.95);
+}
+
+/* Advanced Filters Styles */
+.advanced-filter {
+  @apply relative;
+}
+
+.advanced-filter .absolute {
+  @apply z-50;
+}

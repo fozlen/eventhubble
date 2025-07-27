@@ -1,0 +1,20 @@
+{
+  "last_update": "2025-07-27T09:00:00.133Z",
+  "total_events": 5,
+  "platforms": {
+    "mobilet": 3,
+    "biletinial": 1,
+    "biletix": 1
+  },
+  "categories": {
+    "müzik": 1,
+    "festival": 1,
+    "tiyatro": 1,
+    "spor": 1,
+    "sanat": 1
+  },
+  "cities": {
+    "İstanbul": 2
+  },
+  "next_update": "2025-07-26T20:50:25.692Z"
+}
