@@ -21,6 +21,14 @@ const BlogDetailPage = () => {
     }
   }, [isDarkMode])
 
+  // Update page title based on language
+  useEffect(() => {
+    const title = language === 'TR' 
+      ? 'EventHubble | Blog Detayı'
+      : 'EventHubble | Blog Detail'
+    document.title = title
+  }, [language])
+
   // Load blog post
   useEffect(() => {
     loadBlogPost()
@@ -38,11 +46,15 @@ const BlogDetailPage = () => {
           // Fallback to sample data if not found in localStorage
           const samplePost = {
             id: parseInt(id),
-            title: 'Coachella 2024 Lineup Announced',
-            excerpt: 'The exciting artist lineup for this year\'s biggest music festival has been released.',
-            content: 'The Coachella Valley Music and Arts Festival has just announced its highly anticipated 2024 lineup. This year\'s festival promises to be one of the most diverse and exciting yet, featuring artists from across the musical spectrum.\n\nHeadliners include some of the biggest names in music today, along with emerging artists who are making waves in the industry. The festival will take place over two weekends in April, offering attendees an unforgettable experience in the beautiful California desert.\n\nIn addition to the main stage performances, Coachella 2024 will feature art installations, food vendors, and interactive experiences that have become synonymous with the festival experience.\n\nThe festival organizers have also announced several new initiatives for 2024, including enhanced sustainability programs, expanded food options, and improved accessibility features. These changes reflect the festival\'s commitment to creating an inclusive and environmentally conscious event.\n\nTickets for Coachella 2024 are expected to go on sale in the coming weeks, with early bird pricing available for a limited time. Fans are encouraged to sign up for the festival\'s newsletter to receive updates on ticket sales and additional lineup announcements.',
+            title: language === 'TR' ? 'Coachella 2024 Lineup Açıklandı' : 'Coachella 2024 Lineup Announced',
+            excerpt: language === 'TR' 
+              ? 'Bu yılın en büyük müzik festivali için heyecan verici sanatçı listesi yayınlandı.'
+              : 'The exciting artist lineup for this year\'s biggest music festival has been released.',
+            content: language === 'TR' 
+              ? 'Coachella Valley Müzik ve Sanat Festivali, 2024 yılı için büyük beklenti uyandıran sanatçı listesini açıkladı. Bu yılki festival, müzik spektrumunun her yerinden sanatçıları içeren en çeşitli ve heyecan verici festival olmaya söz veriyor.\n\nAna sanatçılar arasında günümüzün en büyük müzik isimleri ve sektörde dalga yaratan yükselen sanatçılar yer alıyor. Festival, Nisan ayında iki hafta sonu boyunca gerçekleşecek ve katılımcılara güzel Kaliforniya çölünde unutulmaz bir deneyim sunacak.\n\nAna sahne performanslarına ek olarak, Coachella 2024, festival deneyimiyle özdeşleşen sanat enstalasyonları, yemek satıcıları ve interaktif deneyimler sunacak.\n\nFestival organizatörleri ayrıca 2024 için geliştirilmiş sürdürülebilirlik programları, genişletilmiş yemek seçenekleri ve geliştirilmiş erişilebilirlik özellikleri dahil olmak üzere birkaç yeni girişim açıkladı. Bu değişiklikler, festivalin kapsayıcı ve çevre dostu bir etkinlik yaratma taahhüdünü yansıtıyor.\n\nCoachella 2024 biletlerinin önümüzdeki haftalarda satışa çıkması bekleniyor ve sınırlı süre için erken kuş fiyatları mevcut. Hayranlar, bilet satışları ve ek sanatçı duyuruları hakkında güncellemeler almak için festivalin bültenine kaydolmaya teşvik ediliyor.'
+              : 'The Coachella Valley Music and Arts Festival has just announced its highly anticipated 2024 lineup. This year\'s festival promises to be one of the most diverse and exciting yet, featuring artists from across the musical spectrum.\n\nHeadliners include some of the biggest names in music today, along with emerging artists who are making waves in the industry. The festival will take place over two weekends in April, offering attendees an unforgettable experience in the beautiful California desert.\n\nIn addition to the main stage performances, Coachella 2024 will feature art installations, food vendors, and interactive experiences that have become synonymous with the festival experience.\n\nThe festival organizers have also announced several new initiatives for 2024, including enhanced sustainability programs, expanded food options, and improved accessibility features. These changes reflect the festival\'s commitment to creating an inclusive and environmentally conscious event.\n\nTickets for Coachella 2024 are expected to go on sale in the coming weeks, with early bird pricing available for a limited time. Fans are encouraged to sign up for the festival\'s newsletter to receive updates on ticket sales and additional lineup announcements.',
             date: '2024-03-15',
-            category: 'Music',
+            category: language === 'TR' ? 'Müzik' : 'Music',
             image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
             author: 'Admin',
             tags: ['festival', 'music', 'coachella', '2024']
@@ -53,11 +65,15 @@ const BlogDetailPage = () => {
         // No stored posts, use sample data
         const samplePost = {
           id: parseInt(id),
-          title: 'Coachella 2024 Lineup Announced',
-          excerpt: 'The exciting artist lineup for this year\'s biggest music festival has been released.',
-          content: 'The Coachella Valley Music and Arts Festival has just announced its highly anticipated 2024 lineup. This year\'s festival promises to be one of the most diverse and exciting yet, featuring artists from across the musical spectrum.\n\nHeadliners include some of the biggest names in music today, along with emerging artists who are making waves in the industry. The festival will take place over two weekends in April, offering attendees an unforgettable experience in the beautiful California desert.\n\nIn addition to the main stage performances, Coachella 2024 will feature art installations, food vendors, and interactive experiences that have become synonymous with the festival experience.\n\nThe festival organizers have also announced several new initiatives for 2024, including enhanced sustainability programs, expanded food options, and improved accessibility features. These changes reflect the festival\'s commitment to creating an inclusive and environmentally conscious event.\n\nTickets for Coachella 2024 are expected to go on sale in the coming weeks, with early bird pricing available for a limited time. Fans are encouraged to sign up for the festival\'s newsletter to receive updates on ticket sales and additional lineup announcements.',
+          title: language === 'TR' ? 'Coachella 2024 Lineup Açıklandı' : 'Coachella 2024 Lineup Announced',
+          excerpt: language === 'TR' 
+            ? 'Bu yılın en büyük müzik festivali için heyecan verici sanatçı listesi yayınlandı.'
+            : 'The exciting artist lineup for this year\'s biggest music festival has been released.',
+          content: language === 'TR' 
+            ? 'Coachella Valley Müzik ve Sanat Festivali, 2024 yılı için büyük beklenti uyandıran sanatçı listesini açıkladı. Bu yılki festival, müzik spektrumunun her yerinden sanatçıları içeren en çeşitli ve heyecan verici festival olmaya söz veriyor.\n\nAna sanatçılar arasında günümüzün en büyük müzik isimleri ve sektörde dalga yaratan yükselen sanatçılar yer alıyor. Festival, Nisan ayında iki hafta sonu boyunca gerçekleşecek ve katılımcılara güzel Kaliforniya çölünde unutulmaz bir deneyim sunacak.\n\nAna sahne performanslarına ek olarak, Coachella 2024, festival deneyimiyle özdeşleşen sanat enstalasyonları, yemek satıcıları ve interaktif deneyimler sunacak.\n\nFestival organizatörleri ayrıca 2024 için geliştirilmiş sürdürülebilirlik programları, genişletilmiş yemek seçenekleri ve geliştirilmiş erişilebilirlik özellikleri dahil olmak üzere birkaç yeni girişim açıkladı. Bu değişiklikler, festivalin kapsayıcı ve çevre dostu bir etkinlik yaratma taahhüdünü yansıtıyor.\n\nCoachella 2024 biletlerinin önümüzdeki haftalarda satışa çıkması bekleniyor ve sınırlı süre için erken kuş fiyatları mevcut. Hayranlar, bilet satışları ve ek sanatçı duyuruları hakkında güncellemeler almak için festivalin bültenine kaydolmaya teşvik ediliyor.'
+            : 'The Coachella Valley Music and Arts Festival has just announced its highly anticipated 2024 lineup. This year\'s festival promises to be one of the most diverse and exciting yet, featuring artists from across the musical spectrum.\n\nHeadliners include some of the biggest names in music today, along with emerging artists who are making waves in the industry. The festival will take place over two weekends in April, offering attendees an unforgettable experience in the beautiful California desert.\n\nIn addition to the main stage performances, Coachella 2024 will feature art installations, food vendors, and interactive experiences that have become synonymous with the festival experience.\n\nThe festival organizers have also announced several new initiatives for 2024, including enhanced sustainability programs, expanded food options, and improved accessibility features. These changes reflect the festival\'s commitment to creating an inclusive and environmentally conscious event.\n\nTickets for Coachella 2024 are expected to go on sale in the coming weeks, with early bird pricing available for a limited time. Fans are encouraged to sign up for the festival\'s newsletter to receive updates on ticket sales and additional lineup announcements.',
           date: '2024-03-15',
-          category: 'Music',
+          category: language === 'TR' ? 'Müzik' : 'Music',
           image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
           author: 'Admin',
           tags: ['festival', 'music', 'coachella', '2024']
@@ -93,7 +109,7 @@ const BlogDetailPage = () => {
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href)
-      alert('Link copied to clipboard!')
+      alert(language === 'TR' ? 'Link panoya kopyalandı!' : 'Link copied to clipboard!')
     }
   }
 
@@ -103,7 +119,7 @@ const BlogDetailPage = () => {
   }
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -114,7 +130,28 @@ const BlogDetailPage = () => {
     const wordsPerMinute = 200
     const words = content.split(' ').length
     const minutes = Math.ceil(words / wordsPerMinute)
-    return `${minutes} min read`
+    return language === 'TR' ? `${minutes} dk okuma` : `${minutes} min read`
+  }
+
+  // Category translations
+  const getCategoryTranslation = (category) => {
+    const translations = {
+      'Music': 'Müzik',
+      'Sports': 'Spor',
+      'Art': 'Sanat',
+      'Technology': 'Teknoloji',
+      'Film': 'Film',
+      'Theater': 'Tiyatro',
+      'Festival': 'Festival',
+      'Other': 'Diğer',
+      'Müzik': 'Music',
+      'Spor': 'Sports',
+      'Sanat': 'Art',
+      'Teknoloji': 'Technology',
+      'Tiyatro': 'Theater',
+      'Diğer': 'Other'
+    }
+    return translations[category] || category
   }
 
   if (isLoading) {
@@ -130,13 +167,13 @@ const BlogDetailPage = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Blog Post Not Found
+            {language === 'TR' ? 'Blog Yazısı Bulunamadı' : 'Blog Post Not Found'}
           </h1>
           <button
             onClick={() => navigate('/world-news')}
             className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
-            ← Back to World News
+            {language === 'TR' ? '← Dünya Haberlerine Dön' : '← Back to World News'}
           </button>
         </div>
       </div>
@@ -187,7 +224,7 @@ const BlogDetailPage = () => {
               >
                 <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Login
+                  {language === 'TR' ? 'Giriş' : 'Login'}
                 </span>
               </button>
             </div>
@@ -213,7 +250,7 @@ const BlogDetailPage = () => {
               <div className="flex items-center space-x-2">
                 <Tag className="h-4 w-4 text-blue-600" />
                 <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">
-                  {blogPost.category}
+                  {getCategoryTranslation(blogPost.category)}
                 </span>
               </div>
               <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
@@ -242,7 +279,7 @@ const BlogDetailPage = () => {
             <div className="flex items-center space-x-2 mb-6">
               <User className="h-4 w-4 text-gray-400" />
               <span className="text-sm text-gray-500 dark:text-gray-400">
-                By {blogPost.author}
+                {language === 'TR' ? 'Yazar' : 'By'} {blogPost.author}
               </span>
             </div>
 
@@ -267,7 +304,7 @@ const BlogDetailPage = () => {
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 <Share2 className="h-4 w-4" />
-                <span>Share Article</span>
+                <span>{language === 'TR' ? 'Yazıyı Paylaş' : 'Share Article'}</span>
               </button>
             </div>
 
@@ -289,7 +326,7 @@ const BlogDetailPage = () => {
             className="flex items-center space-x-2 mx-auto px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to World News</span>
+            <span>{language === 'TR' ? 'Dünya Haberlerine Dön' : 'Back to World News'}</span>
           </button>
         </div>
       </main>
