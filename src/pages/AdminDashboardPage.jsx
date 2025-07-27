@@ -235,7 +235,7 @@ const AdminDashboardPage = () => {
             if (editingPost) {
               // Edit existing post
               const updatedPosts = blogPosts.map(post =>
-                post.id === editingPost.id ? { ...post, ...postData }
+                post.id === editingPost.id ? { ...post, ...postData } : post
               )
               setBlogPosts(updatedPosts)
               localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
