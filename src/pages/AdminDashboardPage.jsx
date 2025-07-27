@@ -433,10 +433,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
         <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-text">
-              {post 
-                ? (language === 'TR' ? 'Blog Yazısını Düzenle' : 'Edit Blog Post')
-                : (language === 'TR' ? 'Yeni Blog Yazısı Ekle' : 'Add New Blog Post')
-              }
+              {post ? 'Edit Blog Post' : 'Add New Blog Post'}
             </h2>
             <button
               onClick={onClose}
@@ -453,7 +450,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'Başlık' : 'Title'}
+                Title
               </label>
               <input
                 type="text"
@@ -461,13 +458,13 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                placeholder={language === 'TR' ? 'Blog yazısı başlığı...' : 'Blog post title...'}
+                placeholder="Blog post title..."
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'Özet' : 'Excerpt'}
+                Excerpt
               </label>
               <textarea
                 required
@@ -475,13 +472,13 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 value={formData.excerpt}
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40 resize-none"
-                placeholder={language === 'TR' ? 'Kısa özet...' : 'Brief excerpt...'}
+                placeholder="Brief excerpt..."
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'İçerik' : 'Content'}
+                Content
               </label>
               <textarea
                 required
@@ -489,14 +486,14 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40 resize-none"
-                placeholder={language === 'TR' ? 'Blog yazısı içeriği...' : 'Blog post content...'}
+                placeholder="Blog post content..."
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Kategori' : 'Category'}
+                  Category
                 </label>
                 <select
                   value={formData.category}
@@ -511,22 +508,19 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
 
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Etiketler' : 'Tags'}
+                  Tags
                 </label>
                 <input
                   type="text"
                   value={formData.tags}
                   onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder={language === 'TR' ? 'festival, müzik, 2024' : 'festival, music, 2024'}
+                  placeholder="festival, music, 2024"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'Resim URL' : 'Image URL'}
-              </label>
               <ImageSelector
                 value={formData.image}
                 onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
@@ -541,16 +535,13 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 onClick={onClose}
                 className="px-6 py-3 text-text border border-gray-200 rounded-lg hover:bg-background-secondary transition-colors font-medium"
               >
-                {language === 'TR' ? 'İptal' : 'Cancel'}
+                Cancel
               </button>
               <button
                 type="submit"
                 className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors font-medium shadow-lg hover:shadow-xl"
               >
-                {post 
-                  ? (language === 'TR' ? 'Yazıyı Güncelle' : 'Update Post')
-                  : (language === 'TR' ? 'Yazı Oluştur' : 'Create Post')
-                }
+                {post ? 'Update Post' : 'Create Post'}
               </button>
             </div>
           </form>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ChevronDown, Image as ImageIcon } from 'lucide-react'
+import { ChevronDown, Image as ImageIcon, Upload, X } from 'lucide-react'
 
 const ImageSelector = ({ 
   value, 
@@ -9,6 +9,8 @@ const ImageSelector = ({
   className = "" 
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [uploadedImage, setUploadedImage] = useState(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   // Images in public folder
   const publicImages = [
@@ -90,11 +92,116 @@ const ImageSelector = ({
     onChange(e.target.value)
   }
 
+  // Handle file upload
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB')
+      return
+    }
+
+    setIsUploading(true)
+
+    try {
+      // Simulate upload to CDN
+      const formData = new FormData()
+      formData.append('image', file)
+
+      // In a real app, you would upload to your CDN here
+      // For now, we'll create a local URL and simulate CDN upload
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        // Simulate CDN URL generation
+        const fileName = `uploaded_${Date.now()}_${file.name}`
+        const cdnUrl = `https://cdn.eventhubble.com/images/${fileName}`
+        
+        // For demo purposes, we'll use the local URL
+        const localUrl = e.target.result
+        
+        setUploadedImage({
+          name: fileName,
+          url: localUrl,
+          cdnUrl: cdnUrl
+        })
+        
+        // Set the CDN URL as the selected value
+        onChange(cdnUrl)
+        setIsUploading(false)
+      }
+      reader.readAsDataURL(file)
+
+    } catch (error) {
+      console.error('Upload failed:', error)
+      alert('Upload failed. Please try again.')
+      setIsUploading(false)
+    }
+  }
+
+  const removeUploadedImage = () => {
+    setUploadedImage(null)
+    onChange('')
+  }
+
   return (
     <div className={`relative space-y-2 ${className}`}>
       <label className="block text-sm font-medium text-text">
         {label}
       </label>
+      
+      {/* Upload Section */}
+      <div className="mb-4">
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary transition-colors">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileUpload}
+            className="hidden"
+            id="image-upload"
+            disabled={isUploading}
+          />
+          <label htmlFor="image-upload" className="cursor-pointer">
+            <Upload size={24} className="mx-auto mb-2 text-gray-400" />
+            <p className="text-sm text-gray-600">
+              {isUploading ? 'Uploading...' : 'Click to upload image or drag and drop'}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
+          </label>
+        </div>
+      </div>
+
+      {/* Uploaded Image Preview */}
+      {uploadedImage && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <img 
+                src={uploadedImage.url} 
+                alt={uploadedImage.name}
+                className="w-12 h-12 object-cover rounded"
+              />
+              <div>
+                <p className="text-sm font-medium text-green-800">{uploadedImage.name}</p>
+                <p className="text-xs text-green-600">CDN URL: {uploadedImage.cdnUrl}</p>
+              </div>
+            </div>
+            <button
+              onClick={removeUploadedImage}
+              className="text-red-500 hover:text-red-700"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+      )}
       
       {/* Input Field */}
       <div className="relative">
