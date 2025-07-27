@@ -1,10 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Lock, User } from 'lucide-react'
-import newLogo from '../assets/eventhubble_new_logo.png'
+import { Eye, EyeOff, Lock, User, ArrowLeft } from 'lucide-react'
 import logo from '../assets/Logo.png'
-import logoWithoutBg from '../assets/Logo w_out background.png'
-import mainLogo from '../assets/MainLogo.png'
 
 const AdminLoginPage = () => {
   const [username, setUsername] = useState('')
@@ -37,7 +34,7 @@ const AdminLoginPage = () => {
       localStorage.setItem('adminLoginTime', Date.now().toString())
       navigate('/admin/dashboard')
     } else {
-      setError('Invalid username or password')
+      setError(language === 'TR' ? 'Geçersiz kullanıcı adı veya şifre' : 'Invalid username or password')
     }
     
     setIsLoading(false)
@@ -48,66 +45,70 @@ const AdminLoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      {/* Header */}
-      <header className="bg-primary border-b border-primary/20 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate('/')}
-                className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
-              >
-                <img 
-                  src={newLogo} 
-                  alt="EventHubble" 
-                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
-                />
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Admin Header */}
+      <header className="bg-primary shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo and Brand */}
+            <div className="flex items-center space-x-3">
+              <img src={logo} alt="EventHubble" className="h-8 w-auto" />
+              <div className="text-white">
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
                   <span className="text-primary-light">Hubble</span>
                 </span>
-              </button>
+                <span className="ml-2 text-sm text-primary-cream/80">Admin Panel</span>
+              </div>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-white/80">
-                {language === 'TR' ? 'Admin Girişi' : 'Admin Login'}
-              </span>
-            </div>
+
+            {/* Back to Site */}
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center space-x-2 text-primary-cream/80 hover:text-primary-cream transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm">{language === 'TR' ? 'Siteye Dön' : 'Back to Site'}</span>
+            </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="flex items-center justify-center p-4 flex-1">
-        <div className="max-w-md w-full space-y-8">
-          {/* Logo and Header */}
-          <div className="text-center">
-            <img
-              className="mx-auto h-16 w-auto"
-              src={logo}
-              alt="EventHubble"
-            />
-            <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
-              Admin Panel
-            </h2>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              EventHubble Blog Management
-            </p>
-          </div>
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="max-w-md w-full">
+          {/* Login Card */}
+          <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-8">
+            {/* Logo and Header */}
+            <div className="text-center mb-8">
+              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <img
+                  className="h-10 w-auto"
+                  src={logo}
+                  alt="EventHubble"
+                />
+              </div>
+              <h1 className="text-2xl font-bold text-text mb-2">
+                {language === 'TR' ? 'Admin Girişi' : 'Admin Login'}
+              </h1>
+              <p className="text-text/60">
+                {language === 'TR' 
+                  ? 'EventHubble Blog Yönetim Paneli'
+                  : 'EventHubble Blog Management Panel'
+                }
+              </p>
+            </div>
 
-          {/* Login Form */}
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="space-y-4">
+            {/* Login Form */}
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {/* Username Field */}
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Username
+                <label htmlFor="username" className="block text-sm font-medium text-text mb-2">
+                  {language === 'TR' ? 'Kullanıcı Adı' : 'Username'}
                 </label>
-                <div className="mt-1 relative">
+                <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-text/40" />
                   </div>
                   <input
                     id="username"
@@ -116,20 +117,20 @@ const AdminLoginPage = () => {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:focus:ring-blue-400"
-                    placeholder="Enter username"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder={language === 'TR' ? 'Kullanıcı adınızı girin' : 'Enter your username'}
                   />
                 </div>
               </div>
 
               {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Password
+                <label htmlFor="password" className="block text-sm font-medium text-text mb-2">
+                  {language === 'TR' ? 'Şifre' : 'Password'}
                 </label>
-                <div className="mt-1 relative">
+                <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                    <Lock className="h-5 w-5 text-text/40" />
                   </div>
                   <input
                     id="password"
@@ -138,94 +139,60 @@ const AdminLoginPage = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none relative block w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:focus:ring-blue-400"
-                    placeholder="Enter password"
+                    className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder={language === 'TR' ? 'Şifrenizi girin' : 'Enter your password'}
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-text/40 hover:text-text/60 transition-colors"
                     onClick={togglePasswordVisibility}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      <EyeOff className="h-5 w-5" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      <Eye className="h-5 w-5" />
                     )}
                   </button>
                 </div>
               </div>
-            </div>
 
-            {/* Error Message */}
-            {error && (
-              <div className="text-red-600 text-sm text-center bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-                {error}
-              </div>
-            )}
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {isLoading ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Signing in...
+              {/* Error Message */}
+              {error && (
+                <div className="text-text-accent text-sm text-center bg-text-accent/10 p-3 rounded-lg border border-text-accent/20">
+                  {error}
                 </div>
-              ) : (
-                'Sign in'
               )}
-            </button>
-          </form>
 
-          {/* Back to Home */}
-          <div className="text-center">
-            <button
-              onClick={() => navigate('/')}
-              className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-            >
-              ← Back to EventHubble
-            </button>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    {language === 'TR' ? 'Giriş yapılıyor...' : 'Signing in...'}
+                  </div>
+                ) : (
+                  language === 'TR' ? 'Giriş Yap' : 'Sign In'
+                )}
+              </button>
+            </form>
+
+            {/* Demo Credentials */}
+            <div className="mt-6 p-4 bg-background-secondary rounded-lg">
+              <h3 className="text-sm font-medium text-text mb-2">
+                {language === 'TR' ? 'Demo Bilgileri' : 'Demo Credentials'}
+              </h3>
+              <div className="text-xs text-text/60 space-y-1">
+                <p><strong>{language === 'TR' ? 'Kullanıcı Adı:' : 'Username:'}</strong> admin</p>
+                <p><strong>{language === 'TR' ? 'Şifre:' : 'Password:'}</strong> eventhubble2024</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-primary text-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center space-x-2">
-                <img 
-                  src={logo} 
-                  alt="EventHubble" 
-                  className="h-10 w-auto" 
-                />
-                <span className="text-xl font-bold">
-                  <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light">Hubble</span>
-                </span>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-white/80">
-                <li><a href="/about" className="hover:text-white transition-colors">About</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4">Blog</h3>
-              <ul className="space-y-2 text-white/80">
-                <li><a href="/world-news" className="hover:text-white transition-colors">World News</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
