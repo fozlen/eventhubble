@@ -119,8 +119,9 @@ const AdminDashboardPage = () => {
       {/* Header */}
       <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+          <div className="grid grid-cols-3 items-center">
+            {/* Logo and Brand - Left Section */}
+            <div className="flex justify-start">
               <button
                 onClick={() => navigate('/')}
                 className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
@@ -137,8 +138,8 @@ const AdminDashboardPage = () => {
               </button>
             </div>
             
-            {/* Navigation Menu */}
-            <nav className="hidden md:flex items-center space-x-8">
+            {/* Navigation Menu - Center Section */}
+            <nav className="flex justify-center items-center space-x-8">
               <a
                 href="/"
                 className="text-sm font-medium transition-colors text-white hover:text-primary-light"
@@ -159,16 +160,15 @@ const AdminDashboardPage = () => {
               </a>
             </nav>
             
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-white/80">
-                {language === 'TR' ? 'Hoş geldiniz, Admin' : 'Welcome, Admin'}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 text-sm text-primary-accent hover:text-primary-accent/80"
+            {/* Language Toggle - Right Section */}
+            <div className="flex justify-end">
+              <button 
+                onClick={toggleLanguage}
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
+                title={language === 'TR' ? 'Language' : 'Dil'}
               >
-                <LogOut className="h-4 w-4" />
-                <span>{language === 'TR' ? 'Çıkış' : 'Logout'}</span>
+                <Globe size={16} />
+                <span className="hidden sm:inline">{language}</span>
               </button>
             </div>
           </div>
@@ -450,8 +450,9 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
       {/* Footer */}
       <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
+          <div className="grid grid-cols-3 gap-8 items-center">
+            {/* Logo and Brand - Left Section */}
+            <div className="flex justify-center">
               <div className="flex items-center space-x-2">
                 <img 
                   src={logo} 
@@ -465,18 +466,24 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
               </div>
             </div>
             
-            <div>
-              <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
-              <ul className="space-y-2 text-white/80">
-                <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
-              </ul>
+            {/* Company Links - Center Section */}
+            <div className="flex justify-center">
+              <div className="text-center">
+                <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
+                <ul className="space-y-2 text-white/80">
+                  <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
+                </ul>
+              </div>
             </div>
             
-            <div>
-              <h3 className="font-semibold mb-4">Blog</h3>
-              <ul className="space-y-2 text-white/80">
-                <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
-              </ul>
+            {/* Blog Links - Right Section */}
+            <div className="flex justify-center">
+              <div className="text-center">
+                <h3 className="font-semibold mb-4">Blog</h3>
+                <ul className="space-y-2 text-white/80">
+                  <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

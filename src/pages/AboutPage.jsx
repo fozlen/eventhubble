@@ -52,8 +52,9 @@ const AboutPage = () => {
       {/* Header */}
       <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+          <div className="grid grid-cols-3 items-center">
+            {/* Logo and Brand - Left Section */}
+            <div className="flex justify-start">
               <button
                 onClick={() => navigate('/')}
                 className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
@@ -70,17 +71,17 @@ const AboutPage = () => {
               </button>
             </div>
             
-            {/* Navigation Menu */}
-            <nav className="hidden md:flex items-center space-x-8">
+            {/* Navigation Menu - Center Section */}
+            <nav className="flex justify-center items-center space-x-8">
               <a
                 href="/"
-                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
-                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
+                className="text-sm font-medium transition-colors text-primary-light"
               >
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
@@ -92,7 +93,8 @@ const AboutPage = () => {
               </a>
             </nav>
             
-            <div className="flex items-center space-x-4">
+            {/* Language Toggle - Right Section */}
+            <div className="flex justify-end">
               <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
@@ -202,8 +204,9 @@ const AboutPage = () => {
       {/* Footer */}
       <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
+          <div className="grid grid-cols-3 gap-8 items-center">
+            {/* Logo and Brand - Left Section */}
+            <div className="flex justify-center">
               <div className="flex items-center space-x-2">
                 <img 
                   src={logo} 
@@ -217,18 +220,24 @@ const AboutPage = () => {
               </div>
             </div>
             
-            <div>
-              <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
-              <ul className="space-y-2 text-white/80">
-                <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
-              </ul>
+            {/* Company Links - Center Section */}
+            <div className="flex justify-center">
+              <div className="text-center">
+                <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
+                <ul className="space-y-2 text-white/80">
+                  <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
+                </ul>
+              </div>
             </div>
             
-            <div>
-              <h3 className="font-semibold mb-4">Blog</h3>
-              <ul className="space-y-2 text-white/80">
-                <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
-              </ul>
+            {/* Blog Links - Right Section */}
+            <div className="flex justify-center">
+              <div className="text-center">
+                <h3 className="font-semibold mb-4">Blog</h3>
+                <ul className="space-y-2 text-white/80">
+                  <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
