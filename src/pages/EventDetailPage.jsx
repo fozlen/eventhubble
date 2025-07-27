@@ -48,6 +48,52 @@ const EventDetailPage = () => {
     console.log('Login clicked')
   }
 
+  // Share event functionality
+  const handleShareEvent = async () => {
+    const eventUrl = window.location.href
+    const eventTitle = event.title
+    const shareText = language === 'TR' 
+      ? `${eventTitle} etkinliğini EventHubble'da keşfedin!`
+      : `Discover ${eventTitle} event on EventHubble!`
+    
+    try {
+      if (navigator.share) {
+        // Native sharing on mobile devices
+        await navigator.share({
+          title: eventTitle,
+          text: shareText,
+          url: eventUrl
+        })
+      } else {
+        // Fallback: copy to clipboard
+        const shareData = `${shareText}\n\n${eventUrl}`
+        await navigator.clipboard.writeText(shareData)
+        
+        // Show success message
+        alert(language === 'TR' 
+          ? 'Etkinlik linki panoya kopyalandı!'
+          : 'Event link copied to clipboard!'
+        )
+      }
+    } catch (error) {
+      console.error('Share failed:', error)
+      // Fallback to clipboard
+      try {
+        await navigator.clipboard.writeText(eventUrl)
+        alert(language === 'TR' 
+          ? 'Etkinlik linki panoya kopyalandı!'
+          : 'Event link copied to clipboard!'
+        )
+      } catch (clipboardError) {
+        console.error('Clipboard failed:', clipboardError)
+        alert(language === 'TR' 
+          ? 'Paylaşım başarısız oldu. Lütfen linki manuel olarak kopyalayın.'
+          : 'Sharing failed. Please copy the link manually.'
+        )
+      }
+    }
+  }
+
   useEffect(() => {
     const loadEventDetail = async () => {
       setLoading(true)
@@ -420,8 +466,9 @@ const EventDetailPage = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            {/* Price Card */}
-            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 mb-6 sticky top-6`}>
+            <div className="sticky top-8">
+              {/* Price Card */}
+              <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 mb-6`}>
               <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 {language === 'TR' ? 'Bilet Bilgileri' : 'Ticket Information'}
               </h3>
@@ -452,7 +499,10 @@ const EventDetailPage = () => {
                   {language === 'TR' ? 'Bilet Al' : 'Buy Ticket Now'}
                 </button>
                 
-                <button className={`w-full py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                <button 
+                  onClick={handleShareEvent}
+                  className={`w-full py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                >
                   <Share2 size={16} className="mr-2" />
                   {language === 'TR' ? 'Etkinliği Paylaş' : 'Share Event'}
                 </button>
@@ -474,6 +524,7 @@ const EventDetailPage = () => {
                   <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>🎭 {language === 'TR' ? 'Kategori' : 'Category'}: {event.category}</p>
                 </div>
               </div>
+            </div>
             </div>
 
             {/* Similar Events */}

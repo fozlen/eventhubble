@@ -202,7 +202,10 @@ const WorldNewsPage = () => {
                 <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   {news.excerpt}
                 </p>
-                <button className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${isDarkMode ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}>
+                <button 
+                  onClick={() => navigate(`/event/${news.id}`)}
+                  className={`w-full py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center ${isDarkMode ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                >
                   {language === 'TR' ? 'Devamını Oku' : 'Read More'}
                 </button>
               </div>
