@@ -75,15 +75,15 @@ export const DateRangePicker = ({
   const [view, setView] = useState('presets') // 'presets' or 'custom'
   
   const dateOptions = [
-    { value: 'today', label: 'Today', description: 'Events happening today' },
-    { value: 'tomorrow', label: 'Tomorrow', description: 'Events happening tomorrow' },
-    { value: 'this-week', label: 'This Week', description: 'Events this week' },
-    { value: 'next-week', label: 'Next Week', description: 'Events next week' },
-    { value: 'this-month', label: 'This Month', description: 'Events this month' },
-    { value: 'next-month', label: 'Next Month', description: 'Events next month' },
-    { value: 'this-weekend', label: 'This Weekend', description: 'Weekend events' },
-    { value: 'next-weekend', label: 'Next Weekend', description: 'Next weekend events' },
-    { value: 'custom', label: 'Custom Range', description: 'Select specific dates' }
+    { value: 'today', label: 'Bugün', description: 'Bugün gerçekleşen etkinlikler' },
+    { value: 'tomorrow', label: 'Yarın', description: 'Yarın gerçekleşen etkinlikler' },
+    { value: 'this-week', label: 'Bu Hafta', description: 'Bu haftaki etkinlikler' },
+    { value: 'next-week', label: 'Gelecek Hafta', description: 'Gelecek haftaki etkinlikler' },
+    { value: 'this-month', label: 'Bu Ay', description: 'Bu ayki etkinlikler' },
+    { value: 'next-month', label: 'Gelecek Ay', description: 'Gelecek ayki etkinlikler' },
+    { value: 'this-weekend', label: 'Bu Hafta Sonu', description: 'Bu hafta sonu etkinlikleri' },
+    { value: 'next-weekend', label: 'Gelecek Hafta Sonu', description: 'Gelecek hafta sonu etkinlikleri' },
+    { value: 'custom', label: 'Özel Aralık', description: 'Belirli tarihleri seçin' }
   ]
 
   const handleDateOptionChange = (option) => {
@@ -137,7 +137,7 @@ export const DateRangePicker = ({
             {/* Header with back button for custom view */}
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-gray-900">
-                {view === 'presets' ? 'Select Date Range' : 'Custom Date Range'}
+                {view === 'presets' ? 'Tarih Aralığı Seç' : 'Özel Tarih Aralığı'}
               </h3>
               {view === 'custom' && (
                 <button
@@ -147,7 +147,7 @@ export const DateRangePicker = ({
                   }}
                   className="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200"
                 >
-                  ← Back to Presets
+                  ← Önceden Tanımlıya Dön
                 </button>
               )}
             </div>
@@ -157,7 +157,7 @@ export const DateRangePicker = ({
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search date options..."
+                  placeholder="Tarih seçeneklerini ara..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -193,7 +193,7 @@ export const DateRangePicker = ({
             {view === 'custom' && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Date Range</span>
+                  <span className="text-sm font-medium text-gray-700">Tarih Aralığı Seç</span>
                 </div>
                 <div className="w-full">
                   <DatePicker
@@ -203,8 +203,8 @@ export const DateRangePicker = ({
                     onChange={(dates) => {
                       onChange({ type: 'custom', startDate: dates[0], endDate: dates[1] })
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    placeholderText="Select date range"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    placeholderText="Tarih aralığı seçin"
                     dateFormat="MMM dd, yyyy"
                     isClearable={true}
                     showPopperArrow={false}
@@ -224,9 +224,9 @@ export const DateRangePicker = ({
                       tomorrow.setDate(tomorrow.getDate() + 1)
                       onChange({ type: 'custom', startDate: today, endDate: tomorrow })
                     }}
-                    className="px-3 py-2 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors duration-200"
+                    className="px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors duration-200"
                   >
-                    Today - Tomorrow
+                    Bugün - Yarın
                   </button>
                   <button
                     onClick={() => {
@@ -235,9 +235,9 @@ export const DateRangePicker = ({
                       nextWeek.setDate(nextWeek.getDate() + 7)
                       onChange({ type: 'custom', startDate: today, endDate: nextWeek })
                     }}
-                    className="px-3 py-2 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors duration-200"
+                    className="px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors duration-200"
                   >
-                    Next 7 Days
+                    Sonraki 7 Gün
                   </button>
                 </div>
               </div>
@@ -412,7 +412,7 @@ export const CountryCitySelector = ({
             {/* Header with back button for cities view */}
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-gray-900">
-                {view === 'countries' ? 'Select Country' : `${selectedCountry?.label} Cities`}
+                {view === 'countries' ? 'Ülke Seç' : `${selectedCountry?.label} Şehirleri`}
               </h3>
               {view === 'cities' && (
                 <button
@@ -422,7 +422,7 @@ export const CountryCitySelector = ({
                   }}
                   className="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200"
                 >
-                  ← Back to Countries
+                  ← Ülkelere Dön
                 </button>
               )}
             </div>
@@ -431,7 +431,7 @@ export const CountryCitySelector = ({
             <div className="relative">
               <input
                 type="text"
-                placeholder={view === 'countries' ? 'Search countries...' : 'Search cities...'}
+                placeholder={view === 'countries' ? 'Ülkeleri ara...' : 'Şehirleri ara...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -472,14 +472,26 @@ export const CountryCitySelector = ({
               <div className="pt-3 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">
-                    {selectedCities.length} city{selectedCities.length !== 1 ? 'ies' : 'y'} selected
+                    {selectedCities.length} şehir seçildi
                   </span>
-                  <button
-                    onClick={() => onCitiesChange([])}
-                    className="text-sm text-red-600 hover:text-red-800 transition-colors duration-200"
-                  >
-                    Clear All
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => onCitiesChange([])}
+                      className="text-sm text-red-600 hover:text-red-800 transition-colors duration-200"
+                    >
+                      Tümünü Temizle
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Close the dropdown after applying
+                        const event = new Event('click', { bubbles: true })
+                        document.dispatchEvent(event)
+                      }}
+                      className="text-sm bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-colors duration-200"
+                    >
+                      Uygula
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

@@ -447,45 +447,44 @@ const EventDetailPage = () => {
               </div>
             </div>
 
-            {/* Additional Information */}
+            {/* Similar Events */}
             <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>
               <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                {language === 'TR' ? 'Ek Bilgiler' : 'Additional Information'}
+                {language === 'TR' ? 'Benzer Etkinlikler' : 'Similar Events'}
               </h2>
+              <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                {language === 'TR' ? 'Beğenebileceğiniz diğer etkinlikler' : 'Other events you might like'}
+              </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className={`font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {language === 'TR' ? 'İletişim Bilgileri' : 'Contact Information'}
-                  </h3>
-                  <div className="space-y-2">
-                    <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      <Phone size={16} className="mr-2" />
-                      {event.contact}
-                    </p>
-                    <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      <GlobeIcon size={16} className="mr-2" />
-                      <a href={event.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                        {event.website}
-                      </a>
+              <div className="space-y-4">
+                <div className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                  <img
+                    src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=100&h=100&fit=crop"
+                    alt="Similar Event"
+                    className="w-16 h-16 object-cover rounded-lg"
+                  />
+                  <div className="flex-1">
+                    <h4 className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {language === 'TR' ? 'Benzer Etkinlik Başlığı' : 'Similar Event Title'}
+                    </h4>
+                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {language === 'TR' ? 'Tarih • Konum' : 'Date • Location'}
                     </p>
                   </div>
                 </div>
                 
-                <div>
-                  <h3 className={`font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {language === 'TR' ? 'Etkinlik Detayları' : 'Event Details'}
-                  </h3>
-                  <div className="space-y-2">
-                    <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
-                      🆔 {language === 'TR' ? 'Etkinlik ID' : 'Event ID'}: {event.id}
-                    </p>
-                    <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
-                      📊 {language === 'TR' ? 'Durum' : 'Status'}: 
-                      <span className="text-green-600 font-medium ml-1">{event.status}</span>
-                    </p>
-                    <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
-                      🕒 {language === 'TR' ? 'Güncellendi' : 'Scraped'}: {new Date(event.scraped_at).toLocaleString()}
+                <div className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                  <img
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
+                    alt="Similar Event"
+                    className="w-16 h-16 object-cover rounded-lg"
+                  />
+                  <div className="flex-1">
+                    <h4 className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {language === 'TR' ? 'Başka Benzer Etkinlik' : 'Another Similar Event'}
+                    </h4>
+                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {language === 'TR' ? 'Tarih • Konum' : 'Date • Location'}
                     </p>
                   </div>
                 </div>
@@ -535,11 +534,6 @@ const EventDetailPage = () => {
                   <Share2 size={16} className="mr-2" />
                   {language === 'TR' ? 'Etkinliği Paylaş' : 'Share Event'}
                 </button>
-                
-                <button className={`w-full py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
-                  <Heart size={16} className="mr-2" />
-                  {language === 'TR' ? 'Favorilere Ekle' : 'Add to Favorites'}
-                </button>
               </div>
               
               <div className="mt-6 pt-6 border-t border-gray-200">
@@ -554,50 +548,6 @@ const EventDetailPage = () => {
                 </div>
               </div>
             </div>
-            </div>
-
-            {/* Similar Events */}
-            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>
-              <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                {language === 'TR' ? 'Benzer Etkinlikler' : 'Similar Events'}
-              </h3>
-              <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                {language === 'TR' ? 'Beğenebileceğiniz diğer etkinlikler' : 'Other events you might like'}
-              </p>
-              
-              <div className="space-y-4">
-                <div className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
-                  <img
-                    src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=100&h=100&fit=crop"
-                    alt="Similar Event"
-                    className="w-16 h-16 object-cover rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <h4 className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                      {language === 'TR' ? 'Benzer Etkinlik Başlığı' : 'Similar Event Title'}
-                    </h4>
-                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {language === 'TR' ? 'Tarih • Konum' : 'Date • Location'}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
-                    alt="Similar Event"
-                    className="w-16 h-16 object-cover rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <h4 className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                      {language === 'TR' ? 'Başka Benzer Etkinlik' : 'Another Similar Event'}
-                    </h4>
-                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {language === 'TR' ? 'Tarih • Konum' : 'Date • Location'}
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
