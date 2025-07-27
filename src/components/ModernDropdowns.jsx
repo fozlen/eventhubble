@@ -223,6 +223,9 @@ export const DateRangePicker = ({
                       const tomorrow = new Date(today)
                       tomorrow.setDate(tomorrow.getDate() + 1)
                       onChange({ type: 'custom', startDate: today, endDate: tomorrow })
+                      // Close the dropdown after selection
+                      const event = new Event('click', { bubbles: true })
+                      document.dispatchEvent(event)
                     }}
                     className="px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors duration-200"
                   >
@@ -234,6 +237,9 @@ export const DateRangePicker = ({
                       const nextWeek = new Date(today)
                       nextWeek.setDate(nextWeek.getDate() + 7)
                       onChange({ type: 'custom', startDate: today, endDate: nextWeek })
+                      // Close the dropdown after selection
+                      const event = new Event('click', { bubbles: true })
+                      document.dispatchEvent(event)
                     }}
                     className="px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors duration-200"
                   >
@@ -483,7 +489,8 @@ export const CountryCitySelector = ({
                     </button>
                     <button
                       onClick={() => {
-                        // Close the dropdown after applying
+                        // Save the selected cities and close the dropdown
+                        onCitiesChange(selectedCities)
                         const event = new Event('click', { bubbles: true })
                         document.dispatchEvent(event)
                       }}
@@ -514,30 +521,30 @@ export const AdvancedFilters = ({
   const [activeTab, setActiveTab] = useState('price') // 'price', 'type', 'audience'
 
   const priceRanges = [
-    { value: 'free', label: 'Free', icon: '🎫', description: 'No cost events' },
-    { value: '0-50', label: '$0 - $50', icon: '💰', description: 'Budget friendly' },
-    { value: '50-100', label: '$50 - $100', icon: '💵', description: 'Mid-range events' },
-    { value: '100-200', label: '$100 - $200', icon: '💎', description: 'Premium events' },
-    { value: '200+', label: '$200+', icon: '👑', description: 'Luxury events' }
+    { value: 'free', label: 'Ücretsiz', icon: '🎫', description: 'Ücretsiz etkinlikler' },
+    { value: '0-50', label: '0₺ - 50₺', icon: '💰', description: 'Ekonomik etkinlikler' },
+    { value: '50-100', label: '50₺ - 100₺', icon: '💵', description: 'Orta segment etkinlikler' },
+    { value: '100-200', label: '100₺ - 200₺', icon: '💎', description: 'Premium etkinlikler' },
+    { value: '200+', label: '200₺+', icon: '👑', description: 'Lüks etkinlikler' }
   ]
 
   const eventTypes = [
-    { value: 'all', label: 'All Types', icon: '🎭', description: 'All event types' },
-    { value: 'concert', label: 'Concert', icon: '🎵', description: 'Live music events' },
-    { value: 'theater', label: 'Theater', icon: '🎬', description: 'Plays and shows' },
-    { value: 'sports', label: 'Sports', icon: '⚽', description: 'Athletic events' },
-    { value: 'art', label: 'Art & Culture', icon: '🎨', description: 'Exhibitions and galleries' },
-    { value: 'food', label: 'Food & Drink', icon: '🍽️', description: 'Culinary experiences' },
-    { value: 'education', label: 'Education', icon: '📚', description: 'Learning events' },
-    { value: 'business', label: 'Business', icon: '💼', description: 'Professional events' }
+    { value: 'all', label: 'Tüm Türler', icon: '🎭', description: 'Tüm etkinlik türleri' },
+    { value: 'concert', label: 'Konser', icon: '🎵', description: 'Canlı müzik etkinlikleri' },
+    { value: 'theater', label: 'Tiyatro', icon: '🎬', description: 'Oyunlar ve gösteriler' },
+    { value: 'sports', label: 'Spor', icon: '⚽', description: 'Spor etkinlikleri' },
+    { value: 'art', label: 'Sanat & Kültür', icon: '🎨', description: 'Sergiler ve galeriler' },
+    { value: 'food', label: 'Yemek & İçecek', icon: '🍽️', description: 'Gastronomi deneyimleri' },
+    { value: 'education', label: 'Eğitim', icon: '📚', description: 'Öğrenme etkinlikleri' },
+    { value: 'business', label: 'İş', icon: '💼', description: 'Profesyonel etkinlikler' }
   ]
 
   const audienceTypes = [
-    { value: 'all', label: 'All Audiences', icon: '👥', description: 'Everyone welcome' },
-    { value: 'family', label: 'Family', icon: '👨‍👩‍👧‍👦', description: 'Family-friendly events' },
-    { value: 'adults', label: 'Adults Only', icon: '🍷', description: 'Adult content' },
-    { value: 'kids', label: 'Kids', icon: '🧸', description: 'Children events' },
-    { value: 'seniors', label: 'Seniors', icon: '👴', description: 'Senior-friendly events' }
+    { value: 'all', label: 'Tüm Kitleler', icon: '👥', description: 'Herkes davetli' },
+    { value: 'family', label: 'Aile', icon: '👨‍👩‍👧‍👦', description: 'Aile dostu etkinlikler' },
+    { value: 'adults', label: 'Sadece Yetişkinler', icon: '🍷', description: 'Yetişkin içerik' },
+    { value: 'kids', label: 'Çocuklar', icon: '🧸', description: 'Çocuk etkinlikleri' },
+    { value: 'seniors', label: 'Yaşlılar', icon: '👴', description: 'Yaşlı dostu etkinlikler' }
   ]
 
   const handleFilterChange = (key, value, e) => {
@@ -555,9 +562,9 @@ export const AdvancedFilters = ({
   }
 
   const tabs = [
-    { id: 'price', label: 'Price', icon: '💰', count: filters.priceMin || filters.priceMax || filters.priceRange ? 1 : 0 },
-    { id: 'type', label: 'Type', icon: '🎭', count: filters.eventType && filters.eventType !== 'all' ? 1 : 0 },
-    { id: 'audience', label: 'Audience', icon: '👥', count: filters.audienceType && filters.audienceType !== 'all' ? 1 : 0 }
+    { id: 'price', label: 'Fiyat', icon: '💰', count: filters.priceMin || filters.priceMax || filters.priceRange ? 1 : 0 },
+    { id: 'type', label: 'Tür', icon: '🎭', count: filters.eventType && filters.eventType !== 'all' ? 1 : 0 },
+    { id: 'audience', label: 'Kitle', icon: '👥', count: filters.audienceType && filters.audienceType !== 'all' ? 1 : 0 }
   ]
 
   return (
@@ -566,7 +573,7 @@ export const AdvancedFilters = ({
         <button className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-all duration-200 ${className}`}>
           <Filter size={16} className="text-gray-500 dark:text-gray-400" />
           <span className="text-gray-700 dark:text-gray-300">
-            Advanced Filters
+            Gelişmiş Filtreler
             {getActiveFiltersCount() > 0 && (
               <span className="ml-1 px-1.5 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
                 {getActiveFiltersCount()}
@@ -585,9 +592,9 @@ export const AdvancedFilters = ({
         >
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900">Advanced Filters</h3>
+              <h3 className="font-semibold text-gray-900">Gelişmiş Filtreler</h3>
               <span className="text-sm text-gray-500">
-                {getActiveFiltersCount()} filter{getActiveFiltersCount() !== 1 ? 's' : ''} active
+                {getActiveFiltersCount()} filtre aktif
               </span>
             </div>
 
@@ -618,7 +625,7 @@ export const AdvancedFilters = ({
             <div className="relative">
               <input
                 type="text"
-                placeholder={`Search ${activeTab} options...`}
+                placeholder={`${activeTab === 'price' ? 'Fiyat' : activeTab === 'type' ? 'Tür' : 'Kitle'} seçeneklerini ara...`}
                 value={searchTerm}
                 onChange={(e) => {
                   e.stopPropagation()
@@ -635,7 +642,7 @@ export const AdvancedFilters = ({
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     type="number"
-                    placeholder="Min price"
+                    placeholder="Min fiyat"
                     value={filters.priceMin || ''}
                     onChange={(e) => {
                       e.stopPropagation()
@@ -645,7 +652,7 @@ export const AdvancedFilters = ({
                   />
                   <input
                     type="number"
-                    placeholder="Max price"
+                    placeholder="Max fiyat"
                     value={filters.priceMax || ''}
                     onChange={(e) => {
                       e.stopPropagation()
@@ -759,13 +766,13 @@ export const AdvancedFilters = ({
                 onClick={() => onFiltersChange({})}
                 className="px-4 py-2 text-sm text-red-600 hover:text-red-800 transition-colors duration-200"
               >
-                Clear All Filters
+                Tüm Filtreleri Temizle
               </button>
               <button
                 onClick={() => onToggle(false)}
                 className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
               >
-                Apply Filters
+                Filtreleri Uygula
               </button>
             </div>
           </div>

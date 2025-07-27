@@ -354,7 +354,7 @@ const HomePage = () => {
               filters={advancedFilters}
               onFiltersChange={setAdvancedFilters}
               isOpen={showAdvancedFilter}
-              onToggle={() => setShowAdvancedFilter(!showAdvancedFilter)}
+              onToggle={setShowAdvancedFilter}
               className={isDarkMode ? 'bg-gray-700 text-white hover:bg-gray-600 border-gray-600' : 'bg-white text-gray-700 hover:shadow-md border-gray-200'}
             />
           </div>
