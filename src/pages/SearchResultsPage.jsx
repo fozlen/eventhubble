@@ -535,7 +535,7 @@ const SearchResultsPage = () => {
                         
                         <button
                           onClick={() => handleBuyTicket(event)}
-                          className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center"
+                          className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center"
                         >
                           <ExternalLink size={16} className="mr-1" />
                           {language === 'TR' ? 'Bilet Al' : 'Buy Ticket'}

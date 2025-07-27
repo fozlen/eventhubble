@@ -448,7 +448,7 @@ const EventDetailPage = () => {
               <div className="space-y-4">
                 <button
                   onClick={() => window.open(event.url, '_blank')}
-                  className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+                  className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center"
                 >
                   <ExternalLink size={16} className="mr-2" />
                   {language === 'TR' ? 'Bilet Al' : 'Buy Ticket Now'}
