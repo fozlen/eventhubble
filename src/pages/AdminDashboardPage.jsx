@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Edit, Trash2, Eye, LogOut, FileText, Calendar, Tag } from 'lucide-react'
-import lightLogo from '../assets/eventhubble_light_transparent_logo.png'
+import newLogo from '../assets/eventhubble_new_logo.png'
 
 const AdminDashboardPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
@@ -417,7 +417,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2">
-                <img src={darkLogo} alt="EventHubble" className="h-10 w-auto" />
+                <img src={newLogo} alt="EventHubble" className="h-10 w-auto" />
                 <span className="text-xl font-bold">
                   <span className="text-white">Event</span>
                   <span className="text-blue-600">Hubble</span>

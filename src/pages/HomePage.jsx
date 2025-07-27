@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import lightLogo from '../assets/eventhubble_light_transparent_logo.png'
-import darkLogo from '../assets/eventhubble_dark_transparent_logo.png'
+import newLogo from '../assets/eventhubble_new_logo.png'
 import { 
   Search, 
   Calendar, 
@@ -206,9 +205,9 @@ const HomePage = () => {
     // Login modal veya sayfası açılacak
   }
 
-  // Get appropriate logo based on theme
+  // Get logo
   const getLogo = () => {
-    return isDarkMode ? darkLogo : lightLogo
+    return newLogo
   }
 
   // Filtrelenmiş etkinlikler
@@ -503,7 +502,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2">
-                <img src={darkLogo} alt="EventHubble" className="h-10 w-auto" />
+                <img src={newLogo} alt="EventHubble" className="h-10 w-auto" />
                 <span className="text-xl font-bold">
                   <span className="text-white">Event</span>
                   <span className="text-blue-600">Hubble</span>
