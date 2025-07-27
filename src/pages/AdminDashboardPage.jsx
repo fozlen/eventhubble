@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon, Tag } from 'lucide-react'
 import newLogo from '../assets/eventhubble_new_logo.png'
 import logo from '../assets/Logo.png'
 import logoWithoutBg from '../assets/Logo w_out background.png'
@@ -96,6 +96,12 @@ const AdminDashboardPage = () => {
       setBlogPosts(updatedPosts)
       localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
     }
+  }
+
+  const toggleLanguage = () => {
+    const newLanguage = language === 'TR' ? 'EN' : 'TR'
+    setLanguage(newLanguage)
+    localStorage.setItem('language', newLanguage)
   }
 
   const formatDate = (dateString) => {
