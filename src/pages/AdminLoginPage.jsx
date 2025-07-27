@@ -47,10 +47,9 @@ const AdminLoginPage = () => {
         {/* Logo and Header */}
         <div className="text-center">
           <img
-            className="mx-auto h-16 w-auto bg-transparent border-none shadow-none block"
+            className="mx-auto h-16 w-auto bg-white rounded-lg p-2 shadow-sm"
             src={newLogo}
             alt="EventHubble"
-            style={{ mixBlendMode: 'multiply' }}
           />
           <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
             Admin Panel
@@ -163,8 +162,7 @@ const AdminLoginPage = () => {
                 <img 
                   src={newLogo} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-transparent border-none shadow-none block" 
-                  style={{ mixBlendMode: 'multiply' }}
+                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-white">Event</span>

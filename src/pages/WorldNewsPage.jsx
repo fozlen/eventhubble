@@ -167,8 +167,7 @@ const WorldNewsPage = () => {
                 <img 
                   src={getLogo()} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-transparent border-none shadow-none block" 
-                  style={{ mixBlendMode: 'multiply' }}
+                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
                   <span className={isDarkMode ? 'text-white' : 'text-black'}>Event</span>
@@ -315,8 +314,7 @@ const WorldNewsPage = () => {
                 <img 
                   src={newLogo} 
                   alt="EventHubble" 
-                  className="h-10 w-auto bg-transparent border-none shadow-none block" 
-                  style={{ mixBlendMode: 'multiply' }}
+                  className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
                   <span className="text-white">Event</span>
