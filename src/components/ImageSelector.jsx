@@ -112,17 +112,17 @@ const ImageSelector = ({
     setIsUploading(true)
 
     try {
-      // Simple Base64 Solution (No Backend Required)
+      // Simple base64 solution
       const reader = new FileReader()
       
       reader.onload = (e) => {
         const dataUrl = e.target.result
-        const fileName = `uploaded_${Date.now()}_${file.name}`
+        const fileName = `uploaded_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
         
         setUploadedImage({
           name: fileName,
           url: dataUrl,
-          cdnUrl: dataUrl, // For now, use data URL as CDN URL
+          cdnUrl: dataUrl,
           originalName: file.name,
           fileSize: file.size
         })
@@ -132,7 +132,8 @@ const ImageSelector = ({
       }
       
       reader.onerror = () => {
-        throw new Error('Failed to read file')
+        alert('Failed to read file. Please try again.')
+        setIsUploading(false)
       }
       
       reader.readAsDataURL(file)
