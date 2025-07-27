@@ -39,8 +39,15 @@ const HomePage = () => {
   const [selectedCities, setSelectedCities] = useState([])
   const [advancedFilters, setAdvancedFilters] = useState({})
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [language, setLanguage] = useState('EN')
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Load dark mode preference from localStorage
+    const saved = localStorage.getItem('isDarkMode')
+    return saved ? JSON.parse(saved) : false
+  })
+  const [language, setLanguage] = useState(() => {
+    // Load language preference from localStorage
+    return localStorage.getItem('language') || 'EN'
+  })
   const [showMap, setShowMap] = useState(false)
   const navigate = useNavigate()
 
@@ -181,12 +188,16 @@ const HomePage = () => {
 
   // Dark mode toggle
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
+    const newDarkMode = !isDarkMode
+    setIsDarkMode(newDarkMode)
+    localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
   }
 
   // Dil değiştirme
   const toggleLanguage = () => {
-    setLanguage(language === 'EN' ? 'TR' : 'EN')
+    const newLanguage = language === 'EN' ? 'TR' : 'EN'
+    setLanguage(newLanguage)
+    localStorage.setItem('language', newLanguage)
   }
 
   // Login işlemi

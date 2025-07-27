@@ -39,7 +39,7 @@ const BlogDetailPage = () => {
   // Load blog post
   useEffect(() => {
     loadBlogPost()
-  }, [id])
+  }, [id, language])
 
   const loadBlogPost = () => {
     try {

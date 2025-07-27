@@ -9,8 +9,15 @@ const EventDetailPage = () => {
   const navigate = useNavigate()
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [language, setLanguage] = useState('EN')
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Load dark mode preference from localStorage
+    const saved = localStorage.getItem('isDarkMode')
+    return saved ? JSON.parse(saved) : false
+  })
+  const [language, setLanguage] = useState(() => {
+    // Load language preference from localStorage
+    return localStorage.getItem('language') || 'EN'
+  })
 
   // Get appropriate logo based on theme
   const getLogo = () => {
@@ -37,11 +44,15 @@ const EventDetailPage = () => {
   }, [language, event])
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
+    const newDarkMode = !isDarkMode
+    setIsDarkMode(newDarkMode)
+    localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
   }
 
   const toggleLanguage = () => {
-    setLanguage(language === 'TR' ? 'EN' : 'TR')
+    const newLanguage = language === 'TR' ? 'EN' : 'TR'
+    setLanguage(newLanguage)
+    localStorage.setItem('language', newLanguage)
   }
 
   const handleLogin = () => {
