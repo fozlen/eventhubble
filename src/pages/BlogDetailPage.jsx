@@ -197,6 +197,7 @@ const BlogDetailPage = () => {
       <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
+            {/* Logo and Brand */}
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/')}
@@ -214,7 +215,7 @@ const BlogDetailPage = () => {
               </button>
             </div>
             
-            {/* Navigation Menu */}
+            {/* Navigation Menu - Centered */}
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="/"
@@ -236,7 +237,8 @@ const BlogDetailPage = () => {
               </a>
             </nav>
             
-            <div className="flex items-center space-x-4">
+            {/* Language Toggle - Right */}
+            <div className="flex items-center">
               <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
@@ -271,7 +273,7 @@ const BlogDetailPage = () => {
                   {getCategoryTranslation(blogPost.category)}
                 </span>
               </div>
-              <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center space-x-4 text-sm text-text/70">
                 <div className="flex items-center space-x-1">
                   <Calendar className="h-4 w-4" />
                   <span>{formatDate(blogPost.date)}</span>
@@ -284,19 +286,19 @@ const BlogDetailPage = () => {
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-text mb-4">
               {blogPost.title}
             </h1>
 
             {/* Excerpt */}
-            <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+            <p className="text-lg text-text/70 mb-6 leading-relaxed">
               {blogPost.excerpt}
             </p>
 
             {/* Author */}
             <div className="flex items-center space-x-2 mb-6">
-              <User className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-500 dark:text-gray-400">
+              <User className="h-4 w-4 text-text/50" />
+              <span className="text-sm text-text/70">
                 {language === 'TR' ? 'Yazar' : 'By'} {blogPost.author}
               </span>
             </div>
@@ -307,7 +309,7 @@ const BlogDetailPage = () => {
                 {blogPost.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full"
+                    className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-sm rounded-full hover:bg-primary/20 transition-colors"
                   >
                     #{tag}
                   </span>
@@ -327,9 +329,9 @@ const BlogDetailPage = () => {
             </div>
 
             {/* Article Content */}
-            <div className="prose prose-lg max-w-none dark:prose-invert">
+            <div className="prose prose-lg max-w-none">
               {blogPost.content.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="mb-4 leading-relaxed text-gray-700 dark:text-gray-300">
+                <p key={index} className="mb-4 leading-relaxed text-text">
                   {paragraph}
                 </p>
               ))}
@@ -341,7 +343,7 @@ const BlogDetailPage = () => {
         <div className="mt-8 text-center">
           <button
             onClick={() => navigate('/world-news')}
-            className="flex items-center space-x-2 mx-auto px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            className="flex items-center space-x-2 mx-auto px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             <span>{language === 'TR' ? 'Dünya Haberlerine Dön' : 'Back to World News'}</span>
@@ -352,8 +354,9 @@ const BlogDetailPage = () => {
       {/* Footer */}
       <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+            {/* Logo and Brand */}
+            <div className="flex justify-center md:justify-start">
               <div className="flex items-center space-x-2">
                 <img 
                   src={logo} 
@@ -367,14 +370,16 @@ const BlogDetailPage = () => {
               </div>
             </div>
             
-            <div>
+            {/* Company Links */}
+            <div className="text-center md:text-left">
               <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
               <ul className="space-y-2 text-white/80">
                 <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
               </ul>
             </div>
             
-            <div>
+            {/* Blog Links */}
+            <div className="text-center md:text-right">
               <h3 className="font-semibold mb-4">Blog</h3>
               <ul className="space-y-2 text-white/80">
                 <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
