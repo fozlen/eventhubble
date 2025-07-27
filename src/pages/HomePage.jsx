@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import newLogo from '../assets/eventhubble_new_logo.png'
+import logo from '../assets/Logo.png'
+import logoWithoutBg from '../assets/Logo w_out background.png'
+import mainLogo from '../assets/MainLogo.png'
 import { 
   Search, 
   Calendar, 
@@ -197,7 +200,7 @@ const HomePage = () => {
 
   // Get logo
   const getLogo = () => {
-    return newLogo
+    return logo // Yeni logo kullanıyoruz
   }
 
   // Filtrelenmiş etkinlikler
@@ -215,7 +218,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-primary/20 shadow-sm">
+      <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -229,8 +232,8 @@ const HomePage = () => {
                   className="h-8 md:h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-lg md:text-xl font-bold">
-                  <span className="text-text">Event</span>
-                  <span className="text-primary">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </button>
             </div>
@@ -239,19 +242,19 @@ const HomePage = () => {
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="/"
-                className="text-sm font-medium transition-colors text-primary hover:text-primary/80"
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
-                className="text-sm font-medium transition-colors text-text/70 hover:text-text"
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
               <a
                 href="/world-news"
-                className="text-sm font-medium transition-colors text-text/70 hover:text-text"
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
               </a>
@@ -260,7 +263,7 @@ const HomePage = () => {
             <div className="flex items-center space-x-2 md:space-x-4">
               <button 
                 onClick={toggleLanguage}
-                className="flex items-center space-x-1 text-text/70 hover:text-text transition-colors p-1 md:p-0"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
                 title="Change language"
               >
                 <Globe size={16} />
@@ -268,7 +271,7 @@ const HomePage = () => {
               </button>
               <button 
                 onClick={handleLogin}
-                className="flex items-center space-x-1 text-text/70 hover:text-text transition-colors p-1 md:p-0"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
                 title="Login"
               >
                 <User size={16} />
@@ -510,12 +513,12 @@ const HomePage = () => {
             <div>
               <div className="flex items-center space-x-2">
                 <img 
-                  src={newLogo} 
+                  src={logo} 
                   alt="EventHubble" 
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className="text-white">Event</span>
+                  <span className="text-primary-cream">Event</span>
                   <span className="text-primary-light">Hubble</span>
                 </span>
               </div>

@@ -21,7 +21,8 @@ export default {
           DEFAULT: '#473B73', // Koyu mor metin
           secondary: '#6FB5D3', // Mavi metin
           accent: '#EF88AE',  // Pembe metin
-        }
+        },
+        vanilla: '#F5F5DC', // Vanilya rengi
       },
     },
   },

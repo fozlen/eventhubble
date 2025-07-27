@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Phone, Globe as GlobeIcon, Share2, Heart, ExternalLink } from 'lucide-react'
 import newLogo from '../assets/eventhubble_new_logo.png'
+import logo from '../assets/Logo.png'
+import logoWithoutBg from '../assets/Logo w_out background.png'
+import mainLogo from '../assets/MainLogo.png'
 
 const EventDetailPage = () => {
   const { eventId } = useParams()
@@ -16,7 +19,7 @@ const EventDetailPage = () => {
 
   // Get logo
   const getLogo = () => {
-    return newLogo
+    return logo // Yeni logo kullanıyoruz
   }
 
   // Dark mode effect - artık gerekli değil
@@ -219,10 +222,10 @@ const EventDetailPage = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className={`text-6xl mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`}>⏳</div>
-          <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <div className="text-6xl mb-4 text-gray-400">⏳</div>
+          <h3 className="text-xl font-semibold text-text">
             {language === 'TR' ? 'Etkinlik detayları yükleniyor...' : 'Loading event details...'}
           </h3>
         </div>
@@ -232,10 +235,10 @@ const EventDetailPage = () => {
 
   if (!event) {
     return (
-      <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className={`text-6xl mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`}>❌</div>
-          <h3 className={`text-xl font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <div className="text-6xl mb-4 text-gray-400">❌</div>
+          <h3 className="text-xl font-semibold mb-2 text-text">
             {language === 'TR' ? 'Etkinlik bulunamadı' : 'Event not found'}
           </h3>
           <button
@@ -250,9 +253,9 @@ const EventDetailPage = () => {
   }
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
+      <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -266,8 +269,8 @@ const EventDetailPage = () => {
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className={isDarkMode ? 'text-white' : 'text-black'}>Event</span>
-                  <span className="text-blue-600">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </button>
             </div>
@@ -276,47 +279,38 @@ const EventDetailPage = () => {
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="/"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
               <a
                 href="/world-news"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
               </a>
             </nav>
             
             <div className="flex items-center space-x-4">
-              <button 
-                onClick={toggleDarkMode}
-                className={`p-2 ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-400 hover:text-gray-600'} transition-colors`}
-                title="Toggle dark mode"
-              >
-                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
-              <button 
+              <button
                 onClick={toggleLanguage}
-                className={`flex items-center space-x-1 ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
-                title="Change language"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
               >
                 <Globe size={16} />
-                <span>{language}</span>
+                <span className="hidden sm:inline">{language}</span>
               </button>
-              <button 
+              <button
                 onClick={handleLogin}
-                className={`flex items-center space-x-1 ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
-                title="Login"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
               >
                 <User size={16} />
-                <span>{language === 'TR' ? 'Giriş' : 'Login'}</span>
+                <span className="hidden sm:inline">{language === 'TR' ? 'Giriş' : 'Login'}</span>
               </button>
             </div>
           </div>
@@ -344,138 +338,83 @@ const EventDetailPage = () => {
             </div>
 
             {/* Event Title and Description */}
-            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 mb-6`}>
-              <h1 className={`text-3xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{event.title}</h1>
-              <p className={`text-lg leading-relaxed mb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{event.description}</p>
-              
-              {/* Category Tags */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800'}`}>
-                  {event.category}
-                </span>
-                {event.category === (language === 'TR' ? 'Müzik' : 'Music') && (
-                  <>
-                    <span className={`px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-800'}`}>pop</span>
-                    <span className={`px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-green-600 text-white' : 'bg-green-100 text-green-800'}`}>
-                      {language === 'TR' ? 'türkçe' : 'turkish'}
-                    </span>
-                    <span className={`px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-orange-600 text-white' : 'bg-orange-100 text-orange-800'}`}>
-                      {language === 'TR' ? 'klasik' : 'classical'}
-                    </span>
-                  </>
-                )}
-              </div>
-
-              {/* Event Details Grid */}
+            <div className="bg-white rounded-xl p-6 mb-6">
+              <h2 className="text-2xl font-bold mb-4 text-text">{event.title}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <div className="flex items-center">
-                    <Calendar className={`mr-3 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} size={24} />
-                    <div>
-                      <p className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {language === 'TR' ? 'Tarih & Saat' : 'Date & Time'}
-                      </p>
-                      <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>{event.date} • {event.time}</p>
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <Calendar className="h-5 w-5 text-primary" />
+                    <span className="text-text">{event.date}</span>
                   </div>
-                  
-                  <div className="flex items-center">
-                    <MapPin className={`mr-3 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} size={24} />
-                    <div>
-                      <p className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {language === 'TR' ? 'Mekan' : 'Venue'}
-                      </p>
-                      <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>{event.venue}</p>
-                      <p className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>{event.city}</p>
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <span className="text-text">{event.time}</span>
                   </div>
-                  
-                  <div className="flex items-center">
-                    <Users className={`mr-3 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} size={24} />
-                    <div>
-                      <p className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {language === 'TR' ? 'Katılımcılar' : 'Attendees'}
-                      </p>
-                      <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
-                        {event.attendees?.toLocaleString()} {language === 'TR' ? 'kişi katılıyor' : 'people attending'}
-                      </p>
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    <span className="text-text">{event.location}</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Users className="h-5 w-5 text-primary" />
+                    <span className="text-text">{event.organizer}</span>
                   </div>
                 </div>
-                
                 <div className="space-y-4">
-                  <div className="flex items-center">
-                    <Star className={`mr-3 ${isDarkMode ? 'text-yellow-400' : 'text-yellow-500'}`} size={24} />
-                    <div>
-                      <p className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {language === 'TR' ? 'Puan' : 'Rating'}
-                      </p>
-                      <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>{event.rating} / 5.0</p>
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <Star className="h-5 w-5 text-primary" />
+                    <span className="text-text">{event.category}</span>
                   </div>
-                  
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-3">🎫</span>
-                    <div>
-                      <p className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {language === 'TR' ? 'Kalan Biletler' : 'Available Tickets'}
-                      </p>
-                      <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
-                        {event.available_tickets?.toLocaleString()} {language === 'TR' ? 'bilet kaldı' : 'tickets left'}
-                      </p>
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <Phone className="h-5 w-5 text-primary" />
+                    <span className="text-text">{event.phone}</span>
                   </div>
-                  
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-3">🏢</span>
-                    <div>
-                      <p className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {language === 'TR' ? 'Organizatör' : 'Organizer'}
-                      </p>
-                      <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>{event.organizer}</p>
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <GlobeIcon className="h-5 w-5 text-primary" />
+                    <a href={event.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors">
+                      {language === 'TR' ? 'Web Sitesi' : 'Website'}
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Similar Events */}
-            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>
-              <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <div className="bg-white rounded-xl p-6">
+              <h2 className="text-2xl font-bold mb-4 text-text">
                 {language === 'TR' ? 'Benzer Etkinlikler' : 'Similar Events'}
               </h2>
-              <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <p className="text-sm mb-4 text-text/70">
                 {language === 'TR' ? 'Beğenebileceğiniz diğer etkinlikler' : 'Other events you might like'}
               </p>
               
               <div className="space-y-4">
-                <div className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                <div className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer hover:bg-gray-50">
                   <img
                     src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=100&h=100&fit=crop"
                     alt="Similar Event"
                     className="w-16 h-16 object-cover rounded-lg"
                   />
                   <div className="flex-1">
-                    <h4 className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <h4 className="font-semibold text-sm text-text">
                       {language === 'TR' ? 'Benzer Etkinlik Başlığı' : 'Similar Event Title'}
                     </h4>
-                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <p className="text-xs text-text/70">
                       {language === 'TR' ? 'Tarih • Konum' : 'Date • Location'}
                     </p>
                   </div>
                 </div>
                 
-                <div className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                <div className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer hover:bg-gray-50">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
                     alt="Similar Event"
                     className="w-16 h-16 object-cover rounded-lg"
                   />
                   <div className="flex-1">
-                    <h4 className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <h4 className="font-semibold text-sm text-text">
                       {language === 'TR' ? 'Başka Benzer Etkinlik' : 'Another Similar Event'}
                     </h4>
-                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <p className="text-xs text-text/70">
                       {language === 'TR' ? 'Tarih • Konum' : 'Date • Location'}
                     </p>
                   </div>
@@ -488,8 +427,8 @@ const EventDetailPage = () => {
           <div className="lg:col-span-1">
             <div className="sticky top-8">
               {/* Price Card */}
-              <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 mb-6`}>
-              <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <div className="bg-white rounded-xl p-6 mb-6">
+              <h3 className="text-xl font-bold mb-4 text-text">
                 {language === 'TR' ? 'Bilet Bilgileri' : 'Ticket Information'}
               </h3>
               
@@ -498,13 +437,13 @@ const EventDetailPage = () => {
                   <div className="text-3xl font-bold text-green-600 mb-2">
                     {event.price_min}₺ - {event.price_max}₺
                   </div>
-                  <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <p className="text-sm text-text/70">
                     {language === 'TR' ? 'Bilet başına fiyat aralığı' : 'Price range per ticket'}
                   </p>
                 </div>
               ) : (
                 <div className="mb-6">
-                  <div className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <div className="text-xl font-semibold text-text/70">
                     {language === 'TR' ? 'Fiyat mevcut değil' : 'Price not available'}
                   </div>
                 </div>
@@ -521,7 +460,7 @@ const EventDetailPage = () => {
                 
                 <button 
                   onClick={handleShareEvent}
-                  className={`w-full py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                  className="w-full py-3 px-6 rounded-lg transition-colors flex items-center justify-center bg-gray-100 text-gray-700 hover:bg-gray-200"
                 >
                   <Share2 size={16} className="mr-2" />
                   {language === 'TR' ? 'Etkinliği Paylaş' : 'Share Event'}
@@ -529,14 +468,14 @@ const EventDetailPage = () => {
               </div>
               
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <h4 className={`font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <h4 className="font-semibold mb-2 text-text">
                   {language === 'TR' ? 'Hızlı Bilgi' : 'Quick Info'}
                 </h4>
                 <div className="space-y-2 text-sm">
-                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>📅 {language === 'TR' ? 'Tarih' : 'Date'}: {event.date}</p>
-                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>🕐 {language === 'TR' ? 'Saat' : 'Time'}: {event.time}</p>
-                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>📍 {language === 'TR' ? 'Konum' : 'Location'}: {event.city}</p>
-                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>🎭 {language === 'TR' ? 'Kategori' : 'Category'}: {event.category}</p>
+                  <p className="text-text/70">📅 {language === 'TR' ? 'Tarih' : 'Date'}: {event.date}</p>
+                  <p className="text-text/70">🕐 {language === 'TR' ? 'Saat' : 'Time'}: {event.time}</p>
+                  <p className="text-text/70">📍 {language === 'TR' ? 'Konum' : 'Location'}: {event.city}</p>
+                  <p className="text-text/70">🎭 {language === 'TR' ? 'Kategori' : 'Category'}: {event.category}</p>
                 </div>
               </div>
             </div>
@@ -546,33 +485,33 @@ const EventDetailPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2">
                 <img 
-                  src={newLogo} 
+                  src={logo} 
                   alt="EventHubble" 
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className="text-white">Event</span>
-                  <span className="text-blue-600">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </div>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-white/80">
                 <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Blog</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-white/80">
                 <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
               </ul>
             </div>

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Edit, Trash2, Eye, LogOut, FileText, Calendar, Tag } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon } from 'lucide-react'
 import newLogo from '../assets/eventhubble_new_logo.png'
+import logo from '../assets/Logo.png'
+import logoWithoutBg from '../assets/Logo w_out background.png'
+import mainLogo from '../assets/MainLogo.png'
 
 const AdminDashboardPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
@@ -112,9 +115,9 @@ const AdminDashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
+      <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -123,13 +126,13 @@ const AdminDashboardPage = () => {
                 className="flex items-center space-x-4 hover:opacity-80 transition-opacity duration-200"
               >
                 <img 
-                  src={newLogo} 
+                  src={logo} 
                   alt="EventHubble" 
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className={isDarkMode ? 'text-white' : 'text-black'}>Event</span>
-                  <span className="text-blue-600">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </button>
             </div>
@@ -138,31 +141,31 @@ const AdminDashboardPage = () => {
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="/"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
               <a
                 href="/world-news"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
               </a>
             </nav>
             
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="text-sm text-white/80">
                 {language === 'TR' ? 'Hoş geldiniz, Admin' : 'Welcome, Admin'}
               </span>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                className="flex items-center space-x-2 text-sm text-primary-accent hover:text-primary-accent/80"
               >
                 <LogOut className="h-4 w-4" />
                 <span>{language === 'TR' ? 'Çıkış' : 'Logout'}</span>
@@ -201,7 +204,7 @@ const AdminDashboardPage = () => {
           {blogPosts.map((post) => (
             <div
               key={post.id}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
             >
               <img
                 src={post.image}
@@ -332,9 +335,9 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-xl font-semibold text-text mb-4">
             {post 
               ? (language === 'TR' ? 'Blog Yazısını Düzenle' : 'Edit Blog Post')
               : (language === 'TR' ? 'Yeni Blog Yazısı Ekle' : 'Add New Blog Post')
@@ -445,33 +448,33 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2">
                 <img 
-                  src={newLogo} 
+                  src={logo} 
                   alt="EventHubble" 
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className="text-white">Event</span>
-                  <span className="text-blue-600">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </div>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-white/80">
                 <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Blog</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-white/80">
                 <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
               </ul>
             </div>

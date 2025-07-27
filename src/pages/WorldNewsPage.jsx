@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users } from 'lucide-react'
+import { Sun, Moon, Globe, User, Calendar, ArrowRight } from 'lucide-react'
 import newLogo from '../assets/eventhubble_new_logo.png'
+import logo from '../assets/Logo.png'
+import logoWithoutBg from '../assets/Logo w_out background.png'
+import mainLogo from '../assets/MainLogo.png'
 
 const WorldNewsPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
@@ -142,13 +145,13 @@ const WorldNewsPage = () => {
 
   // Get appropriate logo based on theme
   const getLogo = () => {
-    return newLogo
+    return logo // Yeni logo kullanıyoruz
   }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-primary/20 shadow-sm">
+      <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
@@ -162,8 +165,8 @@ const WorldNewsPage = () => {
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className={isDarkMode ? 'text-white' : 'text-black'}>Event</span>
-                  <span className="text-blue-600">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </button>
             </div>
@@ -172,19 +175,19 @@ const WorldNewsPage = () => {
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="/"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
               <a
                 href="/world-news"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}
+                className="text-sm font-medium transition-colors text-primary-light"
               >
                 {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
               </a>
@@ -192,30 +195,20 @@ const WorldNewsPage = () => {
             
             <div className="flex items-center space-x-4">
               <button
-                onClick={toggleDarkMode}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
-              >
-                {isDarkMode ? (
-                  <Sun className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                ) : (
-                  <Moon className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                )}
-              </button>
-              <button
                 onClick={toggleLanguage}
-                className="flex items-center space-x-1 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
               >
-                <Globe className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">
                   {language}
                 </span>
               </button>
               <button
                 onClick={handleLogin}
-                className="flex items-center space-x-1 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
               >
-                <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <User className="h-4 w-4" />
+                <span className="text-sm font-medium">
                   Login
                 </span>
               </button>
@@ -244,7 +237,7 @@ const WorldNewsPage = () => {
           {newsData.map((news) => (
             <article
               key={news.id}
-              className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg shadow-lg border overflow-hidden hover:shadow-xl transition-shadow duration-300`}
+              className="bg-white border-gray-200 rounded-lg shadow-lg border overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
               <img
                 src={news.image}
@@ -253,18 +246,18 @@ const WorldNewsPage = () => {
               />
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                     {news.category}
                   </span>
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center text-sm text-text/70">
                     <Calendar className="h-4 w-4 mr-1" />
                     {news.date}
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2">
+                <h3 className="text-xl font-semibold text-text mb-3 line-clamp-2">
                   {news.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+                <p className="text-text/70 mb-4 line-clamp-3">
                   {news.excerpt}
                 </p>
                 <button
@@ -298,33 +291,33 @@ const WorldNewsPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2">
                 <img 
-                  src={newLogo} 
+                  src={logo} 
                   alt="EventHubble" 
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className="text-white">Event</span>
-                  <span className="text-blue-600">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </div>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-white/80">
                 <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Blog</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-white/80">
                 <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
               </ul>
             </div>

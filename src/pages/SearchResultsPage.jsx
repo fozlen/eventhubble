@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Filter, ChevronDown, Map, ExternalLink } from 'lucide-react'
 import newLogo from '../assets/eventhubble_new_logo.png'
+import logo from '../assets/Logo.png'
+import logoWithoutBg from '../assets/Logo w_out background.png'
+import mainLogo from '../assets/MainLogo.png'
 
 const SearchResultsPage = () => {
   const [searchParams] = useSearchParams()
@@ -24,7 +27,7 @@ const SearchResultsPage = () => {
 
   // Get logo
   const getLogo = () => {
-    return newLogo
+    return logo // Yeni logo kullanıyoruz
   }
 
   // Dark mode effect - artık gerekli değil
@@ -307,9 +310,9 @@ const SearchResultsPage = () => {
   }
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
+      <header className="bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -323,8 +326,8 @@ const SearchResultsPage = () => {
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className={isDarkMode ? 'text-white' : 'text-black'}>Event</span>
-                  <span className="text-blue-600">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </button>
             </div>
@@ -333,19 +336,19 @@ const SearchResultsPage = () => {
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="/"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
               <a
                 href="/about"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </a>
               <a
                 href="/world-news"
-                className={`text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white"
               >
                 {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
               </a>
@@ -361,19 +364,17 @@ const SearchResultsPage = () => {
               </button>
               <button 
                 onClick={toggleLanguage}
-                className={`flex items-center space-x-1 ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
-                title="Change language"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
               >
                 <Globe size={16} />
-                <span>{language}</span>
+                <span className="hidden sm:inline">{language}</span>
               </button>
               <button 
                 onClick={handleLogin}
-                className={`flex items-center space-x-1 ${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
-                title="Login"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
               >
                 <User size={16} />
-                <span>{language === 'TR' ? 'Giriş' : 'Login'}</span>
+                <span className="hidden sm:inline">{language === 'TR' ? 'Giriş' : 'Login'}</span>
               </button>
             </div>
           </div>
@@ -426,23 +427,23 @@ const SearchResultsPage = () => {
 
         {/* Search Filters Summary */}
         {(searchTerm || category || dateRange) && (
-          <div className={`p-4 rounded-lg mb-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-            <h3 className={`font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <div className="p-4 rounded-lg mb-6 bg-white border border-gray-200">
+            <h3 className="font-semibold mb-2 text-text">
               {language === 'TR' ? 'Aktif Filtreler' : 'Active Filters'}
             </h3>
             <div className="flex flex-wrap gap-2">
               {searchTerm && (
-                <span className={`px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800'}`}>
+                <span className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
                   {language === 'TR' ? 'Arama' : 'Search'}: {searchTerm}
                 </span>
               )}
               {category && (
-                <span className={`px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-green-600 text-white' : 'bg-green-100 text-green-800'}`}>
+                <span className="px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
                   {language === 'TR' ? 'Kategori' : 'Category'}: {category}
                 </span>
               )}
               {dateRange && (
-                <span className={`px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-800'}`}>
+                <span className="px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800">
                   {language === 'TR' ? 'Tarih' : 'Date'}: {dateRange}
                 </span>
               )}
@@ -454,7 +455,7 @@ const SearchResultsPage = () => {
         {filteredEvents.length > 0 ? (
           <div className="grid gap-6">
             {filteredEvents.map((event) => (
-              <div key={event.id} className={`rounded-xl overflow-hidden shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+              <div key={event.id} className="rounded-xl overflow-hidden shadow-lg bg-white border border-gray-200">
                 <div className="flex flex-col md:flex-row">
                   {/* Event Image */}
                   <div className="md:w-1/3">
@@ -470,19 +471,19 @@ const SearchResultsPage = () => {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800'}`}>
+                          <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                             {event.category}
                           </span>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${isDarkMode ? 'bg-yellow-600 text-white' : 'bg-yellow-100 text-yellow-800'}`}>
+                          <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                             ⭐ {event.rating}
                           </span>
                         </div>
                         
-                        <h3 className={`text-xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h3 className="text-xl font-bold mb-2 text-text">
                           {event.title}
                         </h3>
                         
-                        <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                        <p className="text-sm mb-4 text-text/70">
                           {event.description}
                         </p>
                       </div>
@@ -588,33 +589,33 @@ const SearchResultsPage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-primary text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2">
                 <img 
-                  src={newLogo} 
+                  src={logo} 
                   alt="EventHubble" 
                   className="h-10 w-auto bg-white rounded-lg p-1 shadow-sm" 
                 />
                 <span className="text-xl font-bold">
-                  <span className="text-white">Event</span>
-                  <span className="text-blue-600">Hubble</span>
+                  <span className="text-primary-cream">Event</span>
+                  <span className="text-primary-light">Hubble</span>
                 </span>
               </div>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-white/80">
                 <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Blog</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-white/80">
                 <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
               </ul>
             </div>
