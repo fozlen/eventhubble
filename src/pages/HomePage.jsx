@@ -502,13 +502,13 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-                              <div className="flex items-center space-x-2">
-                  <img src={darkLogo} alt="EventHubble" className="h-10 w-auto" />
-                  <span className="text-xl font-bold">
-                    <span className="text-white">Event</span>
-                    <span className="text-blue-600">Hubble</span>
-                  </span>
-                </div>
+              <div className="flex items-center space-x-2">
+                <img src={darkLogo} alt="EventHubble" className="h-10 w-auto" />
+                <span className="text-xl font-bold">
+                  <span className="text-white">Event</span>
+                  <span className="text-blue-600">Hubble</span>
+                </span>
+              </div>
             </div>
             
             <div>

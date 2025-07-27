@@ -152,6 +152,37 @@ const AdminLoginPage = () => {
           </button>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center space-x-2">
+                <img src={darkLogo} alt="EventHubble" className="h-10 w-auto" />
+                <span className="text-xl font-bold">
+                  <span className="text-white">Event</span>
+                  <span className="text-blue-600">Hubble</span>
+                </span>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Company</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="/about" className="hover:text-white transition-colors">About</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Blog</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="/world-news" className="hover:text-white transition-colors">World News</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
