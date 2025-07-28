@@ -206,6 +206,12 @@ const AdminDashboardPage = () => {
               <a href="/" className="text-primary-cream/80 hover:text-primary-cream transition-colors">
                 {language === 'TR' ? 'Siteyi Görüntüle' : 'View Site'}
               </a>
+              <button 
+                onClick={() => navigate('/admin/events')}
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors"
+              >
+                {language === 'TR' ? 'Etkinlik Yönetimi' : 'Event Management'}
+              </button>
               <button className="text-primary-cream/80 hover:text-primary-cream transition-colors">
                 <Settings className="h-5 w-5" />
               </button>

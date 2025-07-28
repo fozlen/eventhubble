@@ -20,12 +20,19 @@ export class EventService {
       
       const data = await response.json()
       console.log(`✅ ${data.events?.length || 0} etkinlik alındı`)
-      return data.events || []
+      
+      // Manuel etkinlikleri de ekle
+      const manualEvents = this.getManualEvents()
+      const allEvents = [...(data.events || []), ...manualEvents]
+      
+      return allEvents
     } catch (error) {
       console.error('❌ API Error:', error)
       console.log('🔄 Fallback: Mock data kullanılıyor...')
-      // Fallback: Mock data
-      return this.getMockEvents()
+      // Fallback: Mock data + manuel etkinlikler
+      const mockEvents = this.getMockEvents()
+      const manualEvents = this.getManualEvents()
+      return [...mockEvents, ...manualEvents]
     }
   }
 
@@ -81,6 +88,14 @@ export class EventService {
   // Etkinlik detaylarını çek
   static async getEventDetails(eventId) {
     try {
+      // Önce manuel etkinliklerde ara
+      const manualEvents = this.getManualEvents()
+      const manualEvent = manualEvents.find(event => event.id === eventId)
+      if (manualEvent) {
+        return manualEvent
+      }
+
+      // Backend API'de ara
       const response = await fetch(`${API_BASE_URL}/events/${eventId}`)
       if (!response.ok) {
         throw new Error('Etkinlik detayları alınamadı')
@@ -111,6 +126,17 @@ export class EventService {
     
     // Google arama fallback
     return `https://www.google.com/search?q=${encodeURIComponent(event.title)} bilet`
+  }
+
+  // Manuel etkinlikleri getir
+  static getManualEvents() {
+    try {
+      const storedEvents = localStorage.getItem('manualEvents')
+      return storedEvents ? JSON.parse(storedEvents) : []
+    } catch (error) {
+      console.error('Manuel etkinlikler yüklenirken hata:', error)
+      return []
+    }
   }
 
   // Mock data (gerçek API olmadığında)

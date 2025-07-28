@@ -78,6 +78,57 @@ const ImageSelector = ({
       name: "Favicon",
       url: "/favicon.ico",
       category: "icon"
+    },
+    // Event category images
+    {
+      name: "Music Festival",
+      url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "Electronic Music Festival",
+      url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "Theater Performance",
+      url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "Sports Event",
+      url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "Art Exhibition",
+      url: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "Technology Conference",
+      url: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "Film Festival",
+      url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "Theater Stage",
+      url: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "Gastronomy Event",
+      url: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop",
+      category: "events"
+    },
+    {
+      name: "General Event",
+      url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
+      category: "events"
     }
   ]
 
@@ -249,6 +300,23 @@ const ImageSelector = ({
             <div className="mb-3">
               <div className="text-xs font-medium text-gray-700 mb-1 px-2">Icons</div>
               {publicImages.filter(img => img.category === 'icon').map((image) => (
+                <button
+                  key={image.url}
+                  onClick={() => handleImageSelect(image.url)}
+                  className={`w-full text-left px-2 py-1.5 rounded text-sm hover:bg-gray-100 transition-colors flex items-center space-x-2 ${
+                    value === image.url ? 'bg-primary/10 text-primary' : 'text-gray-700'
+                  }`}
+                >
+                  <ImageIcon size={14} className="text-gray-400" />
+                  <span className="truncate">{image.name}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Events Category */}
+            <div className="mb-3">
+              <div className="text-xs font-medium text-gray-700 mb-1 px-2">Event Images</div>
+              {publicImages.filter(img => img.category === 'events').map((image) => (
                 <button
                   key={image.url}
                   onClick={() => handleImageSelect(image.url)}
