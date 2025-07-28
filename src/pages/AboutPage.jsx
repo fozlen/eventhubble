@@ -47,7 +47,7 @@ const AboutPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24 sm:pb-0">
       {/* Mobile Header */}
       <div className="block sm:hidden">
         <MobileHeader
