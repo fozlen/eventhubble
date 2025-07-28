@@ -1,9 +1,16 @@
 // Event Service - Gerçek Backend API entegrasyonu
-const API_BASE_URL = 'http://localhost:3001/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api'
 
 export class EventService {
   // Gerçek etkinlik verilerini çek
   static async getEvents(filters = {}, language = 'EN') {
+    // Production'da sadece manuel etkinlikler kullan
+    if (import.meta.env.PROD) {
+      console.log('🌐 Production: Sadece manuel etkinlikler kullanılıyor...')
+      const manualEvents = this.getManualEvents(language)
+      return manualEvents
+    }
+
     try {
       console.log('🔄 Backend API\'den veriler çekiliyor...')
       
@@ -37,6 +44,11 @@ export class EventService {
 
   // Backend durumunu kontrol et
   static async getStatus() {
+    // Production'da backend kontrolü yapma
+    if (import.meta.env.PROD) {
+      return { status: 'production', message: 'Backend kontrolü production\'da devre dışı' }
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/status`)
       if (!response.ok) {
@@ -51,6 +63,11 @@ export class EventService {
 
   // İstatistikleri al
   static async getStats() {
+    // Production'da stats kontrolü yapma
+    if (import.meta.env.PROD) {
+      return { totalEvents: 0, message: 'Stats production\'da devre dışı' }
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/stats`)
       if (!response.ok) {
