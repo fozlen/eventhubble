@@ -103,7 +103,7 @@ const SearchResultsPage = () => {
       if (category && event.category !== category) return false
 
       // Date range filter (basit implementasyon)
-      if (dateRange) {
+      if (dateRange && event.date) {
         const eventDate = new Date(event.date)
         const today = new Date()
         if (dateRange === 'today' && eventDate.toDateString() !== today.toDateString()) return false
@@ -118,7 +118,7 @@ const SearchResultsPage = () => {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'date':
-          return new Date(a.date) - new Date(b.date)
+          return a.date && b.date ? new Date(a.date) - new Date(b.date) : 0
         case 'name':
           return a.title.localeCompare(b.title)
         case 'price':
@@ -141,6 +141,7 @@ const SearchResultsPage = () => {
   }
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Tarih belirtilmemiş'
     const date = new Date(dateString)
     return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
       year: 'numeric',

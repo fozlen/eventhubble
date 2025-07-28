@@ -206,11 +206,11 @@ const WorldNewsPage = () => {
                     <div className="flex items-center space-x-1 text-gray-500 text-sm">
                       <Calendar className="h-4 w-4" />
                       <span>
-                        {new Date(post.date || new Date()).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
+                        {post.date ? new Date(post.date).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
-                        })}
+                        }) : 'Tarih belirtilmemiş'}
                       </span>
                     </div>
                   </div>

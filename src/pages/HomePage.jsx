@@ -159,7 +159,7 @@ const HomePage = () => {
   }).sort((a, b) => {
     switch (sortBy) {
       case 'date':
-        return new Date(a.date) - new Date(b.date)
+        return a.date && b.date ? new Date(a.date) - new Date(b.date) : 0
       case 'name':
         return a.title.localeCompare(b.title)
       case 'price':
