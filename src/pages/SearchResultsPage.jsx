@@ -7,6 +7,7 @@ import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
+import MobileNavigation from '../components/MobileNavigation'
 
 
 const SearchResultsPage = () => {
@@ -181,7 +182,7 @@ const SearchResultsPage = () => {
           language={language}
           toggleLanguage={toggleLanguage}
         />
-        <div className="h-24"></div> {/* Spacer for fixed header */}
+        <div className="h-16"></div> {/* Spacer for fixed header */}
       </div>
 
       {/* Desktop Header */}
@@ -531,6 +532,8 @@ const SearchResultsPage = () => {
         </div>
       )}
 
+      {/* Mobile Navigation */}
+      <MobileNavigation language={language} />
 
     </div>
   )

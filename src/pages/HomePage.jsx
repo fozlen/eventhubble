@@ -10,6 +10,7 @@ import MobileHeader from '../components/MobileHeader'
 import MobileEventCard from '../components/MobileEventCard'
 import MobileFilters from '../components/MobileFilters'
 import ModernSearchBox from '../components/ModernSearchBox'
+import MobileNavigation from '../components/MobileNavigation'
 
 import { 
   Search, 
@@ -174,7 +175,7 @@ const HomePage = () => {
           language={language}
           toggleLanguage={toggleLanguage}
         />
-        <div className="h-24"></div> {/* Spacer for fixed header */}
+        <div className="h-16"></div> {/* Spacer for fixed header */}
       </div>
 
       {/* Desktop Header */}
@@ -621,6 +622,8 @@ const HomePage = () => {
         language={language}
       />
 
+      {/* Mobile Navigation */}
+      <MobileNavigation language={language} />
 
     </div>
   )

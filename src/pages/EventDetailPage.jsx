@@ -7,6 +7,7 @@ import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
+import MobileNavigation from '../components/MobileNavigation'
 
 
 const EventDetailPage = () => {
@@ -168,7 +169,7 @@ const EventDetailPage = () => {
           language={language}
           toggleLanguage={toggleLanguage}
         />
-        <div className="h-24"></div> {/* Spacer for fixed header */}
+        <div className="h-16"></div> {/* Spacer for fixed header */}
       </div>
 
       {/* Desktop Header */}
@@ -450,6 +451,8 @@ const EventDetailPage = () => {
         </div>
       </footer>
 
+      {/* Mobile Navigation */}
+      <MobileNavigation language={language} />
 
     </div>
   )
