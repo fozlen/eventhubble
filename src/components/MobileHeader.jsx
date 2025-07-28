@@ -18,7 +18,7 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
-        ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100' 
+        ? 'bg-primary/95 backdrop-blur-md shadow-lg border-b border-primary/20' 
         : 'bg-primary'
     }`}>
       <div className="px-4 py-3">
@@ -27,11 +27,7 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
           <div className="flex items-center space-x-3">
             <button
               onClick={onMenuClick}
-              className={`p-2 rounded-lg transition-colors ${
-                isScrolled 
-                  ? 'text-text hover:bg-gray-100' 
-                  : 'text-white hover:bg-white/10'
-              }`}
+              className="p-2 rounded-lg transition-colors text-white hover:bg-white/10"
             >
               <Menu size={20} />
             </button>
@@ -42,64 +38,20 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
                 alt="EventHubble" 
                 className="h-8 w-auto" 
               />
-              <span className={`text-lg font-bold ${
-                isScrolled ? 'text-text' : 'text-white'
-              }`}>
+              <span className="text-lg font-bold text-white">
                 <span className="text-primary-cream">Event</span>
                 <span className="text-primary-light">Hubble</span>
               </span>
             </div>
           </div>
 
-          {/* Right Actions */}
-          <div className="flex items-center space-x-2">
-            {/* Search Button */}
-            <button
-              onClick={() => setShowSearch(!showSearch)}
-              className={`p-2 rounded-lg transition-colors ${
-                isScrolled 
-                  ? 'text-text hover:bg-gray-100' 
-                  : 'text-white hover:bg-white/10'
-              }`}
-            >
-              <Search size={20} />
-            </button>
-
-            {/* Notifications */}
-            <button
-              className={`p-2 rounded-lg transition-colors relative ${
-                isScrolled 
-                  ? 'text-text hover:bg-gray-100' 
-                  : 'text-white hover:bg-white/10'
-              }`}
-            >
-              <Bell size={20} />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                3
-              </span>
-            </button>
-
-            {/* Language Toggle */}
+          {/* Right Actions - Only Language Toggle */}
+          <div className="flex items-center">
             <button
               onClick={toggleLanguage}
-              className={`p-2 rounded-lg transition-colors ${
-                isScrolled 
-                  ? 'text-text hover:bg-gray-100' 
-                  : 'text-white hover:bg-white/10'
-              }`}
+              className="p-2 rounded-lg transition-colors text-white hover:bg-white/10"
             >
               <Globe size={20} />
-            </button>
-
-            {/* User Profile */}
-            <button
-              className={`p-2 rounded-lg transition-colors ${
-                isScrolled 
-                  ? 'text-text hover:bg-gray-100' 
-                  : 'text-white hover:bg-white/10'
-              }`}
-            >
-              <User size={20} />
             </button>
           </div>
         </div>
@@ -126,22 +78,19 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
         </div>
       </div>
 
-      {/* Bottom Navigation (Alternative) */}
+      {/* Bottom Navigation - 3 Main Pages */}
       <div className={`px-4 pb-2 transition-all duration-300 ${
         isScrolled ? 'opacity-100' : 'opacity-0'
       }`}>
-        <div className="flex items-center justify-around bg-white/80 backdrop-blur-sm rounded-full p-1">
-          <button className="flex-1 py-2 px-3 rounded-full bg-primary text-white text-xs font-medium">
+        <div className="flex items-center justify-around bg-white/10 backdrop-blur-sm rounded-full p-1">
+          <button className="flex-1 py-2 px-3 rounded-full bg-white/20 text-white text-xs font-medium hover:bg-white/30 transition-colors">
             {language === 'TR' ? 'Ana Sayfa' : 'Home'}
           </button>
-          <button className="flex-1 py-2 px-3 rounded-full text-text/70 text-xs font-medium hover:text-text">
-            {language === 'TR' ? 'Kategoriler' : 'Categories'}
+          <button className="flex-1 py-2 px-3 rounded-full text-white/80 text-xs font-medium hover:text-white hover:bg-white/10 transition-colors">
+            {language === 'TR' ? 'Hakkımızda' : 'About'}
           </button>
-          <button className="flex-1 py-2 px-3 rounded-full text-text/70 text-xs font-medium hover:text-text">
-            {language === 'TR' ? 'Haberler' : 'News'}
-          </button>
-          <button className="flex-1 py-2 px-3 rounded-full text-text/70 text-xs font-medium hover:text-text">
-            {language === 'TR' ? 'Profil' : 'Profile'}
+          <button className="flex-1 py-2 px-3 rounded-full text-white/80 text-xs font-medium hover:text-white hover:bg-white/10 transition-colors">
+            {language === 'TR' ? 'Dünya Haberleri' : 'World News'}
           </button>
         </div>
       </div>

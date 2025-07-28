@@ -107,11 +107,25 @@ const AboutPage = () => {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-8 md:py-12">
         
-        <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-text">
+        {/* Mobile Header */}
+        <div className="block sm:hidden text-center mb-6">
+          <h1 className="text-2xl font-bold mb-2 text-text">
             {language === 'TR' ? 'Hakkımızda' : 'About Us'}
           </h1>
-          <p className="text-lg md:text-xl text-text/70 px-4">
+          <p className="text-sm text-text/70 px-2">
+            {language === 'TR' 
+              ? 'Dünyanın en iyi etkinliklerini keşfetmenize yardımcı olan platform'
+              : 'The platform that helps you discover the world\'s best events'
+            }
+          </p>
+        </div>
+
+        {/* Desktop Header */}
+        <div className="hidden sm:block text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4 text-text">
+            {language === 'TR' ? 'Hakkımızda' : 'About Us'}
+          </h1>
+          <p className="text-xl text-text/70 px-4">
             {language === 'TR' 
               ? 'Dünyanın en iyi etkinliklerini keşfetmenize yardımcı olan platform'
               : 'The platform that helps you discover the world\'s best events'

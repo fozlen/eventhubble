@@ -149,12 +149,25 @@ const WorldNewsPage = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-        {/* Page Header */}
-        <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text mb-4">
+        {/* Mobile Header */}
+        <div className="block sm:hidden text-center mb-6">
+          <h1 className="text-2xl font-bold text-text mb-2">
+            {language === 'TR' ? 'Haberler' : 'News'}
+          </h1>
+          <p className="text-sm text-text/70 px-2">
+            {language === 'TR' 
+              ? 'Dünyadan en son etkinlik haberleri'
+              : 'Latest event news from around the world'
+            }
+          </p>
+        </div>
+
+        {/* Desktop Header */}
+        <div className="hidden sm:block text-center mb-12">
+          <h1 className="text-4xl lg:text-5xl font-bold text-text mb-4">
             {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
           </h1>
-          <p className="text-lg md:text-xl text-text/70 max-w-3xl mx-auto px-4">
+          <p className="text-xl text-text/70 max-w-3xl mx-auto px-4">
             {language === 'TR' 
               ? 'Dünyadan en son etkinlik haberleri ve gelişmeler'
               : 'Latest event news and developments from around the world'

@@ -310,14 +310,23 @@ const HomePage = () => {
       </section>
 
       {/* Featured Events */}
-      <section className="py-12 md:py-16 bg-background-secondary">
+      <section className="py-8 md:py-16 bg-background-secondary">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 space-y-4 sm:space-y-0">
+          {/* Mobile Header */}
+          <div className="block sm:hidden mb-6">
+            <div className="text-center">
+              <h2 className="text-xl font-bold mb-1 text-text">{language === 'TR' ? 'Etkinlikler' : 'Events'}</h2>
+              <p className="text-sm text-text/60">{filteredEvents.length} {language === 'TR' ? 'etkinlik' : 'events'}</p>
+            </div>
+          </div>
+
+          {/* Desktop Header */}
+          <div className="hidden sm:flex flex-row items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-2 text-text">{language === 'TR' ? 'Öne Çıkan Etkinlikler' : 'Featured Events'}</h2>
+              <h2 className="text-3xl font-bold mb-2 text-text">{language === 'TR' ? 'Öne Çıkan Etkinlikler' : 'Featured Events'}</h2>
               <p className="text-text/70">{filteredEvents.length} {language === 'TR' ? 'etkinlik bulundu' : 'events found'}</p>
             </div>
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+            <div className="flex flex-row space-x-4">
               <button 
                 onClick={() => {
                   const newSort = sortBy === 'date' ? 'name' : sortBy === 'name' ? 'price' : 'date'
@@ -349,34 +358,32 @@ const HomePage = () => {
           ) : filteredEvents.length > 0 ? (
             <>
               {/* Mobile View Controls */}
-              <div className="block sm:hidden mb-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setViewMode('grid')}
-                      className={`p-2 rounded-lg transition-colors ${
-                        viewMode === 'grid' 
-                          ? 'bg-primary text-white' 
-                          : 'bg-gray-100 text-text/60'
-                      }`}
-                    >
-                      <Grid size={20} />
-                    </button>
-                    <button
-                      onClick={() => setViewMode('list')}
-                      className={`p-2 rounded-lg transition-colors ${
-                        viewMode === 'list' 
-                          ? 'bg-primary text-white' 
-                          : 'bg-gray-100 text-text/60'
-                      }`}
-                    >
-                      <List size={20} />
-                    </button>
-                  </div>
+              <div className="block sm:hidden mb-4">
+                <div className="flex items-center justify-center space-x-3">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-2 rounded-full transition-all duration-200 ${
+                      viewMode === 'grid' 
+                        ? 'bg-primary text-white shadow-lg' 
+                        : 'bg-white text-text/60 shadow-sm hover:shadow-md'
+                    }`}
+                  >
+                    <Grid size={18} />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded-full transition-all duration-200 ${
+                      viewMode === 'list' 
+                        ? 'bg-primary text-white shadow-lg' 
+                        : 'bg-white text-text/60 shadow-sm hover:shadow-md'
+                    }`}
+                  >
+                    <List size={18} />
+                  </button>
                   
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-primary text-white text-sm"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-full bg-primary text-white text-sm shadow-lg hover:shadow-xl transition-all duration-200"
                   >
                     <Filter size={16} />
                     <span>{language === 'TR' ? 'Filtreler' : 'Filters'}</span>

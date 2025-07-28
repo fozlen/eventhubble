@@ -237,12 +237,12 @@ const EventDetailPage = () => {
               <img
                 src={event.image_url}
                 alt={event.title}
-                className="w-full h-96 object-cover rounded-xl"
+                className="w-full h-64 sm:h-96 object-cover rounded-xl"
               />
-              <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded text-sm font-medium">
+              <div className="absolute top-3 left-3 bg-blue-500 text-white px-2 py-1 rounded text-xs sm:text-sm font-medium">
                 {event.platform}
               </div>
-              <div className="absolute top-4 right-4 bg-yellow-400 text-white px-3 py-1 rounded text-sm font-medium">
+              <div className="absolute top-3 right-3 bg-yellow-400 text-white px-2 py-1 rounded text-xs sm:text-sm font-medium">
                 ⭐ {event.rating}
               </div>
             </div>

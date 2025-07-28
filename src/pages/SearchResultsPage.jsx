@@ -242,7 +242,20 @@ const SearchResultsPage = () => {
           </button>
         </div>
         
-        <div className="flex items-center justify-between mb-8">
+        {/* Mobile Header */}
+        <div className="block sm:hidden mb-6">
+          <div className="text-center">
+            <h1 className="text-xl font-bold mb-1 text-text">
+              {language === 'TR' ? 'Arama' : 'Search'}
+            </h1>
+            <p className="text-sm text-text/70">
+              {filteredEvents.length} {language === 'TR' ? 'sonuç' : 'results'}
+            </p>
+          </div>
+        </div>
+
+        {/* Desktop Header */}
+        <div className="hidden sm:flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2 text-text">
               {language === 'TR' ? 'Arama Sonuçları' : 'Search Results'}
