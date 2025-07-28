@@ -6,6 +6,9 @@ import logo from '../assets/Logo.png'
 import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
 import { EventService } from '../services/eventService'
+import MobileHeader from '../components/MobileHeader'
+import MobileEventCard from '../components/MobileEventCard'
+import MobileFilters from '../components/MobileFilters'
 import { 
   Search, 
   Calendar, 
@@ -23,7 +26,10 @@ import {
   Star,
   Clock,
   Users,
-  Map
+  Map,
+  Filter,
+  Grid,
+  List
 } from 'lucide-react'
 
 const HomePage = () => {
@@ -35,6 +41,9 @@ const HomePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
   const [showMap, setShowMap] = useState(false)
   const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'price'
+  const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
   const navigate = useNavigate()
 
   // Dark mode effect - no longer needed
@@ -154,8 +163,20 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary border-b border-primary/20 shadow-sm">
+      {/* Mobile Header */}
+      <div className="block sm:hidden">
+        <MobileHeader
+          onSearchClick={() => setShowFilters(!showFilters)}
+          onMenuClick={() => setShowMobileMenu(!showMobileMenu)}
+          logo={getLogo()}
+          language={language}
+          toggleLanguage={toggleLanguage}
+        />
+        <div className="h-24"></div> {/* Spacer for fixed header */}
+      </div>
+
+      {/* Desktop Header */}
+      <header className="hidden sm:block bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-4 sm:gap-0">
             {/* Logo and Brand - Left Section */}
@@ -326,78 +347,143 @@ const HomePage = () => {
               <h3 className="text-xl font-semibold mb-2 text-text">{language === 'TR' ? 'Etkinlikler yükleniyor...' : 'Loading events...'}</h3>
             </div>
           ) : filteredEvents.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {filteredEvents.map((event) => (
-                <div key={event.id} className="rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
-                  {/* Event Image */}
-                  <div className="relative group">
-                    <img
-                      src={event.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop'}
-                      alt={event.title}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute top-3 left-3 bg-primary text-white px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-                      {event.platform}
-                    </div>
-                    <button 
-                      onClick={() => setShowMap(true)}
-                      className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-white"
-                      title="Show on map"
+            <>
+              {/* Mobile View Controls */}
+              <div className="block sm:hidden mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-2 rounded-lg transition-colors ${
+                        viewMode === 'grid' 
+                          ? 'bg-primary text-white' 
+                          : 'bg-gray-100 text-text/60'
+                      }`}
                     >
-                      <MapPin size={16} className="text-gray-700" />
+                      <Grid size={20} />
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 rounded-lg transition-colors ${
+                        viewMode === 'list' 
+                          ? 'bg-primary text-white' 
+                          : 'bg-gray-100 text-text/60'
+                      }`}
+                    >
+                      <List size={20} />
                     </button>
                   </div>
+                  
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-primary text-white text-sm"
+                  >
+                    <Filter size={16} />
+                    <span>{language === 'TR' ? 'Filtreler' : 'Filters'}</span>
+                  </button>
+                </div>
+              </div>
 
-                  {/* Event Content */}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors text-text">{event.title}</h3>
-                    <p className="text-sm mb-4 line-clamp-2 text-text/70">{event.description}</p>
-                    
-                    {/* Event Details */}
-                    <div className="space-y-3 mb-4">
-                      <div className="flex items-center text-sm text-text/60">
-                        <Calendar size={14} className="mr-2 text-primary" />
-                        <span className="font-medium">{event.date} • {event.time}</span>
+              {/* Mobile Event Cards */}
+              <div className="block sm:hidden">
+                <div className="space-y-4">
+                  {filteredEvents.map((event) => (
+                    <MobileEventCard
+                      key={event.id}
+                      event={event}
+                      onEventClick={() => handleEventDetail(event.id)}
+                      onShare={(event) => {
+                        if (navigator.share) {
+                          navigator.share({
+                            title: event.title,
+                            text: event.description,
+                            url: window.location.href
+                          })
+                        } else {
+                          navigator.clipboard.writeText(window.location.href)
+                          alert(language === 'TR' ? 'Link kopyalandı!' : 'Link copied!')
+                        }
+                      }}
+                      language={language}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop Event Cards */}
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {filteredEvents.map((event) => (
+                  <div key={event.id} className="rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
+                    {/* Event Image */}
+                    <div className="relative group">
+                      <img
+                        src={event.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop'}
+                        alt={event.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute top-3 left-3 bg-primary text-white px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
+                        {event.platform}
                       </div>
-                      <div className="flex items-center text-sm text-text/60">
-                        <MapPin size={14} className="mr-2 text-text-accent" />
-                        <span className="font-medium">{event.venue}, {event.city}</span>
-                      </div>
+                      <button 
+                        onClick={() => setShowMap(true)}
+                        className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-white"
+                        title="Show on map"
+                      >
+                        <MapPin size={16} className="text-gray-700" />
+                      </button>
                     </div>
 
-                    {/* Category Tags */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="px-2 py-1 rounded text-xs bg-primary/10 text-primary">
-                        {event.category}
-                      </span>
-                      {event.category === 'music' && (
-                        <>
-                          <span className="bg-text-accent/10 text-text-accent px-2 py-1 rounded text-xs">pop</span>
-                          <span className="bg-primary-light/10 text-primary-light px-2 py-1 rounded text-xs">turkish</span>
-                        </>
-                      )}
-                    </div>
+                    {/* Event Content */}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors text-text">{event.title}</h3>
+                      <p className="text-sm mb-4 line-clamp-2 text-text/70">{event.description}</p>
+                      
+                      {/* Event Details */}
+                      <div className="space-y-3 mb-4">
+                        <div className="flex items-center text-sm text-text/60">
+                          <Calendar size={14} className="mr-2 text-primary" />
+                          <span className="font-medium">{event.date} • {event.time}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-text/60">
+                          <MapPin size={14} className="mr-2 text-text-accent" />
+                          <span className="font-medium">{event.venue}, {event.city}</span>
+                        </div>
+                      </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex space-x-3">
-                      <button
-                        onClick={() => handleEventDetail(event.id)}
-                        className={`flex-1 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700'}`}
-                      >
-                        Details
-                      </button>
-                      <button
-                        onClick={() => window.open(event.url, '_blank')}
-                        className="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
-                      >
-                        Buy Ticket
-                      </button>
+                      {/* Category Tags */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="px-2 py-1 rounded text-xs bg-primary/10 text-primary">
+                          {event.category}
+                        </span>
+                        {event.category === 'music' && (
+                          <>
+                            <span className="bg-text-accent/10 text-text-accent px-2 py-1 rounded text-xs">pop</span>
+                            <span className="bg-primary-light/10 text-primary-light px-2 py-1 rounded text-xs">turkish</span>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={() => handleEventDetail(event.id)}
+                          className={`flex-1 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700'}`}
+                        >
+                          Details
+                        </button>
+                        <button
+                          onClick={() => window.open(event.url, '_blank')}
+                          className="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                          Buy Ticket
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           ) : (
             <div className="text-center py-12">
               <div className="flex justify-center mb-4">
@@ -486,6 +572,17 @@ const HomePage = () => {
           </div>
         </div>
       )}
+
+      {/* Mobile Filters */}
+      <MobileFilters
+        isOpen={showFilters}
+        onClose={() => setShowFilters(false)}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        language={language}
+      />
     </div>
   )
 }
