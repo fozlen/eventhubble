@@ -287,13 +287,7 @@ const BlogDetailPage = () => {
               {blogPost.excerpt}
             </p>
 
-            {/* Author */}
-            <div className="flex items-center space-x-2 mb-6">
-              <User className="h-4 w-4 text-text/50" />
-              <span className="text-sm text-text/70">
-                {language === 'TR' ? 'Yazar' : 'By'} {blogPost.author}
-              </span>
-            </div>
+
 
             {/* Tags */}
             {blogPost.tags && blogPost.tags.length > 0 && (
