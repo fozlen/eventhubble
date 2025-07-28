@@ -28,8 +28,12 @@ const WorldNewsPage = () => {
     const loadBlogPosts = () => {
       try {
         const storedPosts = localStorage.getItem('blogPosts')
+        console.log('🔍 Stored posts:', storedPosts)
+        
         if (storedPosts) {
           const posts = JSON.parse(storedPosts)
+          console.log('📝 Parsed posts:', posts)
+          
           // Transform posts to match the expected format with localization
           const transformedPosts = posts.map(post => ({
             id: post.id,
@@ -44,8 +48,10 @@ const WorldNewsPage = () => {
             image: post.image,
             url: post.url
           }))
+          console.log('✨ Transformed posts:', transformedPosts)
           setNewsData(transformedPosts)
         } else {
+          console.log('❌ No blog posts found in localStorage')
           // Blog yazısı yok, boş array kullan
           setNewsData([])
         }

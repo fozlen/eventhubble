@@ -45,6 +45,7 @@ const MobileNavigation = ({ language = "EN" }) => {
             return (
               <button
                 key={item.path}
+                type="button"
                 onClick={() => handleNavigation(item.path)}
                 className={`flex flex-col items-center space-y-1 p-3 transition-all duration-200 flex-1 ${
                   isActive 
