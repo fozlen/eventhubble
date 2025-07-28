@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 // Image paths for API compatibility
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
+const API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api'
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
 const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
