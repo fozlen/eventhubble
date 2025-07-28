@@ -1,246 +1,108 @@
-# EventHubble 🌟
+# EventHubble 🎫
 
-**Your Global Event Discovery Platform**
+Turkey's smart event discovery platform - Konser, tiyatro, spor, sanat etkinliklerini keşfedin!
 
-EventHubble is a modern, responsive web application that helps users discover and explore events worldwide. Built with React, Vite, and Tailwind CSS, it provides an intuitive interface for browsing events, searching with advanced filters, and accessing detailed event information.
+## 🚀 Production URLs
 
-## ✨ Features
+- **Frontend:** https://eventhubble.netlify.app
+- **Backend API:** https://eventhubble.onrender.com
+- **API Health:** https://eventhubble.onrender.com/health
+- **API Status:** https://eventhubble.onrender.com/api/status
 
-### 🎯 Core Functionality
-- **Global Event Discovery**: Browse events from around the world
-- **Advanced Search**: Filter by category, date, location, and keywords
-- **Event Details**: Comprehensive event information with pricing and booking
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+## 📁 Project Structure
 
-### 🌙 Dark/Light Theme
-- **Theme Switching**: Toggle between dark and light modes
-- **Theme-Aware Logos**: Automatic logo adaptation based on theme
-- **Smooth Transitions**: Elegant theme switching animations
+```
+EventHubble/
+├── src/                    # Frontend source code
+│   ├── components/         # React components
+│   ├── pages/             # Page components
+│   ├── services/          # API services
+│   └── ...
+├── backend/               # Backend API
+│   ├── uploadServer.js    # Main server
+│   ├── database.js        # MongoDB connection
+│   └── package.json       # Backend dependencies
+├── docs/                  # Documentation
+│   ├── production-checklist.md
+│   ├── database-setup.md
+│   └── ...
+├── scripts/               # Deployment scripts
+│   └── deploy.sh
+├── public/                # Static assets
+├── dist/                  # Build output
+└── package.json           # Frontend dependencies
+```
 
-### 🌍 Multi-Language Support
-- **Bilingual Interface**: Turkish (TR) and English (EN)
-- **Dynamic Content**: All text content adapts to selected language
-- **Localized Dates**: Date formatting based on language preference
-
-### 🔍 Advanced Search & Filtering
-- **Smart Search**: Search across event titles, descriptions, venues, and categories
-- **Category Filters**: Music, Sports, Art, Film, Technology, and more
-- **Date Range Filtering**: Filter by today, this week, this month, or custom ranges
-- **Sorting Options**: Sort by date, name, price, or rating
-
-### 📱 User Experience
-- **Modern UI**: Clean, intuitive interface with Tailwind CSS
-- **Interactive Elements**: Hover effects, smooth animations, and responsive feedback
-- **Accessibility**: Keyboard navigation and screen reader support
-- **Performance**: Optimized loading and smooth interactions
-
-### 🔐 Admin Panel
-- **Secure Authentication**: Protected admin login with environment variables
-- **Blog Management**: Create, edit, and delete blog posts
-- **Content Management**: Manage categories, tags, and media
-- **Local Storage**: Blog data stored locally for fast access
-
-## 🚀 Tech Stack
+## 🛠️ Development
 
 ### Frontend
-- **React 18**: Modern React with hooks and functional components
-- **Vite**: Fast build tool and development server
-- **Tailwind CSS**: Utility-first CSS framework
-- **Lucide React**: Beautiful, customizable icons
-- **React Router**: Client-side routing
-
-### Development Tools
-- **ESLint**: Code linting and formatting
-- **PostCSS**: CSS processing
-- **Autoprefixer**: CSS vendor prefixing
-
-### Deployment
-- **Netlify**: Hosting and continuous deployment
-- **GitHub**: Version control and collaboration
-
-## 📦 Installation
-
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Setup Instructions
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/fozlen/eventhubble.git
-   cd eventhubble
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up admin credentials (optional)**
-   ```bash
-   # Copy the example environment file
-   cp .env.example .env.local
-   
-   # Edit .env.local with your admin credentials
-   VITE_ADMIN_USERNAME=your_admin_username
-   VITE_ADMIN_PASSWORD=your_admin_password
-   ```
-
-4. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open in browser**
-   Navigate to `http://localhost:5173`
-
-### Build for Production
 ```bash
-npm run build
+npm install
+npm run dev
 ```
 
-## 🔐 Admin Panel Usage
-
-### Access Admin Panel
-1. Navigate to `/admin/login` in your browser
-2. Use the credentials from your `.env.local` file
-3. Default credentials (if no .env.local):
-   - Username: `admin`
-   - Password: `eventhubble2024`
-
-### Blog Management
-- **Add New Post**: Click "Add New Post" button
-- **Edit Post**: Click "Edit" on any existing post
-- **Delete Post**: Click "Delete" to remove a post
-- **Categories**: Choose from Music, Sports, Art, Technology, Film, Theater, Festival, Other
-
-### Blog Post Fields
-- **Title**: Main headline of the blog post
-- **Excerpt**: Short description (shown in cards)
-- **Content**: Full blog post content
-- **Category**: Post category for organization
-- **Image URL**: Featured image for the post
-- **Tags**: Comma-separated tags for SEO
-
-### Security Notes
-- Admin credentials are stored in `.env.local` (not committed to git)
-- Session expires after 24 hours
-- Blog data is stored in browser localStorage
-
-## 🏗️ Project Structure
-
-```
-eventhubble/
-├── app.html                # Main application entry point
-├── src/
-│   ├── components/          # Reusable UI components
-│   │   ├── ui/             # Shadcn/ui components
-│   │   ├── EventCard.jsx   # Event display component
-│   │   └── ModernDropdowns.jsx
-│   ├── pages/              # Page components
-│   │   ├── HomePage.jsx    # Landing page
-│   │   ├── SearchResultsPage.jsx
-│   │   ├── EventDetailPage.jsx
-│   │   ├── AboutPage.jsx
-│   │   └── WorldNewsPage.jsx
-│   ├── assets/             # Static assets
-│   │   ├── eventhubble_light_transparent_logo.png
-│   │   └── eventhubble_dark_transparent_logo.png
-│   ├── hooks/              # Custom React hooks
-│   ├── lib/                # Utility functions
-│   └── services/           # API services
-├── public/                 # Public assets and favicons
-├── assets/                 # Design assets
-│   └── logos/              # Logo files and guides
-├── backend/                # Backend services
-├── backups/                # Project backups
-└── docs/                   # Documentation
+### Backend
+```bash
+cd backend
+npm install
+npm start
 ```
 
-## 🎨 Design System
+## 🚀 Deployment
 
-### Color Palette
-- **Primary Blue**: `#2563EB` - Main brand color
-- **Dark Mode**: `#0F172A` - Background
-- **Light Mode**: `#FFFFFF` - Background
-- **Accent Colors**: Various semantic colors for different states
+### Frontend (Netlify)
+- Auto-deploy from `main` branch
+- Environment variables configured in Netlify dashboard
 
-### Typography
-- **Font Family**: System fonts with fallbacks
-- **Headings**: Bold weights for hierarchy
-- **Body Text**: Regular weight for readability
+### Backend (Render.com)
+- Auto-deploy from `main` branch
+- MongoDB Atlas database connection
+- Health check: `/health`
 
-### Components
-- **Cards**: Rounded corners with subtle shadows
-- **Buttons**: Consistent styling with hover states
-- **Forms**: Clean input fields with focus states
-- **Navigation**: Responsive header and footer
+## 📚 Documentation
 
-## 🔧 Configuration
+- [Production Checklist](docs/production-checklist.md)
+- [Database Setup](docs/database-setup.md)
+- [Netlify Setup](docs/netlify-simple-setup.md)
 
-### Environment Variables
-Create a `.env` file in the root directory:
+## 🔧 Environment Variables
 
-```env
-VITE_API_URL=http://localhost:3001
-VITE_APP_NAME=EventHubble
+### Frontend (Netlify)
+```
+VITE_API_BASE_URL=https://eventhubble.onrender.com/api
+VITE_APP_ENV=production
 ```
 
-### Build Configuration
-- **Development**: `npm run dev`
-- **Production Build**: `npm run build`
-- **Preview**: `npm run preview`
-- **Linting**: `npm run lint`
+### Backend (Render.com)
+```
+NODE_ENV=production
+PORT=10000
+CORS_ORIGINS=https://eventhubble.netlify.app
+MONGODB_URI=mongodb+srv://...
+```
 
-## 📱 Responsive Design
+## 📊 API Endpoints
 
-The application is fully responsive and optimized for:
-- **Desktop**: 1024px and above
-- **Tablet**: 768px - 1023px
-- **Mobile**: 320px - 767px
+- `GET /health` - Health check
+- `GET /api/status` - API status
+- `GET /api/events` - Get events
+- `POST /upload` - Image upload
+- `GET /images/*` - Serve images
 
-## 🌐 Browser Support
+## 🎯 Features
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Commit your changes**: `git commit -m 'Add amazing feature'`
-4. **Push to the branch**: `git push origin feature/amazing-feature`
-5. **Open a Pull Request**
-
-### Development Guidelines
-- Follow the existing code style
-- Add tests for new features
-- Update documentation as needed
-- Ensure responsive design compatibility
+- ✅ Event discovery platform
+- ✅ Multi-language support (TR/EN)
+- ✅ Image upload functionality
+- ✅ Responsive design
+- ✅ Production deployment
+- ✅ MongoDB integration
+- ✅ API documentation
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **UI Components**: [Shadcn/ui](https://ui.shadcn.com/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Build Tool**: [Vite](https://vitejs.dev/)
-
-## 📞 Support
-
-For support and questions:
-- **Email**: support@eventhubble.com
-- **Issues**: [GitHub Issues](https://github.com/fozlen/eventhubble/issues)
-- **Documentation**: [Project Wiki](https://github.com/fozlen/eventhubble/wiki)
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**EventHubble** - Discover Amazing Events Worldwide 🌍✨
+**Built with ❤️ by EventHubble Team**
