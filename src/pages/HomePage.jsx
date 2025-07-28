@@ -39,6 +39,7 @@ const HomePage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
@@ -89,6 +90,7 @@ const HomePage = () => {
         if (!import.meta.env.PROD) {
           console.error('Event loading error:', error)
         }
+        setError(error.message || 'Failed to load events')
         setEvents([])
       } finally {
         setLoading(false)
