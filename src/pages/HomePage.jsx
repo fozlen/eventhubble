@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 import newLogo from '../assets/eventhubble_new_logo.png'
 import logo from '../assets/Logo.png'
 import logoWithoutBg from '../assets/Logo w_out background.png'
@@ -26,32 +27,19 @@ import {
 } from 'lucide-react'
 
 const HomePage = () => {
+  const { language, toggleLanguage } = useLanguage()
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
   const [showMap, setShowMap] = useState(false)
-  const [language, setLanguage] = useState('EN')
   const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'price'
   const navigate = useNavigate()
 
   // Dark mode effect - no longer needed
   useEffect(() => {
     document.documentElement.classList.remove('dark')
-  }, [])
-
-  // Update page title based on language
-  useEffect(() => {
-    document.title = language === 'TR' ? 'Event Hubble | Dünya Çapında Harika Etkinlikleri Keşfet' : 'Event Hubble | Discover Amazing Events Worldwide'
-  }, [language])
-
-  // Load language preference from localStorage
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language')
-    if (savedLanguage) {
-      setLanguage(savedLanguage)
-    }
   }, [])
 
   // Categories - with modern icons and dynamic counts
@@ -121,12 +109,7 @@ const HomePage = () => {
     // Single theme
   }
 
-  // Dil değiştirme
-  const toggleLanguage = () => {
-    const newLanguage = language === 'EN' ? 'TR' : 'EN'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+
 
   // Get logo
   const getLogo = () => {

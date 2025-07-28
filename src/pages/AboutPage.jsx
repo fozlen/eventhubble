@@ -8,6 +8,9 @@ import mainLogo from '../assets/MainLogo.png'
 
 const AboutPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem('language') || 'EN'
+  })
   const navigate = useNavigate()
 
   // Dark mode effect - no longer needed
@@ -15,17 +18,19 @@ const AboutPage = () => {
     document.documentElement.classList.remove('dark')
   }, [])
 
-  // Update page title
+  // Update page title based on language
   useEffect(() => {
-    document.title = 'Event Hubble | About Us'
-  }, [])
+    document.title = language === 'TR' ? 'Event Hubble | Hakkımızda' : 'Event Hubble | About Us'
+  }, [language])
 
   const toggleDarkMode = () => {
     // No dark mode anymore, this function is not used
   }
 
   const toggleLanguage = () => {
-    // No language toggle in this version
+    const newLanguage = language === 'EN' ? 'TR' : 'EN'
+    setLanguage(newLanguage)
+    localStorage.setItem('language', newLanguage)
   }
 
   const handleLogin = () => {

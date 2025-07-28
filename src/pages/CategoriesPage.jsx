@@ -29,7 +29,9 @@ const CategoriesPage = () => {
     { id: 'fashion', name: 'Fashion', description: 'Fashion shows and style events', color: '#EC4899' }
   ])
   const [events, setEvents] = useState([])
-  const [language, setLanguage] = useState('EN')
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem('language') || 'EN'
+  })
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingCategory, setEditingCategory] = useState(null)
   const [formData, setFormData] = useState({
@@ -39,14 +41,8 @@ const CategoriesPage = () => {
   })
   const navigate = useNavigate()
 
-  // Load language preference and events
+  // Load events for dynamic counts
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language')
-    if (savedLanguage) {
-      setLanguage(savedLanguage)
-    }
-
-    // Load events for dynamic counts
     const loadEvents = async () => {
       try {
         const allEvents = await EventService.getEvents()
