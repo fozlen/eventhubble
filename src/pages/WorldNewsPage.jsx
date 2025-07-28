@@ -52,8 +52,40 @@ const WorldNewsPage = () => {
           setNewsData(transformedPosts)
         } else {
           console.log('❌ No blog posts found in localStorage')
-          // Blog yazısı yok, boş array kullan
-          setNewsData([])
+          
+          // Demo data for production testing
+          const demoPosts = [
+            {
+              id: 1,
+              title_tr: 'Flamingo Republic 2025: Hırvatistan\'ın En Renkli Elektronik Müzik Festivali',
+              title_en: 'Flamingo Republic 2025: Croatia\'s Most Colorful Electronic Music Festival',
+              excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2025, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
+              excerpt_en: 'Flamingo Republic 2025, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
+              content_tr: 'Zrce Beach, Hırvatistan\'ın en popüler festival destinasyonlarından biri, 28-31 Temmuz 2025 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
+              content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
+              date: new Date('2025-07-28'),
+              category: 'Festival',
+              image: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800',
+              url: 'https://example.com/flamingo-republic-2025'
+            },
+            {
+              id: 2,
+              title_tr: 'Drake\'in Manchester Konseri İptal Edildi',
+              title_en: 'Drake\'s Manchester Concert Cancelled',
+              excerpt_tr: 'Dünyaca ünlü rap sanatçısı Drake\'in Manchester Co-op Live Arena\'daki konseri son dakika iptal edildi.',
+              excerpt_en: 'World-renowned rap artist Drake\'s concert at Manchester Co-op Live Arena has been cancelled at the last minute.',
+              content_tr: 'Drake\'in 28 Temmuz 2025 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
+              content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
+              date: new Date('2025-07-28'),
+              category: 'Music',
+              image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800',
+              url: 'https://example.com/drake-manchester-cancelled'
+            }
+          ]
+          
+          // Use demo data in production, empty array in development
+          const postsToUse = import.meta.env.PROD ? demoPosts : []
+          setNewsData(postsToUse)
         }
       } catch (error) {
         console.error('Error loading blog posts:', error)
