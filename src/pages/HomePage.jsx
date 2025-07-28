@@ -10,6 +10,7 @@ import MobileHeader from '../components/MobileHeader'
 import MobileEventCard from '../components/MobileEventCard'
 import MobileFilters from '../components/MobileFilters'
 import ModernSearchBox from '../components/ModernSearchBox'
+import MobileFooter from '../components/MobileFooter'
 import { 
   Search, 
   Calendar, 
@@ -163,7 +164,7 @@ const HomePage = () => {
   })
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 sm:pb-0">
       {/* Mobile Header */}
       <div className="block sm:hidden">
         <MobileHeader
@@ -619,6 +620,9 @@ const HomePage = () => {
         onSortChange={setSortBy}
         language={language}
       />
+
+      {/* Mobile Footer */}
+      <MobileFooter language={language} />
     </div>
   )
 }

@@ -5,6 +5,8 @@ import newLogo from '../assets/eventhubble_new_logo.png'
 import logo from '../assets/Logo.png'
 import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
+import MobileHeader from '../components/MobileHeader'
+import MobileFooter from '../components/MobileFooter'
 
 const AboutPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
@@ -44,9 +46,21 @@ const AboutPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary border-b border-primary/20 shadow-sm">
+    <div className="min-h-screen bg-background pb-20 sm:pb-0">
+      {/* Mobile Header */}
+      <div className="block sm:hidden">
+        <MobileHeader
+          onSearchClick={() => {}}
+          onMenuClick={() => {}}
+          logo={getLogo()}
+          language={language}
+          toggleLanguage={toggleLanguage}
+        />
+        <div className="h-24"></div> {/* Spacer for fixed header */}
+      </div>
+
+      {/* Desktop Header */}
+      <header className="hidden sm:block bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-4 sm:gap-0">
             {/* Logo and Brand - Left Section */}
@@ -253,6 +267,9 @@ const AboutPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* Mobile Footer */}
+      <MobileFooter language={language} />
     </div>
   )
 }
