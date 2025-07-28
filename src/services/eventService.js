@@ -28,11 +28,10 @@ export class EventService {
       return allEvents
     } catch (error) {
       console.error('❌ API Error:', error)
-      console.log('🔄 Fallback: Mock data kullanılıyor...')
-      // Fallback: Mock data + manuel etkinlikler
-      const mockEvents = this.getMockEvents()
+      console.log('🔄 Fallback: Sadece manuel etkinlikler kullanılıyor...')
+      // Fallback: Sadece manuel etkinlikler
       const manualEvents = this.getManualEvents()
-      return [...mockEvents, ...manualEvents]
+      return manualEvents
     }
   }
 
@@ -139,97 +138,5 @@ export class EventService {
     }
   }
 
-  // Mock data (gerçek API olmadığında)
-  static getMockEvents() {
-    return [
-      {
-        id: "event_1",
-        title: "The Groove Festival",
-        description: "Türkiye'nin en büyük müzik festivali, 3 gün boyunca sürecek muhteşem performanslar.",
-        date: "2025-08-15",
-        time: "18:00",
-        venue: "Küçükçiftlik Park",
-        city: "İstanbul",
-        price_min: 150,
-        price_max: 450,
-        currency: "TRY",
-        category: "müzik",
-        platform: "mobilet",
-        image_url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
-        status: "active",
-        url: "https://mobilet.com/tr/event/the-groove-festival-46834/",
-        rating: 4.2,
-        available_tickets: 1250,
-        organizer: "Groove Productions",
-        contact: "+90 212 555 0123",
-        website: "https://groovefestival.com"
-      },
-      {
-        id: "event_2", 
-        title: "Calibre Fest Bodrum - Tiësto",
-        description: "Bodrum'un en büyük elektronik müzik festivali, dünya çapında DJ'ler.",
-        date: "2025-07-20",
-        time: "22:00",
-        venue: "Bodrum Kalesi",
-        city: "Bodrum",
-        price_min: 200,
-        price_max: 600,
-        currency: "TRY",
-        category: "festival",
-        platform: "mobilet",
-        image_url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=300&fit=crop",
-        status: "active",
-        url: "https://mobilet.com/tr/event/calibre-fest-bodrum-tisto-45330/",
-        rating: 4.8,
-        available_tickets: 800,
-        organizer: "Calibre Events",
-        contact: "+90 252 555 0456",
-        website: "https://calibrefest.com"
-      },
-      {
-        id: "event_3",
-        title: "Romeo ve Juliet",
-        description: "Shakespeare'in ölümsüz eseri, modern yorumla.",
-        date: "2025-09-05",
-        time: "19:30",
-        venue: "İstanbul Devlet Tiyatrosu",
-        city: "İstanbul",
-        price_min: 60,
-        price_max: 180,
-        currency: "TRY",
-        category: "tiyatro",
-        platform: "biletinial",
-        image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
-        status: "active",
-        url: "https://biletinial.com/event/romeo-ve-juliet-2025",
-        rating: 4.5,
-        available_tickets: 150,
-        organizer: "İstanbul Devlet Tiyatrosu",
-        contact: "+90 212 555 0789",
-        website: "https://istanbuldt.gov.tr"
-      },
-      {
-        id: "event_4",
-        title: "Fenerbahçe vs Galatasaray",
-        description: "Türkiye'nin en büyük derbisi, unutulmaz atmosfer.",
-        date: "2025-10-15",
-        time: "20:00",
-        venue: "Ülker Stadyumu",
-        city: "İstanbul",
-        price_min: 200,
-        price_max: 800,
-        currency: "TRY",
-        category: "spor",
-        platform: "mobilet",
-        image_url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
-        status: "active",
-        url: "https://mobilet.com/tr/event/fenerbahce-galatasaray-2025",
-        rating: 4.9,
-        available_tickets: 5000,
-        organizer: "TFF",
-        contact: "+90 212 555 0321",
-        website: "https://tff.org"
-      }
-    ]
-  }
+
 } 

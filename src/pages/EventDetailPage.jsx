@@ -5,6 +5,7 @@ import newLogo from '../assets/eventhubble_new_logo.png'
 import logo from '../assets/Logo.png'
 import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
+import { EventService } from '../services/eventService'
 
 const EventDetailPage = () => {
   const { eventId } = useParams()
@@ -103,111 +104,13 @@ const EventDetailPage = () => {
     const loadEventDetail = async () => {
       setLoading(true)
       try {
-        // Production'da mock data kullan, development'ta backend'e bağlan
-        const isProduction = window.location.hostname !== 'localhost'
-        
-        if (isProduction) {
-          // Mock data kullan - eventId'ye göre farklı etkinlikler
-          const mockEvents = {
-            '1': {
-              id: '1',
-              title: language === 'TR' ? 'Coachella 2024 Müzik Festivali' : 'Coachella 2024 Music Festival',
-              description: language === 'TR' 
-                ? 'Bu yılın en büyük müzik festivali. Dünyaca ünlü sanatçıların performansları, eşsiz deneyimler ve unutulmaz anlar sizi bekliyor.'
-                : 'The biggest music festival of the year. World-famous artists, unique experiences and unforgettable moments await you.',
-              category: language === 'TR' ? 'Müzik' : 'Music',
-              date: '15-17 Nisan 2024',
-              time: '12:00 - 23:00',
-              venue: 'Empire Polo Club',
-              city: 'Indio, California',
-              image_url: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=600&fit=crop',
-              price_min: '350',
-              price_max: '1200',
-              rating: '4.8',
-              attendees: 125000,
-              available_tickets: 5000,
-              organizer: 'Goldenvoice',
-              contact: '+1 (555) 123-4567',
-              website: 'https://www.coachella.com',
-              platform: 'Coachella',
-              status: 'Active',
-              scraped_at: '2024-03-15T10:30:00Z',
-              url: 'https://www.coachella.com'
-            },
-            '2': {
-              id: '2',
-              title: language === 'TR' ? 'Tokyo Olimpiyat Oyunları 2024' : 'Tokyo Olympic Games 2024',
-              description: language === 'TR'
-                ? '2024 Tokyo Olimpiyat Oyunları. Dünyanın en iyi sporcularının katıldığı prestijli spor etkinliği.'
-                : '2024 Tokyo Olympic Games. A prestigious sporting event featuring the world\'s best athletes.',
-              category: language === 'TR' ? 'Spor' : 'Sports',
-              date: '26 Temmuz - 11 Ağustos 2024',
-              time: '09:00 - 22:00',
-              venue: 'Tokyo Olympic Stadium',
-              city: 'Tokyo, Japan',
-              image_url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop',
-              price_min: '50',
-              price_max: '500',
-              rating: '4.9',
-              attendees: 500000,
-              available_tickets: 15000,
-              organizer: 'Tokyo 2024 Organizing Committee',
-              contact: '+81 3-1234-5678',
-              website: 'https://tokyo2020.org',
-              platform: 'Olympics',
-              status: 'Active',
-              scraped_at: '2024-03-14T15:45:00Z',
-              url: 'https://tokyo2020.org'
-            },
-            '3': {
-              id: '3',
-              title: language === 'TR' ? 'Venedik Bienali 2024' : 'Venice Biennale 2024',
-              description: language === 'TR'
-                ? 'Dünyanın en prestijli sanat etkinliği. Çağdaş sanatın en iyi örneklerini görebileceğiniz uluslararası bienal.'
-                : 'The world\'s most prestigious art event. International biennale showcasing the best of contemporary art.',
-              category: language === 'TR' ? 'Sanat' : 'Art',
-              date: '20 Nisan - 24 Kasım 2024',
-              time: '10:00 - 18:00',
-              venue: 'Giardini della Biennale',
-              city: 'Venice, Italy',
-              image_url: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=600&fit=crop',
-              price_min: '25',
-              price_max: '150',
-              rating: '4.7',
-              attendees: 75000,
-              available_tickets: 8000,
-              organizer: 'La Biennale di Venezia',
-              contact: '+39 041 5218 828',
-              website: 'https://www.labiennale.org',
-              platform: 'Biennale',
-              status: 'Active',
-              scraped_at: '2024-03-13T12:20:00Z',
-              url: 'https://www.labiennale.org'
-            }
-          }
-          
-          const foundEvent = mockEvents[eventId]
-          if (foundEvent) {
-            // Dil değişikliğinde event bilgilerini güncelle
-            if (language === 'TR') {
-              foundEvent.title = foundEvent.title.replace('Music Festival', 'Müzik Festivali')
-                .replace('Olympic Games', 'Olimpiyat Oyunları')
-                .replace('Venice Biennale', 'Venedik Bienali')
-            } else {
-              foundEvent.title = foundEvent.title.replace('Müzik Festivali', 'Music Festival')
-                .replace('Olimpiyat Oyunları', 'Olympic Games')
-                .replace('Venedik Bienali', 'Venice Biennale')
-            }
-            setEvent(foundEvent)
-          } else {
-            setEvent(null)
-          }
+        // EventService kullanarak event detaylarını yükle
+        const eventDetail = await EventService.getEventDetails(eventId)
+        if (eventDetail) {
+          setEvent(eventDetail)
         } else {
-          // Development'ta backend'e bağlan
-          const response = await fetch('http://localhost:3001/api/events')
-          const data = await response.json()
-          const foundEvent = data.events?.find(e => e.id === eventId)
-          setEvent(foundEvent)
+          // Event bulunamadı
+          setEvent(null)
         }
       } catch (error) {
         console.error('❌ Etkinlik detay yükleme hatası:', error)

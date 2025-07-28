@@ -44,42 +44,12 @@ const BlogDetailPage = () => {
         if (post) {
           setBlogPost(post)
         } else {
-          // Fallback to sample data if not found in localStorage
-          const samplePost = {
-            id: parseInt(id),
-            title: language === 'TR' ? 'Coachella 2024 Lineup Açıklandı' : 'Coachella 2024 Lineup Announced',
-            excerpt: language === 'TR' 
-              ? 'Bu yılın en büyük müzik festivali için heyecan verici sanatçı listesi yayınlandı.'
-              : 'The exciting artist lineup for this year\'s biggest music festival has been released.',
-            content: language === 'TR' 
-              ? 'Coachella Valley Müzik ve Sanat Festivali, 2024 yılı için büyük beklenti uyandıran sanatçı listesini açıkladı. Bu yılki festival, müzik spektrumunun her yerinden sanatçıları içeren en çeşitli ve heyecan verici festival olmaya söz veriyor.\n\nAna sanatçılar arasında günümüzün en büyük müzik isimleri ve sektörde dalga yaratan yükselen sanatçılar yer alıyor. Festival, Nisan ayında iki hafta sonu boyunca gerçekleşecek ve katılımcılara güzel Kaliforniya çölünde unutulmaz bir deneyim sunacak.\n\nAna sahne performanslarına ek olarak, Coachella 2024, festival deneyimiyle özdeşleşen sanat enstalasyonları, yemek satıcıları ve interaktif deneyimler sunacak.\n\nFestival organizatörleri ayrıca 2024 için geliştirilmiş sürdürülebilirlik programları, genişletilmiş yemek seçenekleri ve geliştirilmiş erişilebilirlik özellikleri dahil olmak üzere birkaç yeni girişim açıkladı. Bu değişiklikler, festivalin kapsayıcı ve çevre dostu bir etkinlik yaratma taahhüdünü yansıtıyor.\n\nCoachella 2024 biletlerinin önümüzdeki haftalarda satışa çıkması bekleniyor ve sınırlı süre için erken kuş fiyatları mevcut. Hayranlar, bilet satışları ve ek sanatçı duyuruları hakkında güncellemeler almak için festivalin bültenine kaydolmaya teşvik ediliyor.'
-              : 'The Coachella Valley Music and Arts Festival has just announced its highly anticipated 2024 lineup. This year\'s festival promises to be one of the most diverse and exciting yet, featuring artists from across the musical spectrum.\n\nHeadliners include some of the biggest names in music today, along with emerging artists who are making waves in the industry. The festival will take place over two weekends in April, offering attendees an unforgettable experience in the beautiful California desert.\n\nIn addition to the main stage performances, Coachella 2024 will feature art installations, food vendors, and interactive experiences that have become synonymous with the festival experience.\n\nThe festival organizers have also announced several new initiatives for 2024, including enhanced sustainability programs, expanded food options, and improved accessibility features. These changes reflect the festival\'s commitment to creating an inclusive and environmentally conscious event.\n\nTickets for Coachella 2024 are expected to go on sale in the coming weeks, with early bird pricing available for a limited time. Fans are encouraged to sign up for the festival\'s newsletter to receive updates on ticket sales and additional lineup announcements.',
-            date: '2024-03-15',
-            category: language === 'TR' ? 'Müzik' : 'Music',
-            image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-            author: 'Admin',
-            tags: ['festival', 'music', 'coachella', '2024']
-          }
-          setBlogPost(samplePost)
+          // Blog yazısı bulunamadı
+          setBlogPost(null)
         }
       } else {
-        // No stored posts, use sample data
-        const samplePost = {
-          id: parseInt(id),
-          title: language === 'TR' ? 'Coachella 2024 Lineup Açıklandı' : 'Coachella 2024 Lineup Announced',
-          excerpt: language === 'TR' 
-            ? 'Bu yılın en büyük müzik festivali için heyecan verici sanatçı listesi yayınlandı.'
-            : 'The exciting artist lineup for this year\'s biggest music festival has been released.',
-          content: language === 'TR' 
-            ? 'Coachella Valley Müzik ve Sanat Festivali, 2024 yılı için büyük beklenti uyandıran sanatçı listesini açıkladı. Bu yılki festival, müzik spektrumunun her yerinden sanatçıları içeren en çeşitli ve heyecan verici festival olmaya söz veriyor.\n\nAna sanatçılar arasında günümüzün en büyük müzik isimleri ve sektörde dalga yaratan yükselen sanatçılar yer alıyor. Festival, Nisan ayında iki hafta sonu boyunca gerçekleşecek ve katılımcılara güzel Kaliforniya çölünde unutulmaz bir deneyim sunacak.\n\nAna sahne performanslarına ek olarak, Coachella 2024, festival deneyimiyle özdeşleşen sanat enstalasyonları, yemek satıcıları ve interaktif deneyimler sunacak.\n\nFestival organizatörleri ayrıca 2024 için geliştirilmiş sürdürülebilirlik programları, genişletilmiş yemek seçenekleri ve geliştirilmiş erişilebilirlik özellikleri dahil olmak üzere birkaç yeni girişim açıkladı. Bu değişiklikler, festivalin kapsayıcı ve çevre dostu bir etkinlik yaratma taahhüdünü yansıtıyor.\n\nCoachella 2024 biletlerinin önümüzdeki haftalarda satışa çıkması bekleniyor ve sınırlı süre için erken kuş fiyatları mevcut. Hayranlar, bilet satışları ve ek sanatçı duyuruları hakkında güncellemeler almak için festivalin bültenine kaydolmaya teşvik ediliyor.'
-            : 'The Coachella Valley Music and Arts Festival has just announced its highly anticipated 2024 lineup. This year\'s festival promises to be one of the most diverse and exciting yet, featuring artists from across the musical spectrum.\n\nHeadliners include some of the biggest names in music today, along with emerging artists who are making waves in the industry. The festival will take place over two weekends in April, offering attendees an unforgettable experience in the beautiful California desert.\n\nIn addition to the main stage performances, Coachella 2024 will feature art installations, food vendors, and interactive experiences that have become synonymous with the festival experience.\n\nThe festival organizers have also announced several new initiatives for 2024, including enhanced sustainability programs, expanded food options, and improved accessibility features. These changes reflect the festival\'s commitment to creating an inclusive and environmentally conscious event.\n\nTickets for Coachella 2024 are expected to go on sale in the coming weeks, with early bird pricing available for a limited time. Fans are encouraged to sign up for the festival\'s newsletter to receive updates on ticket sales and additional lineup announcements.',
-          date: '2024-03-15',
-          category: language === 'TR' ? 'Müzik' : 'Music',
-          image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-          author: 'Admin',
-          tags: ['festival', 'music', 'coachella', '2024']
-        }
-        setBlogPost(samplePost)
+        // Blog yazısı yok
+        setBlogPost(null)
       }
     } catch (error) {
       console.error('Error loading blog post:', error)

@@ -137,12 +137,12 @@ class EventScheduler {
         
         console.log(`✅ Scraping tamamlandı! ${events.length} etkinlik güncellendi.`);
       } else {
-        // Mock data kullan
-        console.log('⚠️ Gerçek scraping başarısız, mock data kullanılıyor...');
-        const mockEvents = this.getMockEvents();
-        await this.saveData(mockEvents, 'all_events.json');
-        this.updateStats(mockEvents);
-        console.log(`✅ Mock data kullanıldı! ${mockEvents.length} etkinlik güncellendi.`);
+        // Mock data kullanma, boş array kullan
+        console.log('⚠️ Gerçek scraping başarısız, boş array kullanılıyor...');
+        const emptyEvents = [];
+        await this.saveData(emptyEvents, 'all_events.json');
+        this.updateStats(emptyEvents);
+        console.log(`✅ Boş array kullanıldı! ${emptyEvents.length} etkinlik güncellendi.`);
       }
       
       this.lastScrapeTime = new Date().toISOString();
@@ -155,11 +155,11 @@ class EventScheduler {
     } catch (error) {
       console.error('❌ Scraping hatası:', error);
       
-      // Hata durumunda mock data kullan
-      console.log('⚠️ Hata nedeniyle mock data kullanılıyor...');
-      const mockEvents = this.getMockEvents();
-      await this.saveData(mockEvents, 'all_events.json');
-      this.updateStats(mockEvents);
+              // Hata durumunda boş array kullan
+        console.log('⚠️ Hata nedeniyle boş array kullanılıyor...');
+        const emptyEvents = [];
+        await this.saveData(emptyEvents, 'all_events.json');
+        this.updateStats(emptyEvents);
       await this.saveStats();
     } finally {
       this.isRunning = false;
@@ -210,13 +210,13 @@ class EventScheduler {
       const data = await fs.readFile(filepath, 'utf8');
       return JSON.parse(data);
     } catch (error) {
-      console.log('⚠️ all_events.json bulunamadı, mock data kullanılıyor...');
-      const mockEvents = this.getMockEvents();
-      return {
-        scraped_at: new Date().toISOString(),
-        total_events: mockEvents.length,
-        events: mockEvents
-      };
+              console.log('⚠️ all_events.json bulunamadı, boş array kullanılıyor...');
+        const emptyEvents = [];
+        return {
+          scraped_at: new Date().toISOString(),
+          total_events: emptyEvents.length,
+          events: emptyEvents
+        };
     }
   }
 

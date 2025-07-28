@@ -42,70 +42,8 @@ const WorldNewsPage = () => {
           }))
           setNewsData(transformedPosts)
         } else {
-          // Fallback to mock data
-          const mockData = [
-            {
-              id: 1,
-              title: language === 'TR' ? 'Coachella 2024 Lineup Açıklandı' : 'Coachella 2024 Lineup Announced',
-              excerpt: language === 'TR' 
-                ? 'Bu yılın en büyük müzik festivali için heyecan verici sanatçı listesi yayınlandı.'
-                : 'The exciting artist lineup for this year\'s biggest music festival has been released.',
-              date: language === 'TR' ? '15 Mart 2024' : 'March 15, 2024',
-              category: language === 'TR' ? 'Müzik' : 'Music',
-              image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop'
-            },
-            {
-              id: 2,
-              title: language === 'TR' ? 'Tokyo Olimpiyat Oyunları Hazırlıkları' : 'Tokyo Olympic Games Preparations',
-              excerpt: language === 'TR' 
-                ? '2024 Tokyo Olimpiyat Oyunları için son hazırlıklar tamamlanıyor.'
-                : 'Final preparations are being completed for the 2024 Tokyo Olympic Games.',
-              date: language === 'TR' ? '12 Mart 2024' : 'March 12, 2024',
-              category: language === 'TR' ? 'Spor' : 'Sports',
-              image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop'
-            },
-            {
-              id: 3,
-              title: language === 'TR' ? 'Venedik Bienali 2024 Programı' : 'Venice Biennale 2024 Program',
-              excerpt: language === 'TR' 
-                ? 'Dünyanın en prestijli sanat etkinliği için program detayları açıklandı.'
-                : 'Program details have been announced for the world\'s most prestigious art event.',
-              date: language === 'TR' ? '10 Mart 2024' : 'March 10, 2024',
-              category: language === 'TR' ? 'Sanat' : 'Art',
-              image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop'
-            },
-            {
-              id: 4,
-              title: language === 'TR' ? 'SXSW Festivali Teknoloji Trendleri' : 'SXSW Festival Technology Trends',
-              excerpt: language === 'TR' 
-                ? 'Austin\'deki festivalde öne çıkan teknoloji ve inovasyon trendleri.'
-                : 'Highlighted technology and innovation trends at the Austin festival.',
-              date: language === 'TR' ? '8 Mart 2024' : 'March 8, 2024',
-              category: language === 'TR' ? 'Teknoloji' : 'Technology',
-              image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop'
-            },
-            {
-              id: 5,
-              title: language === 'TR' ? 'Cannes Film Festivali Jüri Üyeleri' : 'Cannes Film Festival Jury Members',
-              excerpt: language === 'TR' 
-                ? 'Bu yılın Cannes Film Festivali jüri üyeleri açıklandı.'
-                : 'This year\'s Cannes Film Festival jury members have been announced.',
-              date: language === 'TR' ? '5 Mart 2024' : 'March 5, 2024',
-              category: language === 'TR' ? 'Film' : 'Film',
-              image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=300&fit=crop'
-            },
-            {
-              id: 6,
-              title: language === 'TR' ? 'FIFA Dünya Kupası 2026 Hazırlıkları' : 'FIFA World Cup 2026 Preparations',
-              excerpt: language === 'TR' 
-                ? '2026 FIFA Dünya Kupası için ev sahibi ülkelerde hazırlıklar başladı.'
-                : 'Preparations have begun in host countries for the 2026 FIFA World Cup.',
-              date: language === 'TR' ? '3 Mart 2024' : 'March 3, 2024',
-              category: language === 'TR' ? 'Spor' : 'Sports',
-              image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop'
-            }
-          ]
-          setNewsData(mockData)
+          // Blog yazısı yok, boş array kullan
+          setNewsData([])
         }
       } catch (error) {
         console.error('Error loading blog posts:', error)

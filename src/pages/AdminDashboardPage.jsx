@@ -44,44 +44,9 @@ const AdminDashboardPage = () => {
       if (storedPosts) {
         setBlogPosts(JSON.parse(storedPosts))
       } else {
-        // Initialize with sample data
-        const samplePosts = [
-          {
-            id: 1,
-            title: 'Coachella 2024 Lineup Announced',
-            excerpt: 'The exciting artist lineup for this year\'s biggest music festival has been released.',
-            content: 'The Coachella Valley Music and Arts Festival has just announced its highly anticipated 2024 lineup. This year\'s festival promises to be one of the most diverse and exciting yet, featuring artists from across the musical spectrum.\n\nHeadliners include some of the biggest names in music today, along with emerging artists who are making waves in the industry. The festival will take place over two weekends in April, offering attendees an unforgettable experience in the beautiful California desert.\n\nIn addition to the main stage performances, Coachella 2024 will feature art installations, food vendors, and interactive experiences that have become synonymous with the festival experience.',
-            date: '2024-03-15',
-            category: 'Music',
-            image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-            author: 'Admin',
-            tags: ['festival', 'music', 'coachella', '2024']
-          },
-          {
-            id: 2,
-            title: 'Istanbul Jazz Festival 2024',
-            excerpt: 'The most prestigious jazz festival in Turkey returns with world-class artists.',
-            content: 'The Istanbul Jazz Festival, one of the most prestigious music events in Turkey, is back for its 2024 edition. This year\'s festival will feature an impressive lineup of international and local jazz artists, promising unforgettable performances across various venues in Istanbul.\n\nThe festival will take place over two weeks in July, offering jazz enthusiasts the opportunity to experience world-class performances in some of Istanbul\'s most beautiful and historic venues. From intimate club performances to grand outdoor concerts, the festival caters to all jazz lovers.\n\nIn addition to the main performances, the festival will include workshops, masterclasses, and special events that celebrate the rich history and future of jazz music.',
-            date: '2024-03-20',
-            category: 'Music',
-            image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&h=300&fit=crop',
-            author: 'Admin',
-            tags: ['jazz', 'istanbul', 'festival', 'music']
-          },
-          {
-            id: 3,
-            title: 'Turkish Football League Championship Race',
-            excerpt: 'The most exciting championship race in Turkish football history continues.',
-            content: 'The Turkish Süper Lig is witnessing one of the most exciting championship races in its history. With only a few weeks remaining in the season, multiple teams are still in contention for the title, making every match crucial.\n\nThe race for the championship has been incredibly tight, with the top teams separated by just a few points. This has created an atmosphere of intense competition and excitement among football fans across Turkey.\n\nAs the season reaches its climax, fans can expect dramatic matches, unexpected results, and unforgettable moments that will be remembered for years to come.',
-            date: '2024-03-25',
-            category: 'Sports',
-            image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-            author: 'Admin',
-            tags: ['football', 'turkish league', 'championship', 'sports']
-          }
-        ]
-        setBlogPosts(samplePosts)
-        localStorage.setItem('blogPosts', JSON.stringify(samplePosts))
+        // Blog yazısı yok, boş array kullan
+        setBlogPosts([])
+        localStorage.setItem('blogPosts', JSON.stringify([]))
       }
     } catch (error) {
       console.error('Error loading blog posts:', error)

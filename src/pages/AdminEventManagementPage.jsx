@@ -45,12 +45,8 @@ const AdminEventManagementPage = () => {
       const storedEvents = localStorage.getItem('manualEvents')
       const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
       
-      // Mock etkinlikleri de ekle (eventService'den)
-      const mockEvents = EventService.getMockEvents()
-      
-      // Tüm etkinlikleri birleştir
-      const allEvents = [...manualEvents, ...mockEvents]
-      setEvents(allEvents)
+      // Sadece manuel etkinlikleri kullan
+      setEvents(manualEvents)
       
       // İlk kez yükleniyorsa localStorage'ı initialize et
       if (!storedEvents) {
@@ -75,18 +71,7 @@ const AdminEventManagementPage = () => {
   }
 
   const handleEditEvent = (event) => {
-    // Mock eventleri düzenlemeye izin ver ama yeni bir manuel event olarak kaydet
-    if (!event.id.startsWith('manual_')) {
-      // Mock event için yeni ID oluştur
-      const newEvent = {
-        ...event,
-        id: `manual_${Date.now()}`,
-        scraped_at: new Date().toISOString()
-      }
-      setEditingEvent(newEvent)
-    } else {
-      setEditingEvent(event)
-    }
+    setEditingEvent(event)
     setShowAddModal(true)
   }
 
@@ -96,15 +81,13 @@ const AdminEventManagementPage = () => {
       : 'Are you sure you want to delete this event?'
     
     if (window.confirm(confirmMessage)) {
-      // Sadece manuel etkinlikleri localStorage'dan sil
-      if (eventId.startsWith('manual_')) {
-        const storedEvents = localStorage.getItem('manualEvents')
-        const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
-        const updatedManualEvents = manualEvents.filter(event => event.id !== eventId)
-        localStorage.setItem('manualEvents', JSON.stringify(updatedManualEvents))
-      }
+      // Manuel etkinlikleri localStorage'dan sil
+      const storedEvents = localStorage.getItem('manualEvents')
+      const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
+      const updatedManualEvents = manualEvents.filter(event => event.id !== eventId)
+      localStorage.setItem('manualEvents', JSON.stringify(updatedManualEvents))
       
-      // UI'dan kaldır (hem manuel hem mock)
+      // UI'dan kaldır
       const updatedEvents = events.filter(event => event.id !== eventId)
       setEvents(updatedEvents)
     }
@@ -324,13 +307,7 @@ const AdminEventManagementPage = () => {
                         <span className="text-sm text-green-600 font-medium bg-green-100 px-2 py-1 rounded-full">
                           {event.platform}
                         </span>
-                        <span className={`text-sm font-medium px-2 py-1 rounded-full ${
-                          event.id.startsWith('manual_') 
-                            ? 'text-blue-600 bg-blue-100' 
-                            : 'text-orange-600 bg-orange-100'
-                        }`}>
-                          {event.id.startsWith('manual_') ? 'Manuel' : 'Mock'}
-                        </span>
+
                       </div>
                       <h3 className="text-lg font-semibold text-text mb-2 line-clamp-2">
                         {event.title}
