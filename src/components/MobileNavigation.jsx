@@ -34,26 +34,32 @@ const MobileNavigation = ({ language = "EN" }) => {
 
   return (
     <div className="block sm:hidden fixed bottom-4 left-4 right-4 z-40">
-      <div className="flex items-center justify-around">
-        {navItems.map((item) => {
-          const IconComponent = item.icon
-          const isActive = isActivePage(item.path)
-          
-          return (
-            <button
-              key={item.path}
-              onClick={() => handleNavigation(item.path)}
-              className={`flex flex-col items-center space-y-1 p-3 rounded-xl transition-all duration-200 ${
-                isActive 
-                  ? 'text-primary bg-white shadow-lg' 
-                  : 'text-white bg-primary/20 backdrop-blur-sm hover:bg-primary/30'
-              }`}
-            >
-              <IconComponent size={20} />
-              <span className="text-xs font-medium">{item.label}</span>
-            </button>
-          )
-        })}
+      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="flex items-center">
+          {navItems.map((item, index) => {
+            const IconComponent = item.icon
+            const isActive = isActivePage(item.path)
+            const isFirst = index === 0
+            const isLast = index === navItems.length - 1
+            
+            return (
+              <button
+                key={item.path}
+                onClick={() => handleNavigation(item.path)}
+                className={`flex flex-col items-center space-y-1 p-3 transition-all duration-200 flex-1 ${
+                  isActive 
+                    ? 'text-primary bg-primary/10' 
+                    : 'text-gray-500 hover:text-primary hover:bg-gray-50'
+                } ${
+                  !isFirst ? 'border-l border-gray-200' : ''
+                }`}
+              >
+                <IconComponent size={20} />
+                <span className="text-xs font-medium">{item.label}</span>
+              </button>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
