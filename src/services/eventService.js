@@ -3,7 +3,7 @@ const API_BASE_URL = 'http://localhost:3001/api'
 
 export class EventService {
   // Gerçek etkinlik verilerini çek
-  static async getEvents(filters = {}) {
+  static async getEvents(filters = {}, language = 'EN') {
     try {
       console.log('🔄 Backend API\'den veriler çekiliyor...')
       
@@ -22,7 +22,7 @@ export class EventService {
       console.log(`✅ ${data.events?.length || 0} etkinlik alındı`)
       
       // Manuel etkinlikleri de ekle
-      const manualEvents = this.getManualEvents()
+      const manualEvents = this.getManualEvents(language)
       const allEvents = [...(data.events || []), ...manualEvents]
       
       return allEvents
@@ -30,7 +30,7 @@ export class EventService {
       console.error('❌ API Error:', error)
       console.log('🔄 Fallback: Sadece manuel etkinlikler kullanılıyor...')
       // Fallback: Sadece manuel etkinlikler
-      const manualEvents = this.getManualEvents()
+      const manualEvents = this.getManualEvents(language)
       return manualEvents
     }
   }
@@ -85,10 +85,10 @@ export class EventService {
   }
 
   // Etkinlik detaylarını çek
-  static async getEventDetails(eventId) {
+  static async getEventDetails(eventId, language = 'EN') {
     try {
       // Önce manuel etkinliklerde ara
-      const manualEvents = this.getManualEvents()
+      const manualEvents = this.getManualEvents(language)
       const manualEvent = manualEvents.find(event => event.id === eventId)
       if (manualEvent) {
         return manualEvent
@@ -99,44 +99,137 @@ export class EventService {
       if (!response.ok) {
         throw new Error('Etkinlik detayları alınamadı')
       }
-      return await response.json()
+      
+      const event = await response.json()
+      return this.localizeEvent(event, language)
     } catch (error) {
       console.error('Event Details Error:', error)
-      return null
+      throw error
     }
   }
 
-  // Gerçek bilet satış URL'sini al
+  // Etkinliği diline göre localize et
+  static localizeEvent(event, language = 'EN') {
+    if (!event) return event
+
+    const localizedEvent = { ...event }
+    
+    // Çoklu dil alanları varsa kullan
+    if (event.title_tr && event.title_en) {
+      localizedEvent.title = language === 'TR' ? event.title_tr : event.title_en
+    }
+    
+    if (event.description_tr && event.description_en) {
+      localizedEvent.description = language === 'TR' ? event.description_tr : event.description_en
+    }
+    
+    if (event.venue_tr && event.venue_en) {
+      localizedEvent.venue = language === 'TR' ? event.venue_tr : event.venue_en
+    }
+    
+    if (event.city_tr && event.city_en) {
+      localizedEvent.city = language === 'TR' ? event.city_tr : event.city_en
+    }
+    
+    if (event.organizer_tr && event.organizer_en) {
+      localizedEvent.organizer = language === 'TR' ? event.organizer_tr : event.organizer_en
+    }
+
+    return localizedEvent
+  }
+
+  // Bilet URL'sini al
   static getTicketUrl(event) {
     if (event.url) {
       return event.url
     }
     
-    // Platform bazlı fallback URL'ler
-    const platformUrls = {
-      mobilet: 'https://mobilet.com/tr/events',
-      biletinial: 'https://biletinial.com/etkinlikler',
-      biletix: 'https://www.biletix.com/etkinlik'
-    }
+    // Platform bazlı URL oluştur
+    const platform = event.platform?.toLowerCase()
+    const eventTitle = encodeURIComponent(event.title || '')
     
-    if (event.platform && platformUrls[event.platform]) {
-      return platformUrls[event.platform]
+    switch (platform) {
+      case 'mobilet':
+        return `https://www.mobilet.com/search?q=${eventTitle}`
+      case 'biletinial':
+        return `https://www.biletinial.com/search?q=${eventTitle}`
+      case 'biletix':
+        return `https://www.biletix.com/search?q=${eventTitle}`
+      case 'passo':
+        return `https://www.passo.com.tr/search?q=${eventTitle}`
+      default:
+        return '#'
     }
-    
-    // Google arama fallback
-    return `https://www.google.com/search?q=${encodeURIComponent(event.title)} bilet`
   }
 
-  // Manuel etkinlikleri getir
-  static getManualEvents() {
+  // Manuel etkinlikleri al
+  static getManualEvents(language = 'EN') {
     try {
       const storedEvents = localStorage.getItem('manualEvents')
-      return storedEvents ? JSON.parse(storedEvents) : []
+      if (!storedEvents) return []
+      
+      const events = JSON.parse(storedEvents)
+      return events.map(event => this.localizeEvent(event, language))
     } catch (error) {
-      console.error('Manuel etkinlikler yüklenirken hata:', error)
+      console.error('Manual Events Error:', error)
       return []
     }
   }
 
+  // Manuel etkinlik ekle
+  static addManualEvent(eventData) {
+    try {
+      const events = this.getManualEvents()
+      const newEvent = {
+        ...eventData,
+        id: `manual_${Date.now()}`,
+        created_at: new Date().toISOString(),
+        source: 'manual'
+      }
+      
+      events.push(newEvent)
+      localStorage.setItem('manualEvents', JSON.stringify(events))
+      return newEvent
+    } catch (error) {
+      console.error('Add Manual Event Error:', error)
+      throw error
+    }
+  }
 
+  // Manuel etkinlik güncelle
+  static updateManualEvent(eventId, eventData) {
+    try {
+      const events = this.getManualEvents()
+      const eventIndex = events.findIndex(event => event.id === eventId)
+      
+      if (eventIndex === -1) {
+        throw new Error('Etkinlik bulunamadı')
+      }
+      
+      events[eventIndex] = {
+        ...events[eventIndex],
+        ...eventData,
+        updated_at: new Date().toISOString()
+      }
+      
+      localStorage.setItem('manualEvents', JSON.stringify(events))
+      return events[eventIndex]
+    } catch (error) {
+      console.error('Update Manual Event Error:', error)
+      throw error
+    }
+  }
+
+  // Manuel etkinlik sil
+  static deleteManualEvent(eventId) {
+    try {
+      const events = this.getManualEvents()
+      const filteredEvents = events.filter(event => event.id !== eventId)
+      localStorage.setItem('manualEvents', JSON.stringify(filteredEvents))
+      return true
+    } catch (error) {
+      console.error('Delete Manual Event Error:', error)
+      throw error
+    }
+  }
 } 

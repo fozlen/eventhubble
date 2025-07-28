@@ -397,12 +397,18 @@ const AdminEventManagementPage = () => {
 
 const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
   const [formData, setFormData] = useState({
-    title: event?.title || '',
-    description: event?.description || '',
+    title_tr: event?.title_tr || event?.title || '',
+    title_en: event?.title_en || event?.title || '',
+    description_tr: event?.description_tr || event?.description || '',
+    description_en: event?.description_en || event?.description || '',
+    venue_tr: event?.venue_tr || event?.venue || '',
+    venue_en: event?.venue_en || event?.venue || '',
+    city_tr: event?.city_tr || event?.city || '',
+    city_en: event?.city_en || event?.city || '',
+    organizer_tr: event?.organizer_tr || event?.organizer || '',
+    organizer_en: event?.organizer_en || event?.organizer || '',
     date: event?.date || '',
     time: event?.time || '',
-    venue: event?.venue || '',
-    city: event?.city || '',
     price_min: event?.price_min || '',
     price_max: event?.price_max || '',
     currency: event?.currency || 'TRY',
@@ -412,14 +418,19 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
     url: event?.url || '',
     rating: event?.rating || '',
     available_tickets: event?.available_tickets || '',
-    organizer: event?.organizer || '',
     contact: event?.contact || '',
     website: event?.website || ''
   })
 
-  const categories = language === 'TR' 
-    ? ['müzik', 'tiyatro', 'spor', 'sanat', 'gastronomi', 'festival', 'diğer']
-    : ['music', 'theater', 'sports', 'art', 'gastronomy', 'festival', 'other']
+  const categories = [
+    { value: 'müzik', label_tr: 'Müzik', label_en: 'Music' },
+    { value: 'tiyatro', label_tr: 'Tiyatro', label_en: 'Theater' },
+    { value: 'spor', label_tr: 'Spor', label_en: 'Sports' },
+    { value: 'sanat', label_tr: 'Sanat', label_en: 'Art' },
+    { value: 'gastronomi', label_tr: 'Gastronomi', label_en: 'Gastronomy' },
+    { value: 'festival', label_tr: 'Festival', label_en: 'Festival' },
+    { value: 'diğer', label_tr: 'Diğer', label_en: 'Other' }
+  ]
 
   const platforms = ['mobilet', 'biletinial', 'biletix', 'passo', 'manual']
 
@@ -441,7 +452,7 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div className="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-text">
@@ -460,247 +471,362 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
         
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Language Tabs */}
+            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+              <div className="flex-1 text-center py-2 px-4 bg-white rounded-md shadow-sm">
+                <span className="text-sm font-medium text-text">🇹🇷 Türkçe</span>
+              </div>
+              <div className="flex-1 text-center py-2 px-4 bg-gray-100 rounded-md">
+                <span className="text-sm font-medium text-text/60">🇺🇸 English</span>
+              </div>
+            </div>
+
+            {/* Turkish Content */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-text border-b pb-2">🇹🇷 Türkçe İçerik</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Etkinlik Adı (Türkçe)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.title_tr}
+                    onChange={(e) => setFormData({ ...formData, title_tr: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="Etkinlik adını girin..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Kategori
+                  </label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                  >
+                    {categories.map(category => (
+                      <option key={category.value} value={category.value}>{category.label_tr}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Etkinlik Adı' : 'Event Title'}
+                  Açıklama (Türkçe)
+                </label>
+                <textarea
+                  required
+                  value={formData.description_tr}
+                  onChange={(e) => setFormData({ ...formData, description_tr: e.target.value })}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                  placeholder="Etkinlik açıklamasını girin..."
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Mekan (Türkçe)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.venue_tr}
+                    onChange={(e) => setFormData({ ...formData, venue_tr: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="Mekan adını girin..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Şehir (Türkçe)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.city_tr}
+                    onChange={(e) => setFormData({ ...formData, city_tr: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="Şehir adını girin..."
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
+                  Organizatör (Türkçe)
                 </label>
                 <input
                   type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  value={formData.organizer_tr}
+                  onChange={(e) => setFormData({ ...formData, organizer_tr: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder={language === 'TR' ? 'Etkinlik adını girin...' : 'Enter event title...'}
+                  placeholder="Organizatör adını girin..."
                 />
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Kategori' : 'Category'}
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                >
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
+            {/* English Content */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-text border-b pb-2">🇺🇸 English Content</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Event Title (English)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.title_en}
+                    onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="Enter event title..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Category
+                  </label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                  >
+                    {categories.map(category => (
+                      <option key={category.value} value={category.value}>{category.label_en}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'Açıklama' : 'Description'}
-              </label>
-              <textarea
-                required
-                rows="3"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40 resize-none"
-                placeholder={language === 'TR' ? 'Etkinlik açıklaması...' : 'Event description...'}
-              />
-            </div>
-
-            {/* Date and Time */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Tarih' : 'Date'}
+                  Description (English)
                 </label>
-                <input
-                  type="date"
+                <textarea
                   required
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                  value={formData.description_en}
+                  onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                  placeholder="Enter event description..."
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Venue (English)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.venue_en}
+                    onChange={(e) => setFormData({ ...formData, venue_en: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="Enter venue name..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    City (English)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.city_en}
+                    onChange={(e) => setFormData({ ...formData, city_en: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="Enter city name..."
+                  />
+                </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Saat' : 'Time'}
-                </label>
-                <input
-                  type="time"
-                  required
-                  value={formData.time}
-                  onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                />
-              </div>
-            </div>
-
-            {/* Location */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Mekan' : 'Venue'}
+                  Organizer (English)
                 </label>
                 <input
                   type="text"
-                  required
-                  value={formData.venue}
-                  onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
+                  value={formData.organizer_en}
+                  onChange={(e) => setFormData({ ...formData, organizer_en: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder={language === 'TR' ? 'Mekan adı...' : 'Venue name...'}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Şehir' : 'City'}
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder={language === 'TR' ? 'Şehir...' : 'City...'}
+                  placeholder="Enter organizer name..."
                 />
               </div>
             </div>
 
-            {/* Pricing */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Minimum Fiyat' : 'Min Price'}
-                </label>
-                <input
-                  type="number"
-                  required
-                  value={formData.price_min}
-                  onChange={(e) => setFormData({ ...formData, price_min: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                  placeholder="0"
-                />
+            {/* Common Fields */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-text border-b pb-2">📅 Ortak Bilgiler / Common Information</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Tarih' : 'Date'}
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Saat' : 'Time'}
+                  </label>
+                  <input
+                    type="time"
+                    required
+                    value={formData.time}
+                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Platform' : 'Platform'}
+                  </label>
+                  <select
+                    value={formData.platform}
+                    onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                  >
+                    {platforms.map(platform => (
+                      <option key={platform} value={platform}>{platform}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Maksimum Fiyat' : 'Max Price'}
-                </label>
-                <input
-                  type="number"
-                  required
-                  value={formData.price_max}
-                  onChange={(e) => setFormData({ ...formData, price_max: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                  placeholder="0"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Minimum Fiyat' : 'Min Price'}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.price_min}
+                    onChange={(e) => setFormData({ ...formData, price_min: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                    placeholder="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Maksimum Fiyat' : 'Max Price'}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.price_max}
+                    onChange={(e) => setFormData({ ...formData, price_max: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                    placeholder="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Para Birimi' : 'Currency'}
+                  </label>
+                  <select
+                    value={formData.currency}
+                    onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                  >
+                    <option value="TRY">TRY</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Para Birimi' : 'Currency'}
-                </label>
-                <select
-                  value={formData.currency}
-                  onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                >
-                  <option value="TRY">TRY</option>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                </select>
-              </div>
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Resim URL' : 'Image URL'}
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
 
-            {/* Platform and URLs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Platform' : 'Platform'}
-                </label>
-                <select
-                  value={formData.platform}
-                  onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                >
-                  {platforms.map(platform => (
-                    <option key={platform} value={platform}>{platform}</option>
-                  ))}
-                </select>
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Bilet URL' : 'Ticket URL'}
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.url}
+                    onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="https://example.com/tickets"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Bilet URL' : 'Ticket URL'}
-                </label>
-                <input
-                  type="url"
-                  value={formData.url}
-                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder="https://..."
-                />
-              </div>
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Puan' : 'Rating'}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="5"
+                    value={formData.rating}
+                    onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                    placeholder="4.5"
+                  />
+                </div>
 
-            {/* Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Puan' : 'Rating'}
-                </label>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  max="5"
-                  value={formData.rating}
-                  onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                  placeholder="0.0"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Mevcut Bilet' : 'Available Tickets'}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.available_tickets}
+                    onChange={(e) => setFormData({ ...formData, available_tickets: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
+                    placeholder="100"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Kalan Bilet' : 'Available Tickets'}
-                </label>
-                <input
-                  type="number"
-                  value={formData.available_tickets}
-                  onChange={(e) => setFormData({ ...formData, available_tickets: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                  placeholder="0"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Organizatör' : 'Organizer'}
-                </label>
-                <input
-                  type="text"
-                  value={formData.organizer}
-                  onChange={(e) => setFormData({ ...formData, organizer: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder={language === 'TR' ? 'Organizatör adı...' : 'Organizer name...'}
-                />
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'İletişim' : 'Contact'}
-                </label>
-                <input
-                  type="tel"
-                  value={formData.contact}
-                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder="+90 212 555 0123"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'İletişim' : 'Contact'}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.contact}
+                    onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="+90 555 123 4567"
+                  />
+                </div>
               </div>
 
               <div>
@@ -712,34 +838,25 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
                   value={formData.website}
                   onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder="https://..."
+                  placeholder="https://example.com"
                 />
               </div>
             </div>
 
-            {/* Image */}
-            <div>
-              <ImageSelector
-                value={formData.image_url}
-                onChange={(imageUrl) => setFormData({ ...formData, image_url: imageUrl })}
-                placeholder={language === 'TR' ? 'Resim URL\'si girin veya listeden seçin...' : 'Enter image URL or select from dropdown...'}
-                label={language === 'TR' ? 'Resim URL' : 'Image URL'}
-              />
-            </div>
-
-            <div className="flex justify-end space-x-3 pt-6 border-t border-gray-100">
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-4 pt-6 border-t">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-3 text-text border border-gray-200 rounded-lg hover:bg-background-secondary transition-colors font-medium"
+                className="px-6 py-3 border border-gray-300 rounded-lg text-text hover:bg-gray-50 transition-colors"
               >
                 {language === 'TR' ? 'İptal' : 'Cancel'}
               </button>
               <button
                 type="submit"
-                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors font-medium shadow-lg hover:shadow-xl"
+                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
-                {event ? (language === 'TR' ? 'Etkinliği Güncelle' : 'Update Event') : (language === 'TR' ? 'Etkinlik Oluştur' : 'Create Event')}
+                {event ? (language === 'TR' ? 'Güncelle' : 'Update') : (language === 'TR' ? 'Ekle' : 'Add')}
               </button>
             </div>
           </form>
