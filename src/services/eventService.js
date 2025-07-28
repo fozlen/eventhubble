@@ -1,39 +1,9 @@
-// Event Service - Gerçek Backend API entegrasyonu
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble-api.onrender.com/api' : 'http://localhost:3001/api')
+import CacheService from './cacheService'
 
 export class EventService {
-  // Gerçek etkinlik verilerini çek
+  // Gerçek etkinlik verilerini çek (cached)
   static async getEvents(filters = {}, language = 'EN') {
-    // Production'da sadece localStorage'dan manuel etkinlikler kullan
-    if (import.meta.env.PROD) {
-      const manualEvents = this.getManualEvents(language)
-      return manualEvents
-    }
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/events`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-      
-      if (!response.ok) {
-        throw new Error(`API çağrısı başarısız: ${response.status}`)
-      }
-      
-      const data = await response.json()
-      
-      // Manuel etkinlikleri de ekle
-      const manualEvents = this.getManualEvents(language)
-      const allEvents = [...(data.events || []), ...manualEvents]
-      
-      return allEvents
-    } catch (error) {
-      // Fallback: Sadece manuel etkinlikler
-      const manualEvents = this.getManualEvents(language)
-      return manualEvents
-    }
+    return CacheService.getEvents(filters, language)
   }
 
   // Backend durumunu kontrol et

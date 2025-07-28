@@ -26,19 +26,12 @@ const WorldNewsPage = () => {
     setIsDarkMode(savedDarkMode)
   }, [])
 
-  // Load blog posts
+  // Load blog posts with caching
   useEffect(() => {
-    const loadBlogPosts = () => {
+    const loadBlogPosts = async () => {
       try {
-        // Production'da sadece localStorage'dan blog posts yükle
-        const storedPosts = localStorage.getItem('blogPosts')
-        if (storedPosts) {
-          const posts = JSON.parse(storedPosts)
-          setNewsData(posts)
-        } else {
-          // Production'da boş array - sadece admin'den girilen veriler
-          setNewsData([])
-        }
+        const posts = await CacheService.getBlogPosts(language)
+        setNewsData(posts)
       } catch (error) {
         if (!import.meta.env.PROD) {
           console.error('Error loading blog posts:', error)
