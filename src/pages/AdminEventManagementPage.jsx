@@ -4,6 +4,7 @@ import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon, Tag,
 import newLogo from '../assets/eventhubble_new_logo.png'
 import logo from '../assets/Logo.png'
 import ImageSelector from '../components/ImageSelector'
+import { EventService } from '../services/eventService'
 
 const AdminEventManagementPage = () => {
   const [events, setEvents] = useState([])
@@ -40,12 +41,19 @@ const AdminEventManagementPage = () => {
 
   const loadEvents = () => {
     try {
+      // Manuel etkinlikleri yükle
       const storedEvents = localStorage.getItem('manualEvents')
-      if (storedEvents) {
-        setEvents(JSON.parse(storedEvents))
-      } else {
-        // Initialize with empty array
-        setEvents([])
+      const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
+      
+      // Mock etkinlikleri de ekle (eventService'den)
+      const mockEvents = EventService.getMockEvents()
+      
+      // Tüm etkinlikleri birleştir
+      const allEvents = [...manualEvents, ...mockEvents]
+      setEvents(allEvents)
+      
+      // İlk kez yükleniyorsa localStorage'ı initialize et
+      if (!storedEvents) {
         localStorage.setItem('manualEvents', JSON.stringify([]))
       }
     } catch (error) {
@@ -67,7 +75,18 @@ const AdminEventManagementPage = () => {
   }
 
   const handleEditEvent = (event) => {
-    setEditingEvent(event)
+    // Mock eventleri düzenlemeye izin ver ama yeni bir manuel event olarak kaydet
+    if (!event.id.startsWith('manual_')) {
+      // Mock event için yeni ID oluştur
+      const newEvent = {
+        ...event,
+        id: `manual_${Date.now()}`,
+        scraped_at: new Date().toISOString()
+      }
+      setEditingEvent(newEvent)
+    } else {
+      setEditingEvent(event)
+    }
     setShowAddModal(true)
   }
 
@@ -77,9 +96,17 @@ const AdminEventManagementPage = () => {
       : 'Are you sure you want to delete this event?'
     
     if (window.confirm(confirmMessage)) {
+      // Sadece manuel etkinlikleri localStorage'dan sil
+      if (eventId.startsWith('manual_')) {
+        const storedEvents = localStorage.getItem('manualEvents')
+        const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
+        const updatedManualEvents = manualEvents.filter(event => event.id !== eventId)
+        localStorage.setItem('manualEvents', JSON.stringify(updatedManualEvents))
+      }
+      
+      // UI'dan kaldır (hem manuel hem mock)
       const updatedEvents = events.filter(event => event.id !== eventId)
       setEvents(updatedEvents)
-      localStorage.setItem('manualEvents', JSON.stringify(updatedEvents))
     }
   }
 
@@ -220,7 +247,7 @@ const AdminEventManagementPage = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center">
               <div className="p-3 bg-primary/10 rounded-lg">
@@ -256,15 +283,27 @@ const AdminEventManagementPage = () => {
               </div>
             </div>
           </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="flex items-center">
+              <div className="p-3 bg-orange-500/10 rounded-lg">
+                <FileText className="h-6 w-6 text-orange-500" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Manuel Etkinlik' : 'Manual Events'}</p>
+                <p className="text-2xl font-bold text-text">{events.filter(e => e.id.startsWith('manual_')).length}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Events Grid */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-text">
-              {language === 'TR' ? 'Manuel Etkinlikler' : 'Manual Events'}
-            </h2>
-          </div>
+                  <div className="px-6 py-4 border-b border-gray-100">
+          <h2 className="text-xl font-semibold text-text">
+            {language === 'TR' ? 'Tüm Etkinlikler' : 'All Events'}
+          </h2>
+        </div>
           
           {events.length > 0 ? (
             <div className="divide-y divide-gray-100">
@@ -284,6 +323,13 @@ const AdminEventManagementPage = () => {
                         </span>
                         <span className="text-sm text-green-600 font-medium bg-green-100 px-2 py-1 rounded-full">
                           {event.platform}
+                        </span>
+                        <span className={`text-sm font-medium px-2 py-1 rounded-full ${
+                          event.id.startsWith('manual_') 
+                            ? 'text-blue-600 bg-blue-100' 
+                            : 'text-orange-600 bg-orange-100'
+                        }`}>
+                          {event.id.startsWith('manual_') ? 'Manuel' : 'Mock'}
                         </span>
                       </div>
                       <h3 className="text-lg font-semibold text-text mb-2 line-clamp-2">
@@ -337,7 +383,7 @@ const AdminEventManagementPage = () => {
             <div className="text-center py-12">
               <Calendar className="mx-auto h-12 w-12 text-text/30" />
               <h3 className="mt-4 text-lg font-medium text-text">
-                {language === 'TR' ? 'Henüz manuel etkinlik yok' : 'No manual events yet'}
+                {language === 'TR' ? 'Henüz etkinlik yok' : 'No events yet'}
               </h3>
               <p className="mt-2 text-text/60">
                 {language === 'TR' 
