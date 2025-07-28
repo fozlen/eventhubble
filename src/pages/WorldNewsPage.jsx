@@ -62,20 +62,20 @@ const WorldNewsPage = () => {
               content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
               date: new Date('2025-07-28'),
               category: 'Festival',
-              image: '/src/assets/eventhubble_new_logo.png',
-              url: 'https://example.com/flamingo-republic-2025'
-            },
-            {
-              id: 2,
-              title_tr: 'Drake\'in Manchester Konseri İptal Edildi',
-              title_en: 'Drake\'s Manchester Concert Cancelled',
-              excerpt_tr: 'Dünyaca ünlü rap sanatçısı Drake\'in Manchester Co-op Live Arena\'daki konseri son dakika iptal edildi.',
-              excerpt_en: 'World-renowned rap artist Drake\'s concert at Manchester Co-op Live Arena has been cancelled at the last minute.',
-              content_tr: 'Drake\'in 28 Temmuz 2025 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
-              content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
-              date: new Date('2025-07-28'),
-              category: 'Music',
-              image: '/src/assets/Logo.png',
+                          image: '/assets/eventhubble_new_logo.png',
+            url: 'https://example.com/flamingo-republic-2025'
+          },
+          {
+            id: 2,
+            title_tr: 'Drake\'in Manchester Konseri İptal Edildi',
+            title_en: 'Drake\'s Manchester Concert Cancelled',
+            excerpt_tr: 'Dünyaca ünlü rap sanatçısı Drake\'in Manchester Co-op Live Arena\'daki konseri son dakika iptal edildi.',
+            excerpt_en: 'World-renowned rap artist Drake\'s concert at Manchester Co-op Live Arena has been cancelled at the last minute.',
+            content_tr: 'Drake\'in 28 Temmuz 2025 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
+            content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
+            date: new Date('2025-07-28'),
+            category: 'Music',
+            image: '/assets/Logo.png',
               url: 'https://example.com/drake-manchester-cancelled'
             }
           ]
@@ -96,7 +96,7 @@ const WorldNewsPage = () => {
             content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
             date: new Date('2025-07-28'),
             category: 'Festival',
-                          image: '/src/assets/eventhubble_new_logo.png',
+                                      image: '/assets/eventhubble_new_logo.png',
             url: 'https://example.com/flamingo-republic-2025'
           },
           {
@@ -109,7 +109,7 @@ const WorldNewsPage = () => {
             content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
             date: new Date('2025-07-28'),
             category: 'Music',
-                          image: '/src/assets/Logo.png',
+            image: '/assets/Logo.png',
             url: 'https://example.com/drake-manchester-cancelled'
           }
         ]
