@@ -420,10 +420,6 @@ const HomePage = () => {
                         <MapPin size={14} className="mr-2 text-text-accent" />
                         <span className="font-medium">{event.venue}, {event.city}</span>
                       </div>
-                      <div className="flex items-center text-sm text-text/60">
-                        <Users size={14} className="mr-2 text-primary-light" />
-                        <span className="font-medium">{event.attendees?.toLocaleString()} attending</span>
-                      </div>
                     </div>
 
                     {/* Category Tags */}

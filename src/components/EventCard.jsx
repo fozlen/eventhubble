@@ -162,30 +162,16 @@ export function EventCard({ event, onDetails, onBuyTicket, language = 'tr' }) {
         {/* Event Info */}
         <div className="space-y-2 mb-4">
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
+            <span className="truncate">{formatDate(event.date)} • {formatTime(event.time)}</span>
+          </div>
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
             <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
             <span className="truncate">{event.venue}, {event.city}</span>
           </div>
         </div>
 
-        {/* Price */}
-        <div className="mb-4">
-          {event.price_min && event.price_max ? (
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                  {event.price_min}₺ - {event.price_max}₺
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {t('from')} {event.price_min}₺
-                </p>
-              </div>
-            </div>
-          ) : (
-            <p className="text-lg font-bold text-green-600 dark:text-green-400">
-              {t('free')}
-            </p>
-          )}
-        </div>
+
 
         {/* Action Buttons */}
         <div className="flex space-x-3">

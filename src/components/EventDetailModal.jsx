@@ -75,27 +75,13 @@ export function EventDetailModal({ event, isOpen, onClose, onBuyTicket }) {
                     <p className="text-sm text-gray-600">{event.city}</p>
                   </div>
                 </div>
-
-                <div className="flex items-center space-x-3">
-                  <Users className="h-5 w-5 text-gray-500" />
-                  <div>
-                    <p className="font-medium">{event.available_tickets} bilet kaldı</p>
-                  </div>
-                </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Bilet Bilgileri</h3>
+              <h3 className="text-lg font-semibold">Etkinlik Bilgileri</h3>
               
               <div className="space-y-3">
-                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600">Fiyat Aralığı</p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {event.price_min}₺ - {event.price_max}₺
-                  </p>
-                </div>
-
                 <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
                   <p className="text-sm text-gray-600">Kategori</p>
                   <Badge variant="secondary" className="mt-1">

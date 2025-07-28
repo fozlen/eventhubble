@@ -470,7 +470,7 @@ const SearchResultsPage = () => {
                     </div>
 
                     {/* Event Info Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                       <div className="flex items-center">
                         <Calendar className="mr-2 text-primary" size={16} />
                         <div>
@@ -490,38 +490,14 @@ const SearchResultsPage = () => {
                             {language === 'TR' ? 'Konum' : 'Location'}
                           </p>
                           <p className="text-sm text-text">
-                            {event.city}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        <Users className="mr-2 text-primary" size={16} />
-                        <div>
-                          <p className="text-xs font-medium text-text/70">
-                            {language === 'TR' ? 'Katılımcı' : 'Attendees'}
-                          </p>
-                          <p className="text-sm text-text">
-                            {event.attendees?.toLocaleString() || 'N/A'}
+                            {event.venue}, {event.city}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Price and Actions */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        {event.price_min && event.price_max ? (
-                          <div className={`text-lg font-bold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
-                            {event.price_min}₺ - {event.price_max}₺
-                          </div>
-                        ) : (
-                          <div className={`text-lg font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {language === 'TR' ? 'Fiyat belirtilmemiş' : 'Price not specified'}
-                          </div>
-                        )}
-                      </div>
-                      
+                    {/* Actions */}
+                    <div className="flex items-center justify-end">
                       <div className="flex items-center space-x-3">
                         <button
                           onClick={() => handleEventDetail(event.id)}
@@ -612,6 +588,47 @@ const SearchResultsPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* Map Modal */}
+      {showMap && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="rounded-xl p-6 max-w-2xl w-full mx-4 bg-white">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-text">
+                {language === 'TR' ? 'Etkinlik Konumları' : 'Event Locations'}
+              </h3>
+              <button 
+                onClick={() => setShowMap(false)}
+                className="text-text/50 hover:text-text"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="rounded-lg p-4 h-64 flex items-center justify-center bg-background-secondary">
+              <div className="text-center">
+                <Map size={48} className="text-text/50 mx-auto mb-2" />
+                <p className="text-text/70">
+                  {language === 'TR' ? 'İnteraktif harita yakında!' : 'Interactive map coming soon!'}
+                </p>
+                <p className="text-sm mt-1 text-text/60">
+                  {language === 'TR' ? 'Google Maps entegrasyonu üzerinde çalışıyoruz' : 'We\'re working on integrating Google Maps'}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 space-y-2">
+              {filteredEvents.map(event => (
+                <div key={event.id} className="flex items-center space-x-3 p-2 hover:bg-background-secondary rounded">
+                  <MapPin size={16} className="text-text-accent" />
+                  <div>
+                    <p className="font-medium text-text">{event.title}</p>
+                    <p className="text-sm text-text/60">{event.venue}, {event.city}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
