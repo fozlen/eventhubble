@@ -173,7 +173,7 @@ const HomePage = () => {
       {/* Mobile Header */}
       <div className="block sm:hidden">
         <MobileHeader
-          onSearchClick={() => setShowFilters(!showFilters)}
+          onSearchClick={() => {}} // Disable search click for now
           onMenuClick={() => setShowMobileMenu(!showMobileMenu)}
           logo={getLogo()}
           language={language}

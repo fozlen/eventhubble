@@ -1,5 +1,5 @@
 // Event Service - Gerçek Backend API entegrasyonu
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? null : 'http://localhost:3001/api')
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble-api.onrender.com/api' : 'http://localhost:3001/api')
 
 export class EventService {
   // Gerçek etkinlik verilerini çek

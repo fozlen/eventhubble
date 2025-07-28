@@ -3,13 +3,53 @@ const multer = require('multer')
 const cors = require('cors')
 const path = require('path')
 const fs = require('fs-extra')
+const database = require('./database')
 
 const app = express()
 const PORT = process.env.PORT || 3001
 
-// CORS ayarları
+// Database bağlantısını başlat
+async function startServer() {
+  try {
+    // Database bağlantısını dene
+    try {
+      await database.connect()
+      console.log('✅ MongoDB bağlantısı başarılı')
+    } catch (dbError) {
+      console.warn('⚠️  MongoDB bağlantısı başarısız, server database olmadan çalışacak')
+      console.warn('   Hata:', dbError.message)
+    }
+    
+    console.log('🚀 Server başlatılıyor...')
+    
+    app.listen(PORT, () => {
+      console.log(`✅ Server ${PORT} portunda çalışıyor`)
+      console.log(`🌐 Health check: http://localhost:${PORT}/health`)
+    })
+  } catch (error) {
+    console.error('❌ Server başlatma hatası:', error)
+    process.exit(1)
+  }
+}
+
+// Security headers middleware
+app.use((req, res, next) => {
+  // X-Frame-Options header'ı ekle
+  res.setHeader('X-Frame-Options', 'DENY')
+  // Diğer güvenlik header'ları
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-XSS-Protection', '1; mode=block')
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  next()
+})
+
+// CORS ayarları - Production için dinamik
+const corsOrigins = process.env.CORS_ORIGINS 
+  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:5173', 'http://localhost:3000', 'https://eventhubble.netlify.app']
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://eventhubble.netlify.app'],
+  origin: corsOrigins,
   credentials: true
 }))
 
@@ -50,6 +90,152 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Upload server is running' })
 })
 
+// API Routes
+app.get('/api/status', async (req, res) => {
+  try {
+    let stats = null
+    if (database.isConnected) {
+      try {
+        stats = await database.getStats()
+      } catch (dbError) {
+        console.warn('Database stats error:', dbError.message)
+      }
+    }
+    
+    res.json({ 
+      status: 'OK', 
+      message: 'EventHubble API is running',
+      version: '1.0.0',
+      environment: process.env.NODE_ENV || 'development',
+      database: database.isConnected ? 'connected' : 'disconnected',
+      stats: stats || { totalEvents: 0, lastUpdate: new Date() }
+    })
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.get('/api/events', async (req, res) => {
+  try {
+    if (!database.isConnected) {
+      return res.json({ 
+        events: [],
+        total: 0,
+        limit: 50,
+        skip: 0,
+        message: 'Database not connected - using fallback data'
+      })
+    }
+    
+    const { category, city, platform, limit = 50, skip = 0 } = req.query
+    
+    // Filter oluştur
+    const filters = {}
+    if (category) filters.category = category
+    if (city) filters.city = { $regex: city, $options: 'i' }
+    if (platform) filters.platform = platform
+    
+    const events = await database.getEvents(filters)
+    const total = events.length
+    
+    // Pagination
+    const paginatedEvents = events.slice(skip, skip + parseInt(limit))
+    
+    res.json({ 
+      events: paginatedEvents,
+      total: total,
+      limit: parseInt(limit),
+      skip: parseInt(skip),
+      message: 'Events retrieved successfully'
+    })
+  } catch (error) {
+    console.error('Events API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.get('/api/events/:id', async (req, res) => {
+  try {
+    const event = await database.getEventById(req.params.id)
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' })
+    }
+    res.json(event)
+  } catch (error) {
+    console.error('Event Detail API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.post('/api/events', async (req, res) => {
+  try {
+    const result = await database.createEvent(req.body)
+    res.status(201).json({
+      success: true,
+      message: 'Event created successfully',
+      eventId: result.insertedId
+    })
+  } catch (error) {
+    console.error('Create Event API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.put('/api/events/:id', async (req, res) => {
+  try {
+    const result = await database.updateEvent(req.params.id, req.body)
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'Event not found' })
+    }
+    res.json({
+      success: true,
+      message: 'Event updated successfully'
+    })
+  } catch (error) {
+    console.error('Update Event API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.delete('/api/events/:id', async (req, res) => {
+  try {
+    const result = await database.deleteEvent(req.params.id)
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: 'Event not found' })
+    }
+    res.json({
+      success: true,
+      message: 'Event deleted successfully'
+    })
+  } catch (error) {
+    console.error('Delete Event API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.get('/api/stats', async (req, res) => {
+  try {
+    const stats = await database.getStats()
+    res.json(stats)
+  } catch (error) {
+    console.error('Stats API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.post('/api/scrape', async (req, res) => {
+  try {
+    // Scraping işlemi burada yapılacak
+    res.json({ 
+      success: true,
+      message: 'Scraping triggered successfully'
+    })
+  } catch (error) {
+    console.error('Scraping API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
 // Image upload endpoint
 app.post('/upload', upload.single('image'), async (req, res) => {
   try {
@@ -63,9 +249,9 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     const fileSize = req.file.size
     const mimeType = req.file.mimetype
 
-    // CDN URL'ini oluştur (production'da gerçek CDN URL'i kullanılacak)
-    const cdnUrl = process.env.NODE_ENV === 'production' 
-      ? `https://cdn.eventhubble.com/images/${fileName}`
+    // Image URL'ini oluştur (CDN olmadan direkt API'den serve et)
+    const imageUrl = process.env.NODE_ENV === 'production' 
+      ? `https://eventhubble-api.onrender.com/images/${fileName}`
       : `http://localhost:${PORT}/images/${fileName}`
 
     // Başarılı response
@@ -77,7 +263,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
         originalName: req.file.originalname,
         fileSize: fileSize,
         mimeType: mimeType,
-        cdnUrl: cdnUrl,
+        imageUrl: imageUrl,
         localPath: filePath
       }
     })
@@ -106,11 +292,9 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' })
 })
 
-// Server'ı başlat
-app.listen(PORT, () => {
-  console.log(`🚀 Upload server running on port ${PORT}`)
-  console.log(`📁 Uploads directory: ${uploadsDir}`)
-  console.log(`🌐 Health check: http://localhost:${PORT}/health`)
-})
+module.exports = app
 
-module.exports = app 
+// Server'ı başlat
+if (require.main === module) {
+  startServer()
+} 

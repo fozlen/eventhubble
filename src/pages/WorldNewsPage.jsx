@@ -62,7 +62,7 @@ const WorldNewsPage = () => {
               content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
               date: new Date('2025-07-28'),
               category: 'Festival',
-              image: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800',
+              image: '/src/assets/eventhubble_new_logo.png',
               url: 'https://example.com/flamingo-republic-2025'
             },
             {
@@ -75,7 +75,7 @@ const WorldNewsPage = () => {
               content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
               date: new Date('2025-07-28'),
               category: 'Music',
-              image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800',
+              image: '/src/assets/Logo.png',
               url: 'https://example.com/drake-manchester-cancelled'
             }
           ]
@@ -96,7 +96,7 @@ const WorldNewsPage = () => {
             content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
             date: new Date('2025-07-28'),
             category: 'Festival',
-            image: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800',
+                          image: '/src/assets/eventhubble_new_logo.png',
             url: 'https://example.com/flamingo-republic-2025'
           },
           {
@@ -109,7 +109,7 @@ const WorldNewsPage = () => {
             content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
             date: new Date('2025-07-28'),
             category: 'Music',
-            image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800',
+                          image: '/src/assets/Logo.png',
             url: 'https://example.com/drake-manchester-cancelled'
           }
         ]
