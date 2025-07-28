@@ -263,7 +263,8 @@ export const CountryCitySelector = ({
   onCitiesChange, 
   placeholder, 
   icon: Icon,
-  className = "" 
+  className = "",
+  language = "EN"
 }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [view, setView] = useState('countries') // 'countries' or 'cities'
@@ -418,7 +419,10 @@ export const CountryCitySelector = ({
             {/* Header with back button for cities view */}
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-gray-900">
-                {view === 'countries' ? 'Ülke Seç' : `${selectedCountry?.label} Şehirleri`}
+                {view === 'countries' 
+                  ? (language === 'TR' ? 'Ülke Seç' : 'Select Country') 
+                  : `${selectedCountry?.label} ${language === 'TR' ? 'Şehirleri' : 'Cities'}`
+                }
               </h3>
               {view === 'cities' && (
                 <button
@@ -428,7 +432,7 @@ export const CountryCitySelector = ({
                   }}
                   className="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200"
                 >
-                  ← Ülkelere Dön
+                  ← {language === 'TR' ? 'Ülkelere Dön' : 'Back to Countries'}
                 </button>
               )}
             </div>
@@ -437,7 +441,10 @@ export const CountryCitySelector = ({
             <div className="relative">
               <input
                 type="text"
-                placeholder={view === 'countries' ? 'Ülkeleri ara...' : 'Şehirleri ara...'}
+                placeholder={view === 'countries' 
+                  ? (language === 'TR' ? 'Ülkeleri ara...' : 'Search countries...') 
+                  : (language === 'TR' ? 'Şehirleri ara...' : 'Search cities...')
+                }
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -478,14 +485,17 @@ export const CountryCitySelector = ({
               <div className="pt-3 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">
-                    {selectedCities.length} şehir seçildi
+                    {language === 'TR' 
+                      ? `${selectedCities.length} şehir seçildi` 
+                      : `${selectedCities.length} cities selected`
+                    }
                   </span>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => onCitiesChange([])}
                       className="text-sm text-red-600 hover:text-red-800 transition-colors duration-200"
                     >
-                      Tümünü Temizle
+                      {language === 'TR' ? 'Tümünü Temizle' : 'Clear All'}
                     </button>
                     <button
                       onClick={() => {
@@ -496,7 +506,7 @@ export const CountryCitySelector = ({
                       }}
                       className="text-sm bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-colors duration-200"
                     >
-                      Uygula
+                      {language === 'TR' ? 'Uygula' : 'Apply'}
                     </button>
                   </div>
                 </div>
@@ -515,20 +525,27 @@ export const AdvancedFilters = ({
   onFiltersChange, 
   isOpen, 
   onToggle,
-  className = "" 
+  className = "",
+  language = "EN"
 }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [activeTab, setActiveTab] = useState('price') // 'price', 'type', 'audience'
 
-  const priceRanges = [
+  const priceRanges = language === 'TR' ? [
     { value: 'free', label: 'Ücretsiz', icon: '🎫', description: 'Ücretsiz etkinlikler' },
     { value: '0-50', label: '0₺ - 50₺', icon: '💰', description: 'Ekonomik etkinlikler' },
     { value: '50-100', label: '50₺ - 100₺', icon: '💵', description: 'Orta segment etkinlikler' },
     { value: '100-200', label: '100₺ - 200₺', icon: '💎', description: 'Premium etkinlikler' },
     { value: '200+', label: '200₺+', icon: '👑', description: 'Lüks etkinlikler' }
+  ] : [
+    { value: 'free', label: 'Free', icon: '🎫', description: 'Free events' },
+    { value: '0-50', label: '$0 - $50', icon: '💰', description: 'Economic events' },
+    { value: '50-100', label: '$50 - $100', icon: '💵', description: 'Mid-range events' },
+    { value: '100-200', label: '$100 - $200', icon: '💎', description: 'Premium events' },
+    { value: '200+', label: '$200+', icon: '👑', description: 'Luxury events' }
   ]
 
-  const eventTypes = [
+  const eventTypes = language === 'TR' ? [
     { value: 'all', label: 'Tüm Türler', icon: '🎭', description: 'Tüm etkinlik türleri' },
     { value: 'concert', label: 'Konser', icon: '🎵', description: 'Canlı müzik etkinlikleri' },
     { value: 'theater', label: 'Tiyatro', icon: '🎬', description: 'Oyunlar ve gösteriler' },
@@ -537,14 +554,29 @@ export const AdvancedFilters = ({
     { value: 'food', label: 'Yemek & İçecek', icon: '🍽️', description: 'Gastronomi deneyimleri' },
     { value: 'education', label: 'Eğitim', icon: '📚', description: 'Öğrenme etkinlikleri' },
     { value: 'business', label: 'İş', icon: '💼', description: 'Profesyonel etkinlikler' }
+  ] : [
+    { value: 'all', label: 'All Types', icon: '🎭', description: 'All event types' },
+    { value: 'concert', label: 'Concert', icon: '🎵', description: 'Live music events' },
+    { value: 'theater', label: 'Theater', icon: '🎬', description: 'Plays and shows' },
+    { value: 'sports', label: 'Sports', icon: '⚽', description: 'Sports events' },
+    { value: 'art', label: 'Art & Culture', icon: '🎨', description: 'Exhibitions and galleries' },
+    { value: 'food', label: 'Food & Drink', icon: '🍽️', description: 'Gastronomy experiences' },
+    { value: 'education', label: 'Education', icon: '📚', description: 'Learning events' },
+    { value: 'business', label: 'Business', icon: '💼', description: 'Professional events' }
   ]
 
-  const audienceTypes = [
+  const audienceTypes = language === 'TR' ? [
     { value: 'all', label: 'Tüm Kitleler', icon: '👥', description: 'Herkes davetli' },
     { value: 'family', label: 'Aile', icon: '👨‍👩‍👧‍👦', description: 'Aile dostu etkinlikler' },
     { value: 'adults', label: 'Sadece Yetişkinler', icon: '🍷', description: 'Yetişkin içerik' },
     { value: 'kids', label: 'Çocuklar', icon: '🧸', description: 'Çocuk etkinlikleri' },
     { value: 'seniors', label: 'Yaşlılar', icon: '👴', description: 'Yaşlı dostu etkinlikler' }
+  ] : [
+    { value: 'all', label: 'All Audiences', icon: '👥', description: 'Everyone welcome' },
+    { value: 'family', label: 'Family', icon: '👨‍👩‍👧‍👦', description: 'Family-friendly events' },
+    { value: 'adults', label: 'Adults Only', icon: '🍷', description: 'Adult content' },
+    { value: 'kids', label: 'Kids', icon: '🧸', description: 'Children events' },
+    { value: 'seniors', label: 'Seniors', icon: '👴', description: 'Senior-friendly events' }
   ]
 
   const handleFilterChange = (key, value, e) => {
@@ -561,10 +593,14 @@ export const AdvancedFilters = ({
     return count
   }
 
-  const tabs = [
+  const tabs = language === 'TR' ? [
     { id: 'price', label: 'Fiyat', icon: '💰', count: filters.priceMin || filters.priceMax || filters.priceRange ? 1 : 0 },
     { id: 'type', label: 'Tür', icon: '🎭', count: filters.eventType && filters.eventType !== 'all' ? 1 : 0 },
     { id: 'audience', label: 'Kitle', icon: '👥', count: filters.audienceType && filters.audienceType !== 'all' ? 1 : 0 }
+  ] : [
+    { id: 'price', label: 'Price', icon: '💰', count: filters.priceMin || filters.priceMax || filters.priceRange ? 1 : 0 },
+    { id: 'type', label: 'Type', icon: '🎭', count: filters.eventType && filters.eventType !== 'all' ? 1 : 0 },
+    { id: 'audience', label: 'Audience', icon: '👥', count: filters.audienceType && filters.audienceType !== 'all' ? 1 : 0 }
   ]
 
   return (
@@ -573,7 +609,7 @@ export const AdvancedFilters = ({
         <button className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-all duration-200 ${className}`}>
           <Filter size={16} className="text-gray-500 dark:text-gray-400" />
           <span className="text-gray-700 dark:text-gray-300">
-            Gelişmiş Filtreler
+            {language === 'TR' ? 'Gelişmiş Filtreler' : 'Advanced Filters'}
             {getActiveFiltersCount() > 0 && (
               <span className="ml-1 px-1.5 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
                 {getActiveFiltersCount()}
@@ -592,9 +628,14 @@ export const AdvancedFilters = ({
         >
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900">Gelişmiş Filtreler</h3>
+              <h3 className="font-semibold text-gray-900">
+                {language === 'TR' ? 'Gelişmiş Filtreler' : 'Advanced Filters'}
+              </h3>
               <span className="text-sm text-gray-500">
-                {getActiveFiltersCount()} filtre aktif
+                {language === 'TR' 
+                  ? `${getActiveFiltersCount()} filtre aktif` 
+                  : `${getActiveFiltersCount()} filters active`
+                }
               </span>
             </div>
 

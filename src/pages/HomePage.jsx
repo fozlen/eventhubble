@@ -470,13 +470,13 @@ const HomePage = () => {
                           onClick={() => handleEventDetail(event.id)}
                           className={`flex-1 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700'}`}
                         >
-                          Details
+                          {language === 'TR' ? 'Detaylar' : 'Details'}
                         </button>
                         <button
                           onClick={() => window.open(event.url, '_blank')}
                           className="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
                         >
-                          Buy Ticket
+                          {language === 'TR' ? 'Bilet Al' : 'Buy Ticket'}
                         </button>
                       </div>
                     </div>
@@ -489,8 +489,12 @@ const HomePage = () => {
               <div className="flex justify-center mb-4">
                 <Film className="text-text/50" size={48} />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-text">No events found</h3>
-              <p className="text-text/70">Try adjusting your search criteria.</p>
+              <h3 className="text-xl font-semibold mb-2 text-text">
+                {language === 'TR' ? 'Etkinlik bulunamadı' : 'No events found'}
+              </h3>
+              <p className="text-text/70">
+                {language === 'TR' ? 'Arama kriterlerinizi ayarlamayı deneyin.' : 'Try adjusting your search criteria.'}
+              </p>
             </div>
           )}
         </div>
@@ -518,9 +522,13 @@ const HomePage = () => {
             {/* Company Links - Center Section */}
             <div className="flex justify-center w-full sm:w-auto">
               <div className="text-center">
-                <h3 className="font-semibold mb-4">Company</h3>
+                <h3 className="font-semibold mb-4">
+                  {language === 'TR' ? 'Şirket' : 'Company'}
+                </h3>
                 <ul className="space-y-2 text-white/80">
-                  <li><a href="/about" className="hover:text-white transition-colors">About</a></li>
+                  <li><a href="/about" className="hover:text-white transition-colors">
+                    {language === 'TR' ? 'Hakkımızda' : 'About'}
+                  </a></li>
                 </ul>
               </div>
             </div>
@@ -530,7 +538,9 @@ const HomePage = () => {
               <div className="text-center">
                 <h3 className="font-semibold mb-4">Blog</h3>
                 <ul className="space-y-2 text-white/80">
-                  <li><a href="/world-news" className="hover:text-white transition-colors">World News</a></li>
+                  <li><a href="/world-news" className="hover:text-white transition-colors">
+                    {language === 'TR' ? 'Dünya Haberleri' : 'World News'}
+                  </a></li>
                 </ul>
               </div>
             </div>
@@ -543,7 +553,9 @@ const HomePage = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="rounded-xl p-6 max-w-2xl w-full mx-4 bg-white">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-text">Event Locations</h3>
+              <h3 className="text-xl font-bold text-text">
+                {language === 'TR' ? 'Etkinlik Konumları' : 'Event Locations'}
+              </h3>
               <button 
                 onClick={() => setShowMap(false)}
                 className="text-text/50 hover:text-text"
@@ -554,8 +566,12 @@ const HomePage = () => {
             <div className="rounded-lg p-4 h-64 flex items-center justify-center bg-background-secondary">
               <div className="text-center">
                 <Map size={48} className="text-text/50 mx-auto mb-2" />
-                <p className="text-text/70">Interactive map coming soon!</p>
-                <p className="text-sm mt-1 text-text/60">We're working on integrating Google Maps</p>
+                <p className="text-text/70">
+                  {language === 'TR' ? 'İnteraktif harita yakında!' : 'Interactive map coming soon!'}
+                </p>
+                <p className="text-sm mt-1 text-text/60">
+                  {language === 'TR' ? 'Google Maps entegrasyonu üzerinde çalışıyoruz' : 'We\'re working on integrating Google Maps'}
+                </p>
               </div>
             </div>
             <div className="mt-4 space-y-2">

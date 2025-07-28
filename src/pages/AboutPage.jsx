@@ -106,16 +106,6 @@ const AboutPage = () => {
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-8 md:py-12">
-        {/* Back Button */}
-        <div className="mb-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center space-x-2 text-text/70 hover:text-text transition-colors"
-          >
-            <ArrowLeft size={20} />
-            <span>{language === 'TR' ? 'Geri Dön' : 'Go Back'}</span>
-          </button>
-        </div>
         
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-4 text-text">
