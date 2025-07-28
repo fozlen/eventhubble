@@ -79,8 +79,7 @@ export function EventDetailModal({ event, isOpen, onClose, onBuyTicket }) {
                 <div className="flex items-center space-x-3">
                   <Users className="h-5 w-5 text-gray-500" />
                   <div>
-                    <p className="font-medium">{event.attendees?.toLocaleString()} kişi katılıyor</p>
-                    <p className="text-sm text-gray-600">{event.available_tickets} bilet kaldı</p>
+                    <p className="font-medium">{event.available_tickets} bilet kaldı</p>
                   </div>
                 </div>
               </div>

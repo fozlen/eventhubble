@@ -433,7 +433,6 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
     platform: event?.platform || 'mobilet',
     image_url: event?.image_url || '',
     url: event?.url || '',
-    attendees: event?.attendees || '',
     rating: event?.rating || '',
     available_tickets: event?.available_tickets || '',
     organizer: event?.organizer || '',
@@ -668,20 +667,7 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
             </div>
 
             {/* Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Katılımcı Sayısı' : 'Attendees'}
-                </label>
-                <input
-                  type="number"
-                  value={formData.attendees}
-                  onChange={(e) => setFormData({ ...formData, attendees: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
-                  placeholder="0"
-                />
-              </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
                   {language === 'TR' ? 'Puan' : 'Rating'}

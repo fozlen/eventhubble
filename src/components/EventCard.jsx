@@ -165,10 +165,6 @@ export function EventCard({ event, onDetails, onBuyTicket, language = 'tr' }) {
             <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
             <span className="truncate">{event.venue}, {event.city}</span>
           </div>
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <Users className="h-4 w-4 mr-2 flex-shrink-0" />
-            <span>{event.attendees?.toLocaleString()} {t('people_attending')}</span>
-          </div>
         </div>
 
         {/* Price */}

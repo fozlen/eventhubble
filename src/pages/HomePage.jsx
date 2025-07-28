@@ -32,6 +32,7 @@ const HomePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
   const [showMap, setShowMap] = useState(false)
   const [language, setLanguage] = useState('EN')
+  const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'price', 'rating'
   const navigate = useNavigate()
 
   // Dark mode effect - no longer needed
@@ -174,7 +175,22 @@ const HomePage = () => {
     return logo // New logo
   }
 
-  // Filtrelenmiş etkinlikler
+  const getSortLabel = () => {
+    switch (sortBy) {
+      case 'date':
+        return language === 'TR' ? 'Tarihe Göre' : 'By Date'
+      case 'name':
+        return language === 'TR' ? 'İsme Göre' : 'By Name'
+      case 'price':
+        return language === 'TR' ? 'Fiyata Göre' : 'By Price'
+      case 'rating':
+        return language === 'TR' ? 'Puana Göre' : 'By Rating'
+      default:
+        return language === 'TR' ? 'Sırala' : 'Sort'
+    }
+  }
+
+  // Filtrelenmiş ve sıralanmış etkinlikler
   const filteredEvents = events.filter(event => {
     if (selectedCategory && event.category !== selectedCategory) return false
     if (searchTerm) {
@@ -184,6 +200,19 @@ const HomePage = () => {
              event.venue?.toLowerCase().includes(searchLower)
     }
     return true
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case 'date':
+        return new Date(a.date) - new Date(b.date)
+      case 'name':
+        return a.title.localeCompare(b.title)
+      case 'price':
+        return (a.price_min || 0) - (b.price_min || 0)
+      case 'rating':
+        return (b.rating || 0) - (a.rating || 0)
+      default:
+        return 0
+    }
   })
 
   return (
@@ -331,9 +360,15 @@ const HomePage = () => {
               <p className="text-text/70">{filteredEvents.length} {language === 'TR' ? 'etkinlik bulundu' : 'events found'}</p>
             </div>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-              <button className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text text-sm">
+              <button 
+                onClick={() => {
+                  const newSort = sortBy === 'date' ? 'name' : sortBy === 'name' ? 'price' : sortBy === 'price' ? 'rating' : 'date'
+                  setSortBy(newSort)
+                }}
+                className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text text-sm"
+              >
                 <Calendar size={16} />
-                <span>{language === 'TR' ? 'Tarihe Göre' : 'By Date'}</span>
+                <span>{getSortLabel()}</span>
                 <ChevronDown size={14} />
               </button>
               <button 
