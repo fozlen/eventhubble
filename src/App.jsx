@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LanguageProvider } from './contexts/LanguageContext'
+import LogoService from './services/logoService'
 import HomePage from './pages/HomePage'
 import EventDetailPage from './pages/EventDetailPage'
 import AboutPage from './pages/AboutPage'
@@ -14,6 +15,11 @@ import BlogDetailPage from './pages/BlogDetailPage'
 import './App.css'
 
 function App() {
+  // Preload logos on app start
+  useEffect(() => {
+    LogoService.preloadLogos()
+  }, [])
+
   return (
     <LanguageProvider>
       <Router>

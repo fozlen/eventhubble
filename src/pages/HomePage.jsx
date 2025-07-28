@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
-// Image paths for API compatibility
-const API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api'
-const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
-const logo = `${API_BASE_URL}/assets/Logo.png`
-const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
-const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
+import LogoService from '../services/logoService'
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
 import MobileEventCard from '../components/MobileEventCard'
@@ -50,6 +45,7 @@ const HomePage = () => {
   const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+  const [logos, setLogos] = useState({})
   const navigate = useNavigate()
 
   // Dark mode effect - no longer needed
@@ -79,6 +75,31 @@ const HomePage = () => {
 
   // Cities
   const cities = ['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Antalya', 'Adana', 'Konya', 'Gaziantep']
+
+  // Logo'ları yükle
+  useEffect(() => {
+    const loadLogos = async () => {
+      try {
+        const [mainLogo, newLogo, logoWithoutBg, mainLogoLarge] = await Promise.all([
+          LogoService.getLogo('main'),
+          LogoService.getLogo('new'),
+          LogoService.getLogo('withoutBg'),
+          LogoService.getLogo('mainLogo')
+        ])
+        
+        setLogos({
+          main: mainLogo,
+          new: newLogo,
+          withoutBg: logoWithoutBg,
+          mainLogo: mainLogoLarge
+        })
+      } catch (error) {
+        console.error('Logo loading error:', error)
+      }
+    }
+
+    loadLogos()
+  }, [])
 
   // Etkinlikleri yükle
   useEffect(() => {
@@ -131,7 +152,7 @@ const HomePage = () => {
 
   // Get logo
   const getLogo = () => {
-    return logo // New logo
+    return logos.main || LogoService.API_BASE_URL + '/assets/Logo.png'
   }
 
   const getSortLabel = () => {
