@@ -32,7 +32,7 @@ const HomePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
   const [showMap, setShowMap] = useState(false)
   const [language, setLanguage] = useState('EN')
-  const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'price', 'rating'
+  const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'price'
   const navigate = useNavigate()
 
   // Dark mode effect - no longer needed
@@ -87,7 +87,6 @@ const HomePage = () => {
               city: "Istanbul",
               image_url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
               platform: "Biletix",
-              attendees: 15000,
               category: "music",
               url: "https://biletix.com"
             },
@@ -101,7 +100,6 @@ const HomePage = () => {
               city: "Istanbul",
               image_url: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=300&fit=crop",
               platform: "Bubilet",
-              attendees: 800,
               category: "music",
               url: "https://bubilet.com.tr"
             },
@@ -115,7 +113,6 @@ const HomePage = () => {
               city: "Istanbul",
               image_url: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=400&h=300&fit=crop",
               platform: "Passo",
-              attendees: 1200,
               category: "theater",
               url: "https://passo.com.tr"
             }
@@ -183,8 +180,6 @@ const HomePage = () => {
         return language === 'TR' ? 'İsme Göre' : 'By Name'
       case 'price':
         return language === 'TR' ? 'Fiyata Göre' : 'By Price'
-      case 'rating':
-        return language === 'TR' ? 'Puana Göre' : 'By Rating'
       default:
         return language === 'TR' ? 'Sırala' : 'Sort'
     }
@@ -208,8 +203,6 @@ const HomePage = () => {
         return a.title.localeCompare(b.title)
       case 'price':
         return (a.price_min || 0) - (b.price_min || 0)
-      case 'rating':
-        return (b.rating || 0) - (a.rating || 0)
       default:
         return 0
     }
@@ -362,7 +355,7 @@ const HomePage = () => {
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
               <button 
                 onClick={() => {
-                  const newSort = sortBy === 'date' ? 'name' : sortBy === 'name' ? 'price' : sortBy === 'price' ? 'rating' : 'date'
+                  const newSort = sortBy === 'date' ? 'name' : sortBy === 'name' ? 'price' : 'date'
                   setSortBy(newSort)
                 }}
                 className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white hover:shadow-md text-text text-sm"

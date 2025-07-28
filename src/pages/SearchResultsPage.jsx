@@ -254,8 +254,7 @@ const SearchResultsPage = () => {
           return a.title.localeCompare(b.title)
         case 'price':
           return (parseInt(a.price_min) || 0) - (parseInt(b.price_min) || 0)
-        case 'rating':
-          return parseFloat(b.rating) - parseFloat(a.rating)
+
         default:
           return 0
       }
@@ -289,8 +288,6 @@ const SearchResultsPage = () => {
         return language === 'TR' ? 'İsme Göre' : 'By Name'
       case 'price':
         return language === 'TR' ? 'Fiyata Göre' : 'By Price'
-      case 'rating':
-        return language === 'TR' ? 'Puana Göre' : 'By Rating'
       default:
         return language === 'TR' ? 'Sırala' : 'Sort'
     }
@@ -387,7 +384,7 @@ const SearchResultsPage = () => {
               <button
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
                 onClick={() => {
-                  const newSort = sortBy === 'date' ? 'name' : sortBy === 'name' ? 'price' : sortBy === 'price' ? 'rating' : 'date'
+                  const newSort = sortBy === 'date' ? 'name' : sortBy === 'name' ? 'price' : 'date'
                   setSortBy(newSort)
                 }}
               >
