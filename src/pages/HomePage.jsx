@@ -399,14 +399,6 @@ const HomePage = () => {
                   >
                     <List size={18} />
                   </button>
-                  
-                  <button
-                    onClick={() => setShowFilters(!showFilters)}
-                    className="flex items-center space-x-2 px-4 py-2 rounded-full bg-primary text-white text-sm shadow-lg hover:shadow-xl transition-all duration-200"
-                  >
-                    <Filter size={16} />
-                    <span>{language === 'TR' ? 'Filtreler' : 'Filters'}</span>
-                  </button>
                 </div>
               </div>
 

@@ -16,6 +16,7 @@ const WorldNewsPage = () => {
     return localStorage.getItem('language') || 'EN'
   })
   const [newsData, setNewsData] = useState([])
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
   // Dark mode effect - artık gerekli değil
@@ -26,6 +27,7 @@ const WorldNewsPage = () => {
   // Load blog posts from localStorage
   useEffect(() => {
     const loadBlogPosts = () => {
+      setLoading(true)
       try {
         const storedPosts = localStorage.getItem('blogPosts')
         
@@ -56,7 +58,7 @@ const WorldNewsPage = () => {
               title_en: 'Flamingo Republic 2025: Croatia\'s Most Colorful Electronic Music Festival',
               excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2025, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
               excerpt_en: 'Flamingo Republic 2025, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
-              content_tr: 'Zrce Beach, Hırvatistan\'ın en popüler festival destinasyonlarından biri, 28-31 Temmuz 2025 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
+              content_tr: 'Zrce Beach, Hırvatistan\'n en popüler festival destinasyonlarından biri, 28-31 Temmuz 2025 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
               content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
               date: new Date('2025-07-28'),
               category: 'Festival',
@@ -82,9 +84,42 @@ const WorldNewsPage = () => {
           setNewsData(demoPosts)
         }
       } catch (error) {
+        // Always set demo data as fallback to ensure page loads
+        const demoPosts = [
+          {
+            id: 1,
+            title_tr: 'Flamingo Republic 2025: Hırvatistan\'ın En Renkli Elektronik Müzik Festivali',
+            title_en: 'Flamingo Republic 2025: Croatia\'s Most Colorful Electronic Music Festival',
+            excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2025, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
+            excerpt_en: 'Flamingo Republic 2025, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
+            content_tr: 'Zrce Beach, Hırvatistan\'ın en popüler festival destinasyonlarından biri, 28-31 Temmuz 2025 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
+            content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
+            date: new Date('2025-07-28'),
+            category: 'Festival',
+            image: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800',
+            url: 'https://example.com/flamingo-republic-2025'
+          },
+          {
+            id: 2,
+            title_tr: 'Drake\'in Manchester Konseri İptal Edildi',
+            title_en: 'Drake\'s Manchester Concert Cancelled',
+            excerpt_tr: 'Dünyaca ünlü rap sanatçısı Drake\'in Manchester Co-op Live Arena\'daki konseri son dakika iptal edildi.',
+            excerpt_en: 'World-renowned rap artist Drake\'s concert at Manchester Co-op Live Arena has been cancelled at the last minute.',
+            content_tr: 'Drake\'in 28 Temmuz 2025 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
+            content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
+            date: new Date('2025-07-28'),
+            category: 'Music',
+            image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800',
+            url: 'https://example.com/drake-manchester-cancelled'
+          }
+        ]
+        setNewsData(demoPosts)
+        
         if (!import.meta.env.PROD) {
           console.error('Error loading blog posts:', error)
         }
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -226,43 +261,54 @@ const WorldNewsPage = () => {
         </div>
 
         {/* News Grid */}
-        <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {newsData.map((news) => (
-            <article
-              key={news.id}
-              className="bg-white border-gray-200 rounded-lg shadow-lg border overflow-hidden hover:shadow-xl transition-shadow duration-300"
-            >
-              <img
-                src={news.image}
-                alt={news.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {news.category}
-                  </span>
-                  <div className="flex items-center text-sm text-text/70">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    {news.date}
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="flex justify-center mb-4">
+              <Calendar className="text-text/50" size={48} />
+            </div>
+            <h3 className="text-xl font-semibold mb-2 text-text">
+              {language === 'TR' ? 'Haberler yükleniyor...' : 'Loading news...'}
+            </h3>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {newsData.map((news) => (
+              <article
+                key={news.id}
+                className="bg-white border-gray-200 rounded-lg shadow-lg border overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              >
+                <img
+                  src={news.image}
+                  alt={news.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {news.category}
+                    </span>
+                    <div className="flex items-center text-sm text-text/70">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {news.date}
+                    </div>
                   </div>
+                  <h3 className="text-xl font-semibold text-text mb-3 line-clamp-2">
+                    {news.title}
+                  </h3>
+                  <p className="text-text/70 mb-4 line-clamp-3">
+                    {news.excerpt}
+                  </p>
+                  <button
+                    onClick={() => handleReadMore(news.id)}
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+                  >
+                    {language === 'TR' ? 'Devamını Oku' : 'Read More'}
+                  </button>
                 </div>
-                <h3 className="text-xl font-semibold text-text mb-3 line-clamp-2">
-                  {news.title}
-                </h3>
-                <p className="text-text/70 mb-4 line-clamp-3">
-                  {news.excerpt}
-                </p>
-                <button
-                  onClick={() => handleReadMore(news.id)}
-                  className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
-                >
-                  {language === 'TR' ? 'Devamını Oku' : 'Read More'}
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
 
         {/* Empty State */}
         {newsData.length === 0 && (
