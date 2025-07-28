@@ -315,13 +315,30 @@ const BlogDetailPage = () => {
             </div>
 
             {/* Article Content */}
-            <div className="prose prose-lg max-w-none">
+            <div className="prose prose-lg max-w-none text-left">
               {blogPost.content.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="mb-4 leading-relaxed text-text">
+                <p key={index} className="mb-4 leading-relaxed text-text text-left">
                   {paragraph}
                 </p>
               ))}
             </div>
+
+            {/* Reference URL */}
+            {blogPost.url && (
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <span>{language === 'TR' ? 'Kaynak:' : 'Source:'}</span>
+                  <a 
+                    href={blogPost.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:text-primary/80 underline"
+                  >
+                    {new URL(blogPost.url).hostname}
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </article>
 
