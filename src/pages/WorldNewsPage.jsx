@@ -9,62 +9,43 @@ const mainLogo = '/assets/MainLogo.png'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 
-
 const WorldNewsPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
-  const [language, setLanguage] = useState(() => {
-    // Load language preference from localStorage
-    return localStorage.getItem('language') || 'EN'
-  })
   const [newsData, setNewsData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [language, setLanguage] = useState('TR')
   const navigate = useNavigate()
 
-  // Dark mode effect - artık gerekli değil
+  // Load language from localStorage
   useEffect(() => {
-    document.documentElement.classList.remove('dark')
+    const savedLanguage = localStorage.getItem('language') || 'TR'
+    setLanguage(savedLanguage)
   }, [])
 
-  // Load blog posts from localStorage
+  // Load dark mode from localStorage
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('isDarkMode') === 'true'
+    setIsDarkMode(savedDarkMode)
+  }, [])
+
+  // Load blog posts
   useEffect(() => {
     const loadBlogPosts = () => {
-      setLoading(true)
       try {
-        const storedPosts = localStorage.getItem('blogPosts')
-        
-        if (storedPosts) {
-          const posts = JSON.parse(storedPosts)
-          
-          // Transform posts to match the expected format with localization
-          const transformedPosts = posts.map(post => ({
-            id: post.id,
-            title: language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title),
-            excerpt: language === 'TR' ? (post.excerpt_tr || post.excerpt) : (post.excerpt_en || post.excerpt),
-            date: new Date(post.date || new Date()).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            }),
-            category: post.category,
-            image: post.image,
-            url: post.url
-          }))
-          setNewsData(transformedPosts)
-        } else {
-          // Demo data for production testing
-          const demoPosts = [
-            {
-              id: 1,
-              title_tr: 'Flamingo Republic 2025: Hırvatistan\'ın En Renkli Elektronik Müzik Festivali',
-              title_en: 'Flamingo Republic 2025: Croatia\'s Most Colorful Electronic Music Festival',
-              excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2025, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
-              excerpt_en: 'Flamingo Republic 2025, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
-              content_tr: 'Zrce Beach, Hırvatistan\'n en popüler festival destinasyonlarından biri, 28-31 Temmuz 2025 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
-              content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
-              date: new Date('2025-07-28'),
-              category: 'Festival',
-                          image: '/assets/eventhubble_new_logo.png',
-            url: 'https://example.com/flamingo-republic-2025'
+        // Always use demo data for now
+        const demoPosts = [
+          {
+            id: 1,
+            title_tr: 'Flamingo Republic 2024: Hırvatistan\'ın En Renkli Elektronik Müzik Festivali',
+            title_en: 'Flamingo Republic 2024: Croatia\'s Most Colorful Electronic Music Festival',
+            excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2024, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
+            excerpt_en: 'Flamingo Republic 2024, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
+            content_tr: 'Zrce Beach, Hırvatistan\'ın en popüler festival destinasyonlarından biri, 28-31 Temmuz 2024 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
+            content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2024.',
+            date: '2024-07-28',
+            category: 'Festival',
+            image: '/assets/eventhubble_new_logo.png',
+            url: 'https://example.com/flamingo-republic-2024'
           },
           {
             id: 2,
@@ -72,33 +53,32 @@ const WorldNewsPage = () => {
             title_en: 'Drake\'s Manchester Concert Cancelled',
             excerpt_tr: 'Dünyaca ünlü rap sanatçısı Drake\'in Manchester Co-op Live Arena\'daki konseri son dakika iptal edildi.',
             excerpt_en: 'World-renowned rap artist Drake\'s concert at Manchester Co-op Live Arena has been cancelled at the last minute.',
-            content_tr: 'Drake\'in 28 Temmuz 2025 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
-            content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
-            date: new Date('2025-07-28'),
+            content_tr: 'Drake\'in 28 Temmuz 2024 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
+            content_en: 'Drake\'s concert planned for July 28, 2024 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
+            date: '2024-07-28',
             category: 'Music',
             image: '/assets/Logo.png',
-              url: 'https://example.com/drake-manchester-cancelled'
-            }
-          ]
-          
-          // Use demo data in both production and development
-          setNewsData(demoPosts)
-        }
+            url: 'https://example.com/drake-manchester-cancelled'
+          }
+        ]
+        
+        // Use demo data in both production and development
+        setNewsData(demoPosts)
       } catch (error) {
         // Always set demo data as fallback to ensure page loads
         const demoPosts = [
           {
             id: 1,
-            title_tr: 'Flamingo Republic 2025: Hırvatistan\'ın En Renkli Elektronik Müzik Festivali',
-            title_en: 'Flamingo Republic 2025: Croatia\'s Most Colorful Electronic Music Festival',
-            excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2025, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
-            excerpt_en: 'Flamingo Republic 2025, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
-            content_tr: 'Zrce Beach, Hırvatistan\'ın en popüler festival destinasyonlarından biri, 28-31 Temmuz 2025 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
-            content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2025.',
-            date: new Date('2025-07-28'),
+            title_tr: 'Flamingo Republic 2024: Hırvatistan\'ın En Renkli Elektronik Müzik Festivali',
+            title_en: 'Flamingo Republic 2024: Croatia\'s Most Colorful Electronic Music Festival',
+            excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2024, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
+            excerpt_en: 'Flamingo Republic 2024, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
+            content_tr: 'Zrce Beach, Hırvatistan\'ın en popüler festival destinasyonlarından biri, 28-31 Temmuz 2024 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
+            content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2024.',
+            date: '2024-07-28',
             category: 'Festival',
-                                      image: '/assets/eventhubble_new_logo.png',
-            url: 'https://example.com/flamingo-republic-2025'
+            image: '/assets/eventhubble_new_logo.png',
+            url: 'https://example.com/flamingo-republic-2024'
           },
           {
             id: 2,
@@ -106,9 +86,9 @@ const WorldNewsPage = () => {
             title_en: 'Drake\'s Manchester Concert Cancelled',
             excerpt_tr: 'Dünyaca ünlü rap sanatçısı Drake\'in Manchester Co-op Live Arena\'daki konseri son dakika iptal edildi.',
             excerpt_en: 'World-renowned rap artist Drake\'s concert at Manchester Co-op Live Arena has been cancelled at the last minute.',
-            content_tr: 'Drake\'in 28 Temmuz 2025 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
-            content_en: 'Drake\'s concert planned for July 28, 2025 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
-            date: new Date('2025-07-28'),
+            content_tr: 'Drake\'in 28 Temmuz 2024 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
+            content_en: 'Drake\'s concert planned for July 28, 2024 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
+            date: '2024-07-28',
             category: 'Music',
             image: '/assets/Logo.png',
             url: 'https://example.com/drake-manchester-cancelled'
@@ -200,7 +180,7 @@ const WorldNewsPage = () => {
             <nav className="flex justify-center items-center space-x-4 sm:space-x-8 flex-wrap">
               <a
                 href="/"
-                className="text-sm font-medium transition-colors text-white hover:text-primary-light whitespace-nowrap"
+                className="text-sm font-medium transition-colors text-white/80 hover:text-white whitespace-nowrap"
               >
                 {language === 'TR' ? 'Ana Sayfa' : 'Home'}
               </a>
@@ -212,21 +192,35 @@ const WorldNewsPage = () => {
               </a>
               <a
                 href="/world-news"
-                className="text-sm font-medium transition-colors text-primary-light whitespace-nowrap"
+                className="text-sm font-medium transition-colors text-white hover:text-primary-light whitespace-nowrap"
               >
-                {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
+                {language === 'TR' ? 'Dünya Haberleri' : 'World News'}
               </a>
             </nav>
             
-            {/* Language Toggle - Right Section */}
-            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
-              <button 
+            {/* User Actions - Right Section */}
+            <div className="flex justify-center sm:justify-end items-center space-x-2 w-full sm:w-auto">
+              <button
                 onClick={toggleLanguage}
-                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
-                title={language === 'TR' ? 'Language' : 'Dil'}
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
               >
-                <Globe size={16} />
-                <span className="hidden sm:inline">{language}</span>
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">{language}</span>
+              </button>
+              
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 text-white/80 hover:text-white transition-colors"
+              >
+                {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </button>
+              
+              <button
+                onClick={handleLogin}
+                className="flex items-center space-x-1 bg-primary-light text-primary px-3 py-1.5 rounded-md text-sm font-medium hover:bg-primary-light/90 transition-colors"
+              >
+                <User className="h-4 w-4" />
+                <span>{language === 'TR' ? 'Admin' : 'Admin'}</span>
               </button>
             </div>
           </div>
@@ -234,76 +228,77 @@ const WorldNewsPage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-        {/* Mobile Header */}
-        <div className="block sm:hidden text-center mb-6">
-          <h1 className="text-2xl font-bold text-text mb-2">
-            {language === 'TR' ? 'Haberler' : 'News'}
-          </h1>
-          <p className="text-sm text-text/70 px-2">
-            {language === 'TR' 
-              ? 'Dünyadan en son etkinlik haberleri'
-              : 'Latest event news from around the world'
-            }
-          </p>
-        </div>
-
-        {/* Desktop Header */}
-        <div className="hidden sm:block text-center mb-12">
-          <h1 className="text-4xl lg:text-5xl font-bold text-text mb-4">
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Page Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}
           </h1>
-          <p className="text-xl text-text/70 max-w-3xl mx-auto px-4">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             {language === 'TR' 
-              ? 'Dünyadan en son etkinlik haberleri ve gelişmeler'
-              : 'Latest event news and developments from around the world'
+              ? 'Müzik, spor, sanat ve eğlence dünyasından en güncel haberler'
+              : 'Latest news from the world of music, sports, art and entertainment'
             }
           </p>
         </div>
 
-        {/* News Grid */}
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="flex justify-center mb-4">
-              <Calendar className="text-text/50" size={48} />
-            </div>
-            <h3 className="text-xl font-semibold mb-2 text-text">
-              {language === 'TR' ? 'Haberler yükleniyor...' : 'Loading news...'}
-            </h3>
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
-        ) : (
-          <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {newsData.map((news) => (
-              <article
-                key={news.id}
-                className="bg-white border-gray-200 rounded-lg shadow-lg border overflow-hidden hover:shadow-xl transition-shadow duration-300"
-              >
-                <img
-                  src={news.image}
-                  alt={news.title}
-                  className="w-full h-48 object-cover"
-                />
+        )}
+
+        {/* News Grid */}
+        {!loading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {newsData.map((post) => (
+              <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                {/* Image */}
+                <div className="aspect-video bg-gray-200 overflow-hidden">
+                  <img 
+                    src={post.image} 
+                    alt={language === 'TR' ? post.title_tr : post.title_en}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
+                {/* Content */}
                 <div className="p-6">
+                  {/* Category */}
                   <div className="flex items-center justify-between mb-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {news.category}
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                      {post.category}
                     </span>
-                    <div className="flex items-center text-sm text-text/70">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      {news.date}
+                    <div className="flex items-center space-x-1 text-gray-500 text-sm">
+                      <Calendar className="h-4 w-4" />
+                      <span>
+                        {new Date(post.date || new Date()).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </span>
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-text mb-3 line-clamp-2">
-                    {news.title}
-                  </h3>
-                  <p className="text-text/70 mb-4 line-clamp-3">
-                    {news.excerpt}
+                  
+                  {/* Title */}
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                    {language === 'TR' ? post.title_tr : post.title_en}
+                  </h2>
+                  
+                  {/* Excerpt */}
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {language === 'TR' ? post.excerpt_tr : post.excerpt_en}
                   </p>
+                  
+                  {/* Read More Button */}
                   <button
-                    onClick={() => handleReadMore(news.id)}
-                    className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+                    onClick={() => handleReadMore(post.id)}
+                    className="inline-flex items-center space-x-1 text-primary hover:text-primary-dark font-medium transition-colors"
                   >
-                    {language === 'TR' ? 'Devamını Oku' : 'Read More'}
+                    <span>{language === 'TR' ? 'Devamını Oku' : 'Read More'}</span>
+                    <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
               </article>
@@ -311,70 +306,20 @@ const WorldNewsPage = () => {
           </div>
         )}
 
-        {/* Empty State */}
-        {newsData.length === 0 && (
+        {/* No Posts Message */}
+        {!loading && newsData.length === 0 && (
           <div className="text-center py-12">
-            <div className="text-gray-400 dark:text-gray-500 mb-4">
-              <Calendar className="mx-auto h-12 w-12" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              {language === 'TR' ? 'Henüz haber yok' : 'No news yet'}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              {language === 'TR' 
-                ? 'Yakında yeni haberler eklenecek.'
-                : 'New articles will be added soon.'
-              }
+            <p className="text-gray-500 text-lg">
+              {language === 'TR' ? 'Henüz haber bulunmuyor.' : 'No news available yet.'}
             </p>
           </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="hidden sm:block bg-primary text-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-8 items-center">
-            {/* Logo and Brand - Left Section */}
-            <div className="flex justify-center w-full sm:w-auto">
-              <div className="flex items-center space-x-2">
-                <img 
-                  src={logo} 
-                  alt="EventHubble" 
-                  className="h-10 w-auto" 
-                />
-                <span className="text-xl font-bold">
-                  <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light"> Hubble</span>
-                </span>
-              </div>
-            </div>
-            
-            {/* Company Links - Center Section */}
-            <div className="flex justify-center w-full sm:w-auto">
-              <div className="text-center">
-                <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
-                <ul className="space-y-2 text-white/80">
-                  <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
-                </ul>
-              </div>
-            </div>
-            
-            {/* Blog Links - Right Section */}
-            <div className="flex justify-center w-full sm:w-auto">
-              <div className="text-center">
-                <h3 className="font-semibold mb-4">Blog</h3>
-                <ul className="space-y-2 text-white/80">
-                  <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-
       {/* Mobile Navigation */}
-      <MobileNavigation language={language} />
-
+      <div className="block sm:hidden">
+        <MobileNavigation />
+      </div>
     </div>
   )
 }
