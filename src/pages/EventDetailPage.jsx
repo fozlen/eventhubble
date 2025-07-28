@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Phone, Globe as GlobeIcon, Share2, Heart, ExternalLink } from 'lucide-react'
-// Image paths for Safari compatibility
-const newLogo = '/assets/eventhubble_new_logo.png'
-const logo = '/assets/Logo.png'
-const logoWithoutBg = '/assets/Logo w_out background.png'
-const mainLogo = '/assets/MainLogo.png'
+// Image paths for API compatibility
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
+const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
+const logo = `${API_BASE_URL}/assets/Logo.png`
+const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
+const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'

@@ -57,6 +57,9 @@ app.use(cors({
 const uploadsDir = path.join(__dirname, 'uploads')
 fs.ensureDirSync(uploadsDir)
 
+// Logo dosyaları için assets klasörü
+const assetsDir = path.join(__dirname, 'assets')
+
 // Multer konfigürasyonu
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -88,6 +91,35 @@ const upload = multer({
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Upload server is running' })
+})
+
+// Logo endpoint'i
+app.get('/api/assets/:filename', (req, res) => {
+  try {
+    const filename = req.params.filename
+    const filePath = path.join(assetsDir, filename)
+    
+    // Dosya var mı kontrol et
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Logo not found' })
+    }
+    
+    // Dosya türünü belirle
+    const ext = path.extname(filename).toLowerCase()
+    let contentType = 'image/png'
+    
+    if (ext === '.jpg' || ext === '.jpeg') contentType = 'image/jpeg'
+    else if (ext === '.gif') contentType = 'image/gif'
+    else if (ext === '.svg') contentType = 'image/svg+xml'
+    
+    // Dosyayı gönder
+    res.setHeader('Content-Type', contentType)
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+    res.sendFile(filePath)
+  } catch (error) {
+    console.error('Logo serve error:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
 })
 
 // API Routes

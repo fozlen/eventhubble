@@ -14,8 +14,9 @@ import {
   Save,
   X
 } from 'lucide-react'
-// Image paths for Safari compatibility
-const logo = '/assets/Logo.png'
+// Image paths for API compatibility
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
+const logo = `${API_BASE_URL}/assets/Logo.png`
 import { EventService } from '../services/eventService'
 
 const CategoriesPage = () => {
