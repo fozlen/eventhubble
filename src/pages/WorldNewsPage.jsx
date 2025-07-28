@@ -20,7 +20,7 @@ const WorldNewsPage = () => {
     document.documentElement.classList.remove('dark')
   }, [])
 
-  // Load blog posts from localStorage or use mock data
+  // Load blog posts from localStorage
   useEffect(() => {
     const loadBlogPosts = () => {
       try {

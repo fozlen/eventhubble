@@ -218,6 +218,17 @@ const EventDetailPage = () => {
 
       {/* Event Detail Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center space-x-2 text-text/70 hover:text-text transition-colors"
+          >
+            <ArrowLeft size={20} />
+            <span>{language === 'TR' ? 'Geri Dön' : 'Go Back'}</span>
+          </button>
+        </div>
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">

@@ -82,7 +82,7 @@ const HomePage = () => {
     const loadEvents = async () => {
       setLoading(true)
       try {
-        // eventService.js kullanarak tüm eventleri yükle (Manuel + Mock + API)
+        // eventService.js kullanarak tüm eventleri yükle (Manuel + API)
         const allEvents = await EventService.getEvents()
         setEvents(allEvents)
       } catch (error) {

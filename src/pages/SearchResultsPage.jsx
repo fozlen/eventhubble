@@ -65,7 +65,7 @@ const SearchResultsPage = () => {
     const loadEvents = async () => {
       setLoading(true)
       try {
-        // eventService.js kullanarak tüm eventleri yükle (Manuel + Mock + API)
+        // eventService.js kullanarak tüm eventleri yükle (Manuel + API)
         const allEvents = await EventService.getEvents()
         setEvents(allEvents)
       } catch (error) {
@@ -231,6 +231,17 @@ const SearchResultsPage = () => {
 
       {/* Search Results Header */}
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center space-x-2 text-text/70 hover:text-text transition-colors"
+          >
+            <ArrowLeft size={20} />
+            <span>{language === 'TR' ? 'Geri Dön' : 'Go Back'}</span>
+          </button>
+        </div>
+        
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2 text-text">
