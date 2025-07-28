@@ -185,7 +185,15 @@ export class EventService {
   static getManualEvents(language = 'EN') {
     try {
       const storedEvents = localStorage.getItem('manualEvents')
-      if (!storedEvents) return []
+      if (!storedEvents) {
+        // Production'da varsayılan etkinlikler ekle
+        if (import.meta.env.PROD) {
+          const defaultEvents = this.getDefaultEvents(language)
+          localStorage.setItem('manualEvents', JSON.stringify(defaultEvents))
+          return defaultEvents.map(event => this.localizeEvent(event, language))
+        }
+        return []
+      }
       
       const events = JSON.parse(storedEvents)
       return events.map(event => this.localizeEvent(event, language))
@@ -193,8 +201,63 @@ export class EventService {
       if (!import.meta.env.PROD) {
         console.error('Manual Events Error:', error)
       }
+      // Hata durumunda varsayılan etkinlikler döndür
+      if (import.meta.env.PROD) {
+        return this.getDefaultEvents(language).map(event => this.localizeEvent(event, language))
+      }
       return []
     }
+  }
+
+  // Varsayılan etkinlikler (Production için)
+  static getDefaultEvents(language = 'EN') {
+    return [
+      {
+        id: 'default_1',
+        title: language === 'TR' ? 'İstanbul Müzik Festivali' : 'Istanbul Music Festival',
+        description: language === 'TR' ? 'Yılın en büyük müzik festivali' : 'The biggest music festival of the year',
+        date: '2024-08-15',
+        time: '19:00',
+        venue: language === 'TR' ? 'Küçükçiftlik Park' : 'Kucukciftlik Park',
+        city: 'Istanbul',
+        category: 'music',
+        price_min: 150,
+        price_max: 500,
+        image: '/assets/eventhubble_new_logo.png',
+        platform: 'mobilet',
+        source: 'default'
+      },
+      {
+        id: 'default_2',
+        title: language === 'TR' ? 'Ankara Tiyatro Festivali' : 'Ankara Theater Festival',
+        description: language === 'TR' ? 'Klasik ve modern tiyatro oyunları' : 'Classic and modern theater plays',
+        date: '2024-08-20',
+        time: '20:00',
+        venue: language === 'TR' ? 'Ankara Devlet Tiyatrosu' : 'Ankara State Theater',
+        city: 'Ankara',
+        category: 'theater',
+        price_min: 80,
+        price_max: 200,
+        image: '/assets/eventhubble_new_logo.png',
+        platform: 'biletix',
+        source: 'default'
+      },
+      {
+        id: 'default_3',
+        title: language === 'TR' ? 'İzmir Spor Turnuvası' : 'Izmir Sports Tournament',
+        description: language === 'TR' ? 'Çeşitli spor dallarında yarışmalar' : 'Competitions in various sports',
+        date: '2024-08-25',
+        time: '14:00',
+        venue: language === 'TR' ? 'İzmir Atatürk Spor Salonu' : 'Izmir Ataturk Sports Hall',
+        city: 'Izmir',
+        category: 'sports',
+        price_min: 50,
+        price_max: 150,
+        image: '/assets/eventhubble_new_logo.png',
+        platform: 'biletinial',
+        source: 'default'
+      }
+    ]
   }
 
   // Manuel etkinlik ekle
