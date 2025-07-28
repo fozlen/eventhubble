@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Sun, Moon, Globe, User, ArrowLeft } from 'lucide-react'
-// Image paths for API compatibility
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
-const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
-const logo = `${API_BASE_URL}/assets/Logo.png`
-const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
-const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
+import CacheService from '../services/cacheService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 
@@ -16,6 +11,32 @@ const AboutPage = () => {
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
   const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
+  const [logos, setLogos] = useState({})
+
+  // Load logos
+  useEffect(() => {
+    const loadLogos = async () => {
+      try {
+        const [mainLogo, newLogo, logoWithoutBg, mainLogoLarge] = await Promise.all([
+          CacheService.getLogo('main'),
+          CacheService.getLogo('new'),
+          CacheService.getLogo('withoutBg'),
+          CacheService.getLogo('mainLogo')
+        ])
+        
+        setLogos({
+          main: mainLogo,
+          new: newLogo,
+          withoutBg: logoWithoutBg,
+          mainLogo: mainLogoLarge
+        })
+      } catch (error) {
+        console.error('Logo loading error:', error)
+      }
+    }
+
+    loadLogos()
+  }, [])
 
   // Dark mode effect - no longer needed
   useEffect(() => {
@@ -39,7 +60,7 @@ const AboutPage = () => {
 
   // Get logo
   const getLogo = () => {
-    return logo // New logo
+    return logos.main || CacheService.API_BASE_URL + '/assets/Logo.png'
   }
 
   return (
