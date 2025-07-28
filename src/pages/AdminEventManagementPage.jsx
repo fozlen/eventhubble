@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon, Tag, FileText, Settings, BarChart3, MapPin, Clock, DollarSign, Users, Star, Phone, ExternalLink } from 'lucide-react'
-import newLogo from '../assets/eventhubble_new_logo.png'
-import logo from '../assets/Logo.png'
+// Image paths for Safari compatibility
+const newLogo = '/assets/eventhubble_new_logo.png'
+const logo = '/assets/Logo.png'
 import ImageSelector from '../components/ImageSelector'
 import { EventService } from '../services/eventService'
 

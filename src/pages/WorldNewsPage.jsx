@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, Calendar, ArrowRight } from 'lucide-react'
-import newLogo from '../assets/eventhubble_new_logo.png'
-import logo from '../assets/Logo.png'
-import logoWithoutBg from '../assets/Logo w_out background.png'
-import mainLogo from '../assets/MainLogo.png'
+// Image paths for Safari compatibility
+const newLogo = '/assets/eventhubble_new_logo.png'
+const logo = '/assets/Logo.png'
+const logoWithoutBg = '/assets/Logo w_out background.png'
+const mainLogo = '/assets/MainLogo.png'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 

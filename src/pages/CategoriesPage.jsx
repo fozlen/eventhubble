@@ -14,7 +14,8 @@ import {
   Save,
   X
 } from 'lucide-react'
-import logo from '../assets/Logo.png'
+// Image paths for Safari compatibility
+const logo = '/assets/Logo.png'
 import { EventService } from '../services/eventService'
 
 const CategoriesPage = () => {

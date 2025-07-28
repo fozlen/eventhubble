@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Lock, User, ArrowLeft } from 'lucide-react'
-import logo from '../assets/Logo.png'
+// Image paths for Safari compatibility
+const logo = '/assets/Logo.png'
 
 const AdminLoginPage = () => {
   const [username, setUsername] = useState('')
