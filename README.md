@@ -106,3 +106,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ---
 
 **Built with ❤️ by EventHubble Team**
+# Force rebuild for logo fix
