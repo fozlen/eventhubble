@@ -5,6 +5,7 @@ import newLogo from '../assets/eventhubble_new_logo.png'
 import logo from '../assets/Logo.png'
 import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
+import { EventService } from '../services/eventService'
 
 const SearchResultsPage = () => {
   const [searchParams] = useSearchParams()
@@ -64,147 +65,9 @@ const SearchResultsPage = () => {
     const loadEvents = async () => {
       setLoading(true)
       try {
-        // Production'da mock data kullan, development'ta backend'e bağlan
-        const isProduction = window.location.hostname !== 'localhost'
-        
-        if (isProduction) {
-          // Mock data - genişletilmiş etkinlik listesi
-          const mockEvents = [
-            {
-              id: '1',
-              title: language === 'TR' ? 'Coachella 2024 Müzik Festivali' : 'Coachella 2024 Music Festival',
-              description: language === 'TR' 
-                ? 'Bu yılın en büyük müzik festivali. Dünyaca ünlü sanatçıların performansları.'
-                : 'The biggest music festival of the year. World-famous artists performances.',
-              category: language === 'TR' ? 'Müzik' : 'Music',
-              date: '2024-04-15',
-              time: '12:00 - 23:00',
-              venue: 'Empire Polo Club',
-              city: 'Indio, California',
-              image_url: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-              price_min: '350',
-              price_max: '1200',
-              rating: '4.8',
-              attendees: 125000,
-              available_tickets: 5000,
-              organizer: 'Goldenvoice',
-              platform: 'Coachella',
-              url: 'https://www.coachella.com'
-            },
-            {
-              id: '2',
-              title: language === 'TR' ? 'Tokyo Olimpiyat Oyunları 2024' : 'Tokyo Olympic Games 2024',
-              description: language === 'TR'
-                ? '2024 Tokyo Olimpiyat Oyunları. Dünyanın en iyi sporcularının katıldığı prestijli spor etkinliği.'
-                : '2024 Tokyo Olympic Games. A prestigious sporting event featuring the world\'s best athletes.',
-              category: language === 'TR' ? 'Spor' : 'Sports',
-              date: '2024-07-26',
-              time: '09:00 - 22:00',
-              venue: 'Tokyo Olympic Stadium',
-              city: 'Tokyo, Japan',
-              image_url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-              price_min: '50',
-              price_max: '500',
-              rating: '4.9',
-              attendees: 500000,
-              available_tickets: 15000,
-              organizer: 'Tokyo 2024 Organizing Committee',
-              platform: 'Olympics',
-              url: 'https://tokyo2020.org'
-            },
-            {
-              id: '3',
-              title: language === 'TR' ? 'Venedik Bienali 2024' : 'Venice Biennale 2024',
-              description: language === 'TR'
-                ? 'Dünyanın en prestijli sanat etkinliği. Çağdaş sanatın en iyi örneklerini görebileceğiniz uluslararası bienal.'
-                : 'The world\'s most prestigious art event. International biennale showcasing the best of contemporary art.',
-              category: language === 'TR' ? 'Sanat' : 'Art',
-              date: '2024-04-20',
-              time: '10:00 - 18:00',
-              venue: 'Giardini della Biennale',
-              city: 'Venice, Italy',
-              image_url: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop',
-              price_min: '25',
-              price_max: '150',
-              rating: '4.7',
-              attendees: 75000,
-              available_tickets: 8000,
-              organizer: 'La Biennale di Venezia',
-              platform: 'Biennale',
-              url: 'https://www.labiennale.org'
-            },
-            {
-              id: '4',
-              title: language === 'TR' ? 'SXSW Festivali Teknoloji Trendleri' : 'SXSW Festival Technology Trends',
-              description: language === 'TR' 
-                ? 'Austin\'deki festivalde öne çıkan teknoloji ve inovasyon trendleri.'
-                : 'Highlighted technology and innovation trends at the Austin festival.',
-              category: language === 'TR' ? 'Teknoloji' : 'Technology',
-              date: '2024-03-08',
-              time: '09:00 - 18:00',
-              venue: 'Austin Convention Center',
-              city: 'Austin, Texas',
-              image_url: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop',
-              price_min: '150',
-              price_max: '800',
-              rating: '4.6',
-              attendees: 45000,
-              available_tickets: 3000,
-              organizer: 'SXSW LLC',
-              platform: 'SXSW',
-              url: 'https://www.sxsw.com'
-            },
-            {
-              id: '5',
-              title: language === 'TR' ? 'Cannes Film Festivali Jüri Üyeleri' : 'Cannes Film Festival Jury Members',
-              description: language === 'TR' 
-                ? 'Bu yılın Cannes Film Festivali jüri üyeleri açıklandı.'
-                : 'This year\'s Cannes Film Festival jury members have been announced.',
-              category: language === 'TR' ? 'Film' : 'Film',
-              date: '2024-05-14',
-              time: '19:00 - 23:00',
-              venue: 'Palais des Festivals',
-              city: 'Cannes, France',
-              image_url: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=300&fit=crop',
-              price_min: '200',
-              price_max: '1000',
-              rating: '4.9',
-              attendees: 35000,
-              available_tickets: 2000,
-              organizer: 'Festival de Cannes',
-              platform: 'Cannes',
-              url: 'https://www.festival-cannes.com'
-            },
-            {
-              id: '6',
-              title: language === 'TR' ? 'FIFA Dünya Kupası 2026 Hazırlıkları' : 'FIFA World Cup 2026 Preparations',
-              description: language === 'TR' 
-                ? '2026 FIFA Dünya Kupası için ev sahibi ülkelerde hazırlıklar başladı.'
-                : 'Preparations have begun in host countries for the 2026 FIFA World Cup.',
-              category: language === 'TR' ? 'Spor' : 'Sports',
-              date: '2026-06-15',
-              time: '14:00 - 22:00',
-              venue: 'Multiple Stadiums',
-              city: 'North America',
-              image_url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-              price_min: '100',
-              price_max: '2000',
-              rating: '4.8',
-              attendees: 3000000,
-              available_tickets: 50000,
-              organizer: 'FIFA',
-              platform: 'FIFA',
-              url: 'https://www.fifa.com'
-            }
-          ]
-          
-          setEvents(mockEvents)
-        } else {
-          // Development'ta backend'e bağlan
-          const response = await fetch('http://localhost:3001/api/events')
-          const data = await response.json()
-          setEvents(data.events || [])
-        }
+        // eventService.js kullanarak tüm eventleri yükle (Manuel + Mock + API)
+        const allEvents = await EventService.getEvents()
+        setEvents(allEvents)
       } catch (error) {
         console.error('❌ Etkinlik yükleme hatası:', error)
         setEvents([])

@@ -4,6 +4,7 @@ import newLogo from '../assets/eventhubble_new_logo.png'
 import logo from '../assets/Logo.png'
 import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
+import { EventService } from '../services/eventService'
 import { 
   Search, 
   Calendar, 
@@ -71,59 +72,9 @@ const HomePage = () => {
     const loadEvents = async () => {
       setLoading(true)
       try {
-        // Production'da mock data kullan, development'ta backend'e bağlan
-        const isProduction = window.location.hostname !== 'localhost'
-        
-        if (isProduction) {
-          // Mock data kullan
-          const mockEvents = [
-            {
-              id: 1,
-              title: "Rock Festival 2024",
-              description: "The biggest rock festival of the year",
-              date: "June 15, 2024",
-              time: "19:00",
-              venue: "Kucukciftlik Park",
-              city: "Istanbul",
-              image_url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
-              platform: "Biletix",
-              category: "music",
-              url: "https://biletix.com"
-            },
-            {
-              id: 2,
-              title: "Jazz Night",
-              description: "Unique jazz performances",
-              date: "June 20, 2024",
-              time: "20:30",
-              venue: "Babylon",
-              city: "Istanbul",
-              image_url: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=300&fit=crop",
-              platform: "Bubilet",
-              category: "music",
-              url: "https://bubilet.com.tr"
-            },
-            {
-              id: 3,
-              title: "Theater Play",
-              description: "Classic theater piece",
-              date: "June 25, 2024",
-              time: "20:00",
-              venue: "Istanbul State Theater",
-              city: "Istanbul",
-              image_url: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=400&h=300&fit=crop",
-              platform: "Passo",
-              category: "theater",
-              url: "https://passo.com.tr"
-            }
-          ]
-          setEvents(mockEvents)
-        } else {
-          // Development'ta backend'e bağlan
-          const response = await fetch('http://localhost:3001/api/events')
-          const data = await response.json()
-          setEvents(data.events || [])
-        }
+        // eventService.js kullanarak tüm eventleri yükle (Manuel + Mock + API)
+        const allEvents = await EventService.getEvents()
+        setEvents(allEvents)
       } catch (error) {
         console.error('❌ Etkinlik yükleme hatası:', error)
         setEvents([])
