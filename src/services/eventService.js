@@ -4,7 +4,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD 
 export class EventService {
   // Gerçek etkinlik verilerini çek
   static async getEvents(filters = {}, language = 'EN') {
-    // Production'da sadece manuel etkinlikler kullan
+    // Production'da sadece localStorage'dan manuel etkinlikler kullan
     if (import.meta.env.PROD) {
       const manualEvents = this.getManualEvents(language)
       return manualEvents
@@ -186,12 +186,7 @@ export class EventService {
     try {
       const storedEvents = localStorage.getItem('manualEvents')
       if (!storedEvents) {
-        // Production'da varsayılan etkinlikler ekle
-        if (import.meta.env.PROD) {
-          const defaultEvents = this.getDefaultEvents(language)
-          localStorage.setItem('manualEvents', JSON.stringify(defaultEvents))
-          return defaultEvents.map(event => this.localizeEvent(event, language))
-        }
+        // Production'da boş array döndür - sadece admin'den girilen veriler
         return []
       }
       
@@ -201,15 +196,12 @@ export class EventService {
       if (!import.meta.env.PROD) {
         console.error('Manual Events Error:', error)
       }
-      // Hata durumunda varsayılan etkinlikler döndür
-      if (import.meta.env.PROD) {
-        return this.getDefaultEvents(language).map(event => this.localizeEvent(event, language))
-      }
+      // Hata durumunda boş array döndür
       return []
     }
   }
 
-  // Varsayılan etkinlikler (Production için)
+  // Varsayılan etkinlikler (Development için)
   static getDefaultEvents(language = 'EN') {
     return [
       {

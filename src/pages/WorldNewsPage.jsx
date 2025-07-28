@@ -32,73 +32,20 @@ const WorldNewsPage = () => {
   useEffect(() => {
     const loadBlogPosts = () => {
       try {
-        // Always use demo data for now
-        const demoPosts = [
-          {
-            id: 1,
-            title_tr: 'Flamingo Republic 2024: Hırvatistan\'ın En Renkli Elektronik Müzik Festivali',
-            title_en: 'Flamingo Republic 2024: Croatia\'s Most Colorful Electronic Music Festival',
-            excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2024, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
-            excerpt_en: 'Flamingo Republic 2024, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
-            content_tr: 'Zrce Beach, Hırvatistan\'ın en popüler festival destinasyonlarından biri, 28-31 Temmuz 2024 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
-            content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2024.',
-            date: '2024-07-28',
-            category: 'Festival',
-            image: '/assets/eventhubble_new_logo.png',
-            url: 'https://example.com/flamingo-republic-2024'
-          },
-          {
-            id: 2,
-            title_tr: 'Drake\'in Manchester Konseri İptal Edildi',
-            title_en: 'Drake\'s Manchester Concert Cancelled',
-            excerpt_tr: 'Dünyaca ünlü rap sanatçısı Drake\'in Manchester Co-op Live Arena\'daki konseri son dakika iptal edildi.',
-            excerpt_en: 'World-renowned rap artist Drake\'s concert at Manchester Co-op Live Arena has been cancelled at the last minute.',
-            content_tr: 'Drake\'in 28 Temmuz 2024 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
-            content_en: 'Drake\'s concert planned for July 28, 2024 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
-            date: '2024-07-28',
-            category: 'Music',
-            image: '/assets/Logo.png',
-            url: 'https://example.com/drake-manchester-cancelled'
-          }
-        ]
-        
-        // Use demo data in both production and development
-        setNewsData(demoPosts)
+        // Production'da sadece localStorage'dan blog posts yükle
+        const storedPosts = localStorage.getItem('blogPosts')
+        if (storedPosts) {
+          const posts = JSON.parse(storedPosts)
+          setNewsData(posts)
+        } else {
+          // Production'da boş array - sadece admin'den girilen veriler
+          setNewsData([])
+        }
       } catch (error) {
-        // Always set demo data as fallback to ensure page loads
-        const demoPosts = [
-          {
-            id: 1,
-            title_tr: 'Flamingo Republic 2024: Hırvatistan\'ın En Renkli Elektronik Müzik Festivali',
-            title_en: 'Flamingo Republic 2024: Croatia\'s Most Colorful Electronic Music Festival',
-            excerpt_tr: 'Zrce Beach\'te düzenlenecek Flamingo Republic 2024, 28-31 Temmuz tarihleri arasında elektronik müzik severleri bekliyor.',
-            excerpt_en: 'Flamingo Republic 2024, to be held at Zrce Beach between July 28-31, awaits electronic music lovers.',
-            content_tr: 'Zrce Beach, Hırvatistan\'ın en popüler festival destinasyonlarından biri, 28-31 Temmuz 2024 tarihleri arasında Flamingo Republic Festivali\'ne ev sahipliği yapacak.',
-            content_en: 'Zrce Beach, one of Croatia\'s most popular festival destinations, will host the Flamingo Republic Festival from July 28-31, 2024.',
-            date: '2024-07-28',
-            category: 'Festival',
-            image: '/assets/eventhubble_new_logo.png',
-            url: 'https://example.com/flamingo-republic-2024'
-          },
-          {
-            id: 2,
-            title_tr: 'Drake\'in Manchester Konseri İptal Edildi',
-            title_en: 'Drake\'s Manchester Concert Cancelled',
-            excerpt_tr: 'Dünyaca ünlü rap sanatçısı Drake\'in Manchester Co-op Live Arena\'daki konseri son dakika iptal edildi.',
-            excerpt_en: 'World-renowned rap artist Drake\'s concert at Manchester Co-op Live Arena has been cancelled at the last minute.',
-            content_tr: 'Drake\'in 28 Temmuz 2024 tarihinde Manchester Co-op Live Arena\'da gerçekleştirilmesi planlanan konseri, teknik sorunlar nedeniyle iptal edildi.',
-            content_en: 'Drake\'s concert planned for July 28, 2024 at Manchester Co-op Live Arena has been cancelled due to technical issues.',
-            date: '2024-07-28',
-            category: 'Music',
-            image: '/assets/Logo.png',
-            url: 'https://example.com/drake-manchester-cancelled'
-          }
-        ]
-        setNewsData(demoPosts)
-        
         if (!import.meta.env.PROD) {
           console.error('Error loading blog posts:', error)
         }
+        setNewsData([])
       } finally {
         setLoading(false)
       }
@@ -198,29 +145,15 @@ const WorldNewsPage = () => {
               </a>
             </nav>
             
-            {/* User Actions - Right Section */}
-            <div className="flex justify-center sm:justify-end items-center space-x-2 w-full sm:w-auto">
-              <button
+            {/* Language Toggle - Right Section */}
+            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
+              <button 
                 onClick={toggleLanguage}
-                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors p-1 md:p-0"
+                title="Language"
               >
-                <Globe className="h-4 w-4" />
-                <span className="text-sm font-medium">{language}</span>
-              </button>
-              
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 text-white/80 hover:text-white transition-colors"
-              >
-                {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </button>
-              
-              <button
-                onClick={handleLogin}
-                className="flex items-center space-x-1 bg-primary-light text-primary px-3 py-1.5 rounded-md text-sm font-medium hover:bg-primary-light/90 transition-colors"
-              >
-                <User className="h-4 w-4" />
-                <span>{language === 'TR' ? 'Admin' : 'Admin'}</span>
+                <Globe size={16} />
+                <span className="hidden sm:inline">{language.toUpperCase()}</span>
               </button>
             </div>
           </div>
@@ -316,12 +249,60 @@ const WorldNewsPage = () => {
         )}
       </main>
 
-      {/* Mobile Navigation */}
-      <div className="block sm:hidden">
-        <MobileNavigation />
-      </div>
-    </div>
-  )
-}
+              {/* Footer */}
+        <footer className="hidden sm:block bg-primary text-white py-12">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-8 items-center">
+              {/* Logo and Brand - Left Section */}
+              <div className="flex justify-center w-full sm:w-auto">
+                <div className="flex items-center space-x-2">
+                  <img 
+                    src={logo} 
+                    alt="EventHubble" 
+                    className="h-10 w-auto" 
+                  />
+                  <span className="text-xl font-bold">
+                    <span className="text-primary-cream">Event</span>
+                    <span className="text-primary-light"> Hubble</span>
+                  </span>
+                </div>
+              </div>
+              
+              {/* Company Links - Center Section */}
+              <div className="flex justify-center w-full sm:w-auto">
+                <div className="text-center">
+                  <h3 className="font-semibold mb-4">
+                    {language === 'TR' ? 'Şirket' : 'Company'}
+                  </h3>
+                  <ul className="space-y-2 text-white/80">
+                    <li><a href="/about" className="hover:text-white transition-colors">
+                      {language === 'TR' ? 'Hakkımızda' : 'About'}
+                    </a></li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Blog Links - Right Section */}
+              <div className="flex justify-center w-full sm:w-auto">
+                <div className="text-center">
+                  <h3 className="font-semibold mb-4">Blog</h3>
+                  <ul className="space-y-2 text-white/80">
+                    <li><a href="/world-news" className="hover:text-white transition-colors">
+                      {language === 'TR' ? 'Dünya Haberleri' : 'World News'}
+                    </a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
 
-export default WorldNewsPage 
+        {/* Mobile Navigation */}
+        <div className="block sm:hidden">
+          <MobileNavigation language={language} />
+        </div>
+      </div>
+    )
+  }
+  
+  export default WorldNewsPage 
