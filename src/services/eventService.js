@@ -6,14 +6,11 @@ export class EventService {
   static async getEvents(filters = {}, language = 'EN') {
     // Production'da sadece manuel etkinlikler kullan
     if (import.meta.env.PROD) {
-      console.log('🌐 Production: Sadece manuel etkinlikler kullanılıyor...')
       const manualEvents = this.getManualEvents(language)
       return manualEvents
     }
 
     try {
-      console.log('🔄 Backend API\'den veriler çekiliyor...')
-      
       const response = await fetch(`${API_BASE_URL}/events`, {
         method: 'GET',
         headers: {
@@ -26,7 +23,6 @@ export class EventService {
       }
       
       const data = await response.json()
-      console.log(`✅ ${data.events?.length || 0} etkinlik alındı`)
       
       // Manuel etkinlikleri de ekle
       const manualEvents = this.getManualEvents(language)
@@ -34,8 +30,6 @@ export class EventService {
       
       return allEvents
     } catch (error) {
-      console.error('❌ API Error:', error)
-      console.log('🔄 Fallback: Sadece manuel etkinlikler kullanılıyor...')
       // Fallback: Sadece manuel etkinlikler
       const manualEvents = this.getManualEvents(language)
       return manualEvents
@@ -56,7 +50,9 @@ export class EventService {
       }
       return await response.json()
     } catch (error) {
-      console.error('Status Error:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Status Error:', error)
+      }
       return { error: 'Backend bağlantısı yok' }
     }
   }
@@ -75,7 +71,9 @@ export class EventService {
       }
       return await response.json()
     } catch (error) {
-      console.error('Stats Error:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Stats Error:', error)
+      }
       return null
     }
   }
@@ -96,7 +94,9 @@ export class EventService {
       
       return await response.json()
     } catch (error) {
-      console.error('Scraping Error:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Scraping Error:', error)
+      }
       throw error
     }
   }
@@ -120,7 +120,9 @@ export class EventService {
       const event = await response.json()
       return this.localizeEvent(event, language)
     } catch (error) {
-      console.error('Event Details Error:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Event Details Error:', error)
+      }
       throw error
     }
   }
@@ -188,7 +190,9 @@ export class EventService {
       const events = JSON.parse(storedEvents)
       return events.map(event => this.localizeEvent(event, language))
     } catch (error) {
-      console.error('Manual Events Error:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Manual Events Error:', error)
+      }
       return []
     }
   }
@@ -208,7 +212,9 @@ export class EventService {
       localStorage.setItem('manualEvents', JSON.stringify(events))
       return newEvent
     } catch (error) {
-      console.error('Add Manual Event Error:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Add Manual Event Error:', error)
+      }
       throw error
     }
   }
@@ -232,7 +238,9 @@ export class EventService {
       localStorage.setItem('manualEvents', JSON.stringify(events))
       return events[eventIndex]
     } catch (error) {
-      console.error('Update Manual Event Error:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Update Manual Event Error:', error)
+      }
       throw error
     }
   }
@@ -245,7 +253,9 @@ export class EventService {
       localStorage.setItem('manualEvents', JSON.stringify(filteredEvents))
       return true
     } catch (error) {
-      console.error('Delete Manual Event Error:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Delete Manual Event Error:', error)
+      }
       throw error
     }
   }

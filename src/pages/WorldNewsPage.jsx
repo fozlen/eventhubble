@@ -28,11 +28,9 @@ const WorldNewsPage = () => {
     const loadBlogPosts = () => {
       try {
         const storedPosts = localStorage.getItem('blogPosts')
-        console.log('🔍 Stored posts:', storedPosts)
         
         if (storedPosts) {
           const posts = JSON.parse(storedPosts)
-          console.log('📝 Parsed posts:', posts)
           
           // Transform posts to match the expected format with localization
           const transformedPosts = posts.map(post => ({
@@ -48,11 +46,8 @@ const WorldNewsPage = () => {
             image: post.image,
             url: post.url
           }))
-          console.log('✨ Transformed posts:', transformedPosts)
           setNewsData(transformedPosts)
         } else {
-          console.log('❌ No blog posts found in localStorage')
-          
           // Demo data for production testing
           const demoPosts = [
             {
@@ -88,7 +83,9 @@ const WorldNewsPage = () => {
           setNewsData(postsToUse)
         }
       } catch (error) {
-        console.error('Error loading blog posts:', error)
+        if (!import.meta.env.PROD) {
+          console.error('Error loading blog posts:', error)
+        }
       }
     }
 
