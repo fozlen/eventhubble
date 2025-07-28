@@ -103,6 +103,7 @@ const AdminEventManagementPage = () => {
   }
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Tarih belirtilmemiş'
     const date = new Date(dateString)
     return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
       year: 'numeric',
@@ -124,7 +125,7 @@ const AdminEventManagementPage = () => {
       const newEvent = {
         ...eventData,
         id: `manual_${Date.now()}`,
-        scraped_at: new Date().toISOString(),
+        scraped_at: new Date().toISOString() || new Date('2024-07-29').toISOString(),
         status: 'active'
       }
       const updatedEvents = [...events, newEvent]

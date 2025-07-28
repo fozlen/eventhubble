@@ -93,6 +93,7 @@ const AdminDashboardPage = () => {
   }
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Tarih belirtilmemiş'
     const date = new Date(dateString)
     return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
       year: 'numeric',
@@ -129,7 +130,7 @@ const AdminDashboardPage = () => {
       const newPost = {
         ...postData,
         id: Date.now(),
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toISOString().split('T')[0] || '2024-07-29',
         author: 'Admin'
       }
       const updatedPosts = [...blogPosts, newPost]
