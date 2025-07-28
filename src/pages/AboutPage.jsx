@@ -38,7 +38,6 @@ const AboutPage = () => {
 
   const handleLogin = () => {
     // Login functionality
-    console.log('Login clicked')
   }
 
   // Get logo

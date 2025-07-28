@@ -53,7 +53,9 @@ const AdminEventManagementPage = () => {
         localStorage.setItem('manualEvents', JSON.stringify([]))
       }
     } catch (error) {
-      console.error('Error loading events:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Error loading events:', error)
+      }
     } finally {
       setIsLoading(false)
     }

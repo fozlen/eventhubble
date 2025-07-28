@@ -60,7 +60,7 @@ const SearchResultsPage = () => {
   }
 
   const handleLogin = () => {
-    console.log('Login clicked')
+    // Login functionality
   }
 
   // Load events and filter based on search criteria
@@ -72,7 +72,9 @@ const SearchResultsPage = () => {
         const allEvents = await EventService.getEvents()
         setEvents(allEvents)
       } catch (error) {
-        console.error('❌ Etkinlik yükleme hatası:', error)
+        if (!import.meta.env.PROD) {
+          console.error('Event loading error:', error)
+        }
         setEvents([])
       } finally {
         setLoading(false)

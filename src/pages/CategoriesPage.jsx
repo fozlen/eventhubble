@@ -48,7 +48,9 @@ const CategoriesPage = () => {
         const allEvents = await EventService.getEvents()
         setEvents(allEvents)
       } catch (error) {
-        console.error('Error loading events:', error)
+        if (!import.meta.env.PROD) {
+          console.error('Error loading events:', error)
+        }
         setEvents([])
       }
     }
@@ -95,7 +97,7 @@ const CategoriesPage = () => {
 
   const handleSaveCategory = () => {
     if (!formData.name.trim()) {
-      alert(language === 'TR' ? 'Kategori adı gereklidir' : 'Category name is required')
+      // Silent validation - no alert in production
       return
     }
 

@@ -62,7 +62,9 @@ const BlogDetailPage = () => {
         setBlogPost(null)
       }
     } catch (error) {
-      console.error('Error loading blog post:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Error loading blog post:', error)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -94,7 +96,7 @@ const BlogDetailPage = () => {
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href)
-      alert(language === 'TR' ? 'Link panoya kopyalandı!' : 'Link copied to clipboard!')
+      // Silent success - no alert in production
     }
   }
 

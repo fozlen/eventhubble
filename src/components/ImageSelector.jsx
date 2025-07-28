@@ -150,13 +150,13 @@ const ImageSelector = ({
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file')
+      // Silent validation - no alert in production
       return
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('File size must be less than 5MB')
+      // Silent validation - no alert in production
       return
     }
 
@@ -183,17 +183,19 @@ const ImageSelector = ({
       }
       
       reader.onerror = () => {
-        alert('Failed to read file. Please try again.')
+        // Silent error - no alert in production
         setIsUploading(false)
       }
       
       reader.readAsDataURL(file)
 
-    } catch (error) {
-      console.error('Upload error:', error)
-      alert(`Upload failed: ${error.message}`)
-      setIsUploading(false)
-    }
+          } catch (error) {
+        if (!import.meta.env.PROD) {
+          console.error('Upload error:', error)
+        }
+        // Silent error - no alert in production
+        setIsUploading(false)
+      }
   }
 
   const removeUploadedImage = () => {

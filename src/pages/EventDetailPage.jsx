@@ -54,7 +54,7 @@ const EventDetailPage = () => {
   }
 
   const handleLogin = () => {
-    console.log('Login clicked')
+    // Login functionality
   }
 
   // Share event functionality
@@ -78,29 +78,23 @@ const EventDetailPage = () => {
         const shareData = `${shareText}\n\n${eventUrl}`
         await navigator.clipboard.writeText(shareData)
         
-        // Show success message
-        alert(language === 'TR' 
-          ? 'Etkinlik linki panoya kopyalandı!'
-          : 'Event link copied to clipboard!'
-        )
+        // Silent success - no alert in production
       }
-    } catch (error) {
-      console.error('Share failed:', error)
-      // Fallback to clipboard
-      try {
-        await navigator.clipboard.writeText(eventUrl)
-        alert(language === 'TR' 
-          ? 'Etkinlik linki panoya kopyalandı!'
-          : 'Event link copied to clipboard!'
-        )
-      } catch (clipboardError) {
-        console.error('Clipboard failed:', clipboardError)
-        alert(language === 'TR' 
-          ? 'Paylaşım başarısız oldu. Lütfen linki manuel olarak kopyalayın.'
-          : 'Sharing failed. Please copy the link manually.'
-        )
+          } catch (error) {
+        if (!import.meta.env.PROD) {
+          console.error('Share failed:', error)
+        }
+        // Fallback to clipboard
+        try {
+          await navigator.clipboard.writeText(eventUrl)
+          // Silent success - no alert in production
+        } catch (clipboardError) {
+          if (!import.meta.env.PROD) {
+            console.error('Clipboard failed:', clipboardError)
+          }
+          // Silent failure - no alert in production
+        }
       }
-    }
   }
 
   useEffect(() => {
@@ -116,7 +110,9 @@ const EventDetailPage = () => {
           setEvent(null)
         }
       } catch (error) {
-        console.error('❌ Etkinlik detay yükleme hatası:', error)
+        if (!import.meta.env.PROD) {
+          console.error('Event detail loading error:', error)
+        }
         setEvent(null)
       } finally {
         setLoading(false)

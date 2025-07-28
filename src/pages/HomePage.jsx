@@ -86,7 +86,9 @@ const HomePage = () => {
         const allEvents = await EventService.getEvents()
         setEvents(allEvents)
       } catch (error) {
-        console.error('❌ Etkinlik yükleme hatası:', error)
+        if (!import.meta.env.PROD) {
+          console.error('Event loading error:', error)
+        }
         setEvents([])
       } finally {
         setLoading(false)
@@ -423,7 +425,7 @@ const HomePage = () => {
                           })
                         } else {
                           navigator.clipboard.writeText(window.location.href)
-                          alert(language === 'TR' ? 'Link kopyalandı!' : 'Link copied!')
+                          // Silent success - no alert in production
                         }
                       }}
                       language={language}

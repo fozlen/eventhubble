@@ -49,7 +49,9 @@ const AdminDashboardPage = () => {
         localStorage.setItem('blogPosts', JSON.stringify([]))
       }
     } catch (error) {
-      console.error('Error loading blog posts:', error)
+      if (!import.meta.env.PROD) {
+        console.error('Error loading blog posts:', error)
+      }
     } finally {
       setIsLoading(false)
     }
