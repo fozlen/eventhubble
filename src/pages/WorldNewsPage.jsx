@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 import { Sun, Moon, Globe, User, Calendar, ArrowRight } from 'lucide-react'
 // Image paths for API compatibility
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
@@ -11,17 +12,13 @@ import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 
 const WorldNewsPage = () => {
+  const navigate = useNavigate()
+  const { language, toggleLanguage } = useLanguage()
   const [newsData, setNewsData] = useState([])
   const [loading, setLoading] = useState(true)
   const [isDarkMode, setIsDarkMode] = useState(false)
-  const [language, setLanguage] = useState('TR')
-  const navigate = useNavigate()
 
-  // Load language from localStorage
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') || 'TR'
-    setLanguage(savedLanguage)
-  }, [])
+
 
   // Load dark mode from localStorage
   useEffect(() => {
@@ -69,11 +66,7 @@ const WorldNewsPage = () => {
     localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+
 
   const handleLogin = () => {
     navigate('/admin/login')

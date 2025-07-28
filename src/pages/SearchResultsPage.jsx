@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Filter, ChevronDown, Map, ExternalLink } from 'lucide-react'
 // Image paths for API compatibility
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
@@ -15,14 +16,11 @@ import MobileNavigation from '../components/MobileNavigation'
 const SearchResultsPage = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const { language, toggleLanguage } = useLanguage()
   const [events, setEvents] = useState([])
   const [filteredEvents, setFilteredEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
-  const [language, setLanguage] = useState(() => {
-    // Load language preference from localStorage
-    return localStorage.getItem('language') || 'EN'
-  })
   const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'price'
   const [showMap, setShowMap] = useState(false)
 
@@ -55,11 +53,7 @@ const SearchResultsPage = () => {
     localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+
 
   const handleLogin = () => {
     // Login functionality

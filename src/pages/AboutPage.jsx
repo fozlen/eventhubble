@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 import { Sun, Moon, Globe, User, ArrowLeft } from 'lucide-react'
 // Image paths for API compatibility
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
@@ -12,11 +13,9 @@ import MobileNavigation from '../components/MobileNavigation'
 
 
 const AboutPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'EN'
-  })
   const navigate = useNavigate()
+  const { language, toggleLanguage } = useLanguage()
+  const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
 
   // Dark mode effect - no longer needed
   useEffect(() => {
@@ -32,11 +31,7 @@ const AboutPage = () => {
     // No dark mode anymore, this function is not used
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'EN' ? 'TR' : 'EN'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+
 
   const handleLogin = () => {
     // Login functionality
