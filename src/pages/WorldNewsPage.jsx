@@ -78,9 +78,8 @@ const WorldNewsPage = () => {
             }
           ]
           
-          // Use demo data in production, empty array in development
-          const postsToUse = import.meta.env.PROD ? demoPosts : []
-          setNewsData(postsToUse)
+          // Use demo data in both production and development
+          setNewsData(demoPosts)
         }
       } catch (error) {
         if (!import.meta.env.PROD) {
