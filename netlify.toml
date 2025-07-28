@@ -1,6 +1,7 @@
 [build]
   publish = "dist"
   command = "npm run build"
+  timeout = 600
 
 [build.environment]
   NODE_VERSION = "18"

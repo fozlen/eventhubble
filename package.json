@@ -44,7 +44,7 @@
     "multer": "^2.0.2",
     "node-cron": "^3.0.3",
     "path": "^0.12.7",
-    "puppeteer": "^21.0.0"
+    "puppeteer": "^22.8.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
