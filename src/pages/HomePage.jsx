@@ -9,6 +9,7 @@ import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
 import MobileEventCard from '../components/MobileEventCard'
 import MobileFilters from '../components/MobileFilters'
+import ModernSearchBox from '../components/ModernSearchBox'
 import { 
   Search, 
   Calendar, 
@@ -244,9 +245,21 @@ const HomePage = () => {
             {language === 'TR' ? 'Akıllı arama ve gelişmiş filtrelerle hayalinizdeki etkinlikleri bulun.' : 'Find your dream events with smart search and advanced filters.'}
           </p>
           
-          {/* Search Box */}
-          <div className="max-w-xl sm:max-w-2xl mx-auto px-2 sm:px-4">
-            <div className="flex flex-col sm:flex-row rounded-full shadow-lg p-1.5 sm:p-2 bg-white">
+          {/* Mobile Search Box */}
+          <div className="block sm:hidden max-w-xl mx-auto px-4">
+            <ModernSearchBox
+              language={language}
+              onSearch={(term) => {
+                setSearchTerm(term)
+                handleSearch()
+              }}
+              showCloseButton={false}
+            />
+          </div>
+
+          {/* Desktop Search Box */}
+          <div className="hidden sm:block max-w-xl sm:max-w-2xl mx-auto px-2 sm:px-4">
+            <div className="flex flex-row rounded-full shadow-lg p-1.5 sm:p-2 bg-white">
               <div className="flex-1 flex items-center px-2.5 sm:px-4 py-2.5 sm:py-0">
                 <Search className="mr-2 sm:mr-3 text-text/50 flex-shrink-0" size={18} />
                 <input
@@ -260,7 +273,7 @@ const HomePage = () => {
               </div>
               <button
                 onClick={handleSearch}
-                className="bg-primary text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center space-x-1.5 sm:space-x-2 mt-1.5 sm:mt-0 whitespace-nowrap"
+                className="bg-primary text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center space-x-1.5 sm:space-x-2 whitespace-nowrap"
               >
                 <Search size={14} />
                 <span className="text-xs sm:text-sm">{language === 'TR' ? 'Ara' : 'Search'}</span>
