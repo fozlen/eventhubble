@@ -180,16 +180,18 @@ const AdminLoginPage = () => {
               </button>
             </form>
 
-            {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-background-secondary rounded-lg">
-              <h3 className="text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'Demo Bilgileri' : 'Demo Credentials'}
-              </h3>
-              <div className="text-xs text-text/60 space-y-1">
-                <p><strong>{language === 'TR' ? 'Kullanıcı Adı:' : 'Username:'}</strong> admin</p>
-                <p><strong>{language === 'TR' ? 'Şifre:' : 'Password:'}</strong> eventhubble2024</p>
+            {/* Demo Credentials - Only in Development */}
+            {import.meta.env.DEV && (
+              <div className="mt-6 p-4 bg-background-secondary rounded-lg">
+                <h3 className="text-sm font-medium text-text mb-2">
+                  {language === 'TR' ? 'Demo Bilgileri (Sadece Geliştirme)' : 'Demo Credentials (Development Only)'}
+                </h3>
+                <div className="text-xs text-text/60 space-y-1">
+                  <p><strong>{language === 'TR' ? 'Kullanıcı Adı:' : 'Username:'}</strong> admin</p>
+                  <p><strong>{language === 'TR' ? 'Şifre:' : 'Password:'}</strong> eventhubble2024</p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
