@@ -6,7 +6,7 @@ import logo from '../assets/Logo.png'
 import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
 import MobileHeader from '../components/MobileHeader'
-import MobileFooter from '../components/MobileFooter'
+
 
 const BlogDetailPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
@@ -164,7 +164,7 @@ const BlogDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20 sm:pb-0">
+    <div className="min-h-screen bg-background">
       {/* Mobile Header */}
       <div className="block sm:hidden">
         <MobileHeader
@@ -377,8 +377,7 @@ const BlogDetailPage = () => {
         </div>
       </footer>
 
-      {/* Mobile Footer */}
-      <MobileFooter language={language} />
+
     </div>
   )
 }

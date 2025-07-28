@@ -7,7 +7,7 @@ import logoWithoutBg from '../assets/Logo w_out background.png'
 import mainLogo from '../assets/MainLogo.png'
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
-import MobileFooter from '../components/MobileFooter'
+
 
 const EventDetailPage = () => {
   const { eventId } = useParams()
@@ -158,7 +158,7 @@ const EventDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20 sm:pb-0">
+    <div className="min-h-screen bg-background">
       {/* Mobile Header */}
       <div className="block sm:hidden">
         <MobileHeader
@@ -450,8 +450,7 @@ const EventDetailPage = () => {
         </div>
       </footer>
 
-      {/* Mobile Footer */}
-      <MobileFooter language={language} />
+
     </div>
   )
 }

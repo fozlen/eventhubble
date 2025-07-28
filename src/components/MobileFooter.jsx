@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Home, Info, Newspaper, Search } from 'lucide-react'
+import { Home, Info, Newspaper } from 'lucide-react'
 
 const MobileFooter = ({ language = "EN" }) => {
   const navigate = useNavigate()
@@ -29,11 +29,6 @@ const MobileFooter = ({ language = "EN" }) => {
       path: '/world-news',
       icon: Newspaper,
       label: language === 'TR' ? 'Haberler' : 'News'
-    },
-    {
-      path: '/search',
-      icon: Search,
-      label: language === 'TR' ? 'Arama' : 'Search'
     }
   ]
 

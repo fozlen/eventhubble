@@ -47,13 +47,6 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <button
-              onClick={onMenuClick}
-              className="p-2 rounded-lg transition-colors text-white hover:bg-white/10"
-            >
-              <Menu size={20} />
-            </button>
-            
             <div className="flex items-center space-x-2">
               <img 
                 src={logo} 
@@ -67,14 +60,8 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
             </div>
           </div>
 
-          {/* Right Actions - Search and Language Toggle */}
-          <div className="flex items-center space-x-1">
-            <button
-              onClick={() => setShowSearch(!showSearch)}
-              className="p-2 rounded-lg transition-colors text-white hover:bg-white/10"
-            >
-              <Search size={20} />
-            </button>
+          {/* Right Actions - Only Language Toggle */}
+          <div className="flex items-center">
             <button
               onClick={toggleLanguage}
               className="p-2 rounded-lg transition-colors text-white hover:bg-white/10"
