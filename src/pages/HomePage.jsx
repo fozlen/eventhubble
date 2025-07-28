@@ -54,15 +54,25 @@ const HomePage = () => {
     }
   }, [])
 
-  // Categories - with modern icons
+  // Categories - with modern icons and dynamic counts
   const categories = [
-    { id: 'music', name: language === 'TR' ? 'Müzik' : 'Music', icon: Music, subtitle: language === 'TR' ? 'Konserler & Festivaller' : 'Concerts & Festivals', count: 3, total: '2.5K+' },
-    { id: 'theater', name: language === 'TR' ? 'Tiyatro' : 'Theater', icon: Film, subtitle: language === 'TR' ? 'Oyunlar & Gösteriler' : 'Plays & Shows', count: 1, total: '1.2K+' },
-    { id: 'sports', name: language === 'TR' ? 'Spor' : 'Sports', icon: Trophy, subtitle: language === 'TR' ? 'Maçlar & Turnuvalar' : 'Matches & Tournaments', count: 1, total: '3.8K+' },
-    { id: 'art', name: language === 'TR' ? 'Sanat' : 'Art', icon: Palette, subtitle: language === 'TR' ? 'Sergiler & Atölyeler' : 'Exhibitions & Workshops', count: 1, total: '1.8K+' },
-    { id: 'gastronomy', name: language === 'TR' ? 'Gastronomi' : 'Gastronomy', icon: ChefHat, subtitle: language === 'TR' ? 'Tatma & Atölyeler' : 'Tastings & Workshops', count: 1, total: '950+' },
-    { id: 'education', name: language === 'TR' ? 'Eğitim' : 'Education', icon: GraduationCap, subtitle: language === 'TR' ? 'Seminerler & Kurslar' : 'Seminars & Courses', count: 1, total: '720+' }
+    { id: 'music', name: language === 'TR' ? 'Müzik' : 'Music', icon: Music, subtitle: language === 'TR' ? 'Konserler & Festivaller' : 'Concerts & Festivals' },
+    { id: 'theater', name: language === 'TR' ? 'Tiyatro' : 'Theater', icon: Film, subtitle: language === 'TR' ? 'Oyunlar & Gösteriler' : 'Plays & Shows' },
+    { id: 'sports', name: language === 'TR' ? 'Spor' : 'Sports', icon: Trophy, subtitle: language === 'TR' ? 'Maçlar & Turnuvalar' : 'Matches & Tournaments' },
+    { id: 'art', name: language === 'TR' ? 'Sanat' : 'Art', icon: Palette, subtitle: language === 'TR' ? 'Sergiler & Atölyeler' : 'Exhibitions & Workshops' },
+    { id: 'gastronomy', name: language === 'TR' ? 'Gastronomi' : 'Gastronomy', icon: ChefHat, subtitle: language === 'TR' ? 'Tatma & Atölyeler' : 'Tastings & Workshops' },
+    { id: 'education', name: language === 'TR' ? 'Eğitim' : 'Education', icon: GraduationCap, subtitle: language === 'TR' ? 'Seminerler & Kurslar' : 'Seminars & Courses' }
   ]
+
+  // Calculate dynamic counts for each category
+  const categoriesWithCounts = categories.map(category => {
+    const count = events.filter(event => event.category === category.id).length
+    return {
+      ...category,
+      count: count,
+      total: count > 0 ? `${count}+` : '0'
+    }
+  })
 
   // Cities
   const cities = ['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Antalya', 'Adana', 'Konya', 'Gaziantep']
@@ -267,7 +277,7 @@ const HomePage = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
-            {categories.map((category) => {
+            {categoriesWithCounts.map((category) => {
               const IconComponent = category.icon
               return (
                 <div

@@ -15,18 +15,20 @@ import {
   X
 } from 'lucide-react'
 import logo from '../assets/Logo.png'
+import { EventService } from '../services/eventService'
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([
-    { id: 1, name: 'Music', description: 'Concerts, festivals, and musical events', postCount: 15, color: '#473B73' },
-    { id: 2, name: 'Theater', description: 'Plays, shows, and theatrical performances', postCount: 8, color: '#8B5CF6' },
-    { id: 3, name: 'Sports', description: 'Matches, tournaments, and sporting events', postCount: 12, color: '#10B981' },
-    { id: 4, name: 'Art', description: 'Exhibitions, workshops, and art events', postCount: 6, color: '#F59E0B' },
-    { id: 5, name: 'Gastronomy', description: 'Food tastings, cooking workshops', postCount: 4, color: '#EF4444' },
-    { id: 6, name: 'Education', description: 'Seminars, courses, and learning events', postCount: 9, color: '#3B82F6' },
-    { id: 7, name: 'Technology', description: 'Tech conferences and workshops', postCount: 7, color: '#6366F1' },
-    { id: 8, name: 'Fashion', description: 'Fashion shows and style events', postCount: 3, color: '#EC4899' }
+    { id: 'music', name: 'Music', description: 'Concerts, festivals, and musical events', color: '#473B73' },
+    { id: 'theater', name: 'Theater', description: 'Plays, shows, and theatrical performances', color: '#8B5CF6' },
+    { id: 'sports', name: 'Sports', description: 'Matches, tournaments, and sporting events', color: '#10B981' },
+    { id: 'art', name: 'Art', description: 'Exhibitions, workshops, and art events', color: '#F59E0B' },
+    { id: 'gastronomy', name: 'Gastronomy', description: 'Food tastings, cooking workshops', color: '#EF4444' },
+    { id: 'education', name: 'Education', description: 'Seminars, courses, and learning events', color: '#3B82F6' },
+    { id: 'technology', name: 'Technology', description: 'Tech conferences and workshops', color: '#6366F1' },
+    { id: 'fashion', name: 'Fashion', description: 'Fashion shows and style events', color: '#EC4899' }
   ])
+  const [events, setEvents] = useState([])
   const [language, setLanguage] = useState('EN')
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingCategory, setEditingCategory] = useState(null)
@@ -37,12 +39,25 @@ const CategoriesPage = () => {
   })
   const navigate = useNavigate()
 
-  // Load language preference
+  // Load language preference and events
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language')
     if (savedLanguage) {
       setLanguage(savedLanguage)
     }
+
+    // Load events for dynamic counts
+    const loadEvents = async () => {
+      try {
+        const allEvents = await EventService.getEvents()
+        setEvents(allEvents)
+      } catch (error) {
+        console.error('Error loading events:', error)
+        setEvents([])
+      }
+    }
+
+    loadEvents()
   }, [])
 
   const handleLogout = () => {
@@ -220,7 +235,10 @@ const CategoriesPage = () => {
 
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((category) => (
+          {categories.map((category) => {
+            // Calculate dynamic post count for this category
+            const postCount = events.filter(event => event.category === category.id).length
+            return (
             <div key={category.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -252,7 +270,7 @@ const CategoriesPage = () => {
               
               <div className="flex items-center justify-between">
                 <span className="text-sm text-text/60">
-                  {language === 'TR' ? `${category.postCount} yazı` : `${category.postCount} posts`}
+                  {language === 'TR' ? `${postCount} yazı` : `${postCount} posts`}
                 </span>
                 <div 
                   className="px-3 py-1 rounded-full text-xs font-medium text-white"
@@ -262,7 +280,8 @@ const CategoriesPage = () => {
                 </div>
               </div>
             </div>
-          ))}
+          )
+          })}
         </div>
       </main>
 
