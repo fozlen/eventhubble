@@ -552,15 +552,11 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">
-                    {language === 'TR' ? 'Resim URL' : 'Image URL'}
-                  </label>
-                  <input
-                    type="url"
+                  <ImageSelector
                     value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                    placeholder="https://example.com/image.jpg"
+                    onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
+                    placeholder={language === 'TR' ? 'Resim URL\'si girin veya listeden seçin...' : 'Enter image URL or select from dropdown...'}
+                    label={language === 'TR' ? 'Resim URL' : 'Image URL'}
                   />
                 </div>
               </div>
