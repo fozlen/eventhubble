@@ -45,7 +45,14 @@ const BlogDetailPage = () => {
         const posts = JSON.parse(storedPosts)
         const post = posts.find(p => p.id === parseInt(id))
         if (post) {
-          setBlogPost(post)
+          // Localize the blog post based on current language
+          const localizedPost = {
+            ...post,
+            title: language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title),
+            excerpt: language === 'TR' ? (post.excerpt_tr || post.excerpt) : (post.excerpt_en || post.excerpt),
+            content: language === 'TR' ? (post.content_tr || post.content) : (post.content_en || post.content)
+          }
+          setBlogPost(localizedPost)
         } else {
           // Blog yazısı bulunamadı
           setBlogPost(null)

@@ -30,18 +30,19 @@ const WorldNewsPage = () => {
         const storedPosts = localStorage.getItem('blogPosts')
         if (storedPosts) {
           const posts = JSON.parse(storedPosts)
-          // Transform posts to match the expected format
+          // Transform posts to match the expected format with localization
           const transformedPosts = posts.map(post => ({
             id: post.id,
-            title: post.title,
-            excerpt: post.excerpt,
-            date: new Date(post.date).toLocaleDateString('en-US', {
+            title: language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title),
+            excerpt: language === 'TR' ? (post.excerpt_tr || post.excerpt) : (post.excerpt_en || post.excerpt),
+            date: new Date(post.date || new Date()).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric'
             }),
             category: post.category,
-            image: post.image
+            image: post.image,
+            url: post.url
           }))
           setNewsData(transformedPosts)
         } else {

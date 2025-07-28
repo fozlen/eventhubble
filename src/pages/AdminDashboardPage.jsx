@@ -382,6 +382,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
     content_en: post?.content_en || post?.content || '',
     category: post?.category || 'Music',
     image: post?.image || '',
+    url: post?.url || '',
     tags: post?.tags?.join(', ') || ''
   })
 
@@ -559,6 +560,19 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                     label={language === 'TR' ? 'Resim URL' : 'Image URL'}
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
+                  {language === 'TR' ? 'Referans URL' : 'Reference URL'}
+                </label>
+                <input
+                  type="url"
+                  value={formData.url}
+                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                  placeholder={language === 'TR' ? 'https://example.com/blog-post' : 'https://example.com/blog-post'}
+                />
               </div>
 
               <div>
