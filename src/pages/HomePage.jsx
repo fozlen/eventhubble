@@ -10,6 +10,7 @@ import MobileEventCard from '../components/MobileEventCard'
 import MobileFilters from '../components/MobileFilters'
 import ModernSearchBox from '../components/ModernSearchBox'
 import MobileNavigation from '../components/MobileNavigation'
+import Footer from '../components/Footer'
 
 import { 
   Search, 
