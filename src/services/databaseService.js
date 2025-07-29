@@ -216,6 +216,156 @@ class DatabaseService {
     })
   }
 
+  // ===== CRUD OPERATIONS =====
+  
+  // Events CRUD
+  static async createEvent(eventData) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/events/db`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(eventData)
+      })
+      
+      if (!response.ok) throw new Error('Failed to create event')
+      
+      const result = await response.json()
+      return result.success ? result.event : null
+    } catch (error) {
+      throw new Error(`Create event failed: ${error.message}`)
+    }
+  }
+
+  static async updateEvent(eventId, eventData) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/events/db/${eventId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(eventData)
+      })
+      
+      if (!response.ok) throw new Error('Failed to update event')
+      
+      const result = await response.json()
+      return result.success ? result.event : null
+    } catch (error) {
+      throw new Error(`Update event failed: ${error.message}`)
+    }
+  }
+
+  static async deleteEvent(eventId) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/events/db/${eventId}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) throw new Error('Failed to delete event')
+      
+      const result = await response.json()
+      return result.success
+    } catch (error) {
+      throw new Error(`Delete event failed: ${error.message}`)
+    }
+  }
+
+  // Blog Posts CRUD
+  static async createBlogPost(postData) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/blog-posts/db`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData)
+      })
+      
+      if (!response.ok) throw new Error('Failed to create blog post')
+      
+      const result = await response.json()
+      return result.success ? result.post : null
+    } catch (error) {
+      throw new Error(`Create blog post failed: ${error.message}`)
+    }
+  }
+
+  static async updateBlogPost(postId, postData) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/blog-posts/db/${postId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData)
+      })
+      
+      if (!response.ok) throw new Error('Failed to update blog post')
+      
+      const result = await response.json()
+      return result.success ? result.post : null
+    } catch (error) {
+      throw new Error(`Update blog post failed: ${error.message}`)
+    }
+  }
+
+  static async deleteBlogPost(postId) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/blog-posts/db/${postId}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) throw new Error('Failed to delete blog post')
+      
+      const result = await response.json()
+      return result.success
+    } catch (error) {
+      throw new Error(`Delete blog post failed: ${error.message}`)
+    }
+  }
+
+  // Images CRUD
+  static async createImage(imageData) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/images`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(imageData)
+      })
+      
+      if (!response.ok) throw new Error('Failed to create image')
+      
+      const result = await response.json()
+      return result.success ? result.image : null
+    } catch (error) {
+      throw new Error(`Create image failed: ${error.message}`)
+    }
+  }
+
+  // Logos CRUD
+  static async createLogo(logoData) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/logos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(logoData)
+      })
+      
+      if (!response.ok) throw new Error('Failed to create logo')
+      
+      const result = await response.json()
+      return result.success ? result.logo : null
+    } catch (error) {
+      throw new Error(`Create logo failed: ${error.message}`)
+    }
+  }
+
   // Cache wrapper for expensive operations
   static async getCachedData(key, fetchFunction, cacheTime = 300000) { // 5 minutes default
     const cacheKey = `db_cache_${key}`

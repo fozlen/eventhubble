@@ -1,9 +1,9 @@
-const express = require('express')
-const multer = require('multer')
-const cors = require('cors')
-const path = require('path')
-const fs = require('fs-extra')
-const supabaseService = require('./supabaseService')
+import express from 'express'
+import multer from 'multer'
+import cors from 'cors'
+import path from 'path'
+import fs from 'fs-extra'
+import supabaseService from './supabaseService.js'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -130,8 +130,9 @@ app.get('/api/assets/:filename', (req, res) => {
   }
 })
 
-// ===== DATABASE CONTENT APIS =====
 import DatabaseService from './databaseService.js'
+
+// ===== DATABASE CONTENT APIS =====
 
 // Logos API
 app.get('/api/logos', async (req, res) => {
@@ -263,6 +264,84 @@ app.get('/api/blog-posts/db/:slug', async (req, res) => {
     res.json(result)
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to fetch blog post' })
+  }
+})
+
+// ===== WRITE/UPDATE/DELETE APIs =====
+
+// Events CRUD
+app.post('/api/events/db', async (req, res) => {
+  try {
+    const result = await DatabaseService.createEvent(req.body)
+    res.status(201).json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to create event' })
+  }
+})
+
+app.put('/api/events/db/:eventId', async (req, res) => {
+  try {
+    const result = await DatabaseService.updateEvent(req.params.eventId, req.body)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update event' })
+  }
+})
+
+app.delete('/api/events/db/:eventId', async (req, res) => {
+  try {
+    const result = await DatabaseService.deleteEvent(req.params.eventId)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to delete event' })
+  }
+})
+
+// Blog Posts CRUD
+app.post('/api/blog-posts/db', async (req, res) => {
+  try {
+    const result = await DatabaseService.createBlogPost(req.body)
+    res.status(201).json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to create blog post' })
+  }
+})
+
+app.put('/api/blog-posts/db/:postId', async (req, res) => {
+  try {
+    const result = await DatabaseService.updateBlogPost(req.params.postId, req.body)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update blog post' })
+  }
+})
+
+app.delete('/api/blog-posts/db/:postId', async (req, res) => {
+  try {
+    const result = await DatabaseService.deleteBlogPost(req.params.postId)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to delete blog post' })
+  }
+})
+
+// Images CRUD
+app.post('/api/images', async (req, res) => {
+  try {
+    const result = await DatabaseService.createImage(req.body)
+    res.status(201).json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to create image' })
+  }
+})
+
+// Logos CRUD
+app.post('/api/logos', async (req, res) => {
+  try {
+    const result = await DatabaseService.createLogo(req.body)
+    res.status(201).json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to create logo' })
   }
 })
 

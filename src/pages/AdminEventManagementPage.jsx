@@ -8,6 +8,7 @@ const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
 import ImageSelector from '../components/ImageSelector'
 import { EventService } from '../services/eventService'
+import DatabaseService from '../services/databaseService'
 
 const AdminEventManagementPage = () => {
   const [events, setEvents] = useState([])
@@ -47,23 +48,30 @@ const AdminEventManagementPage = () => {
     loadEvents()
   }, [navigate])
 
-  const loadEvents = () => {
+  const loadEvents = async () => {
     try {
-      // Manuel etkinlikleri yükle
+      setIsLoading(true)
+      
+      // Database'den etkinlikleri yükle
+      const dbEvents = await DatabaseService.getEvents()
+      
+      // Manuel etkinlikleri de yükle (fallback olarak)
       const storedEvents = localStorage.getItem('manualEvents')
       const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
       
-      // Sadece manuel etkinlikleri kullan
-      setEvents(manualEvents)
+      // Database ve manuel etkinlikleri birleştir
+      const allEvents = [...dbEvents, ...manualEvents]
+      setEvents(allEvents)
       
       // İlk kez yükleniyorsa localStorage'ı initialize et
       if (!storedEvents) {
         localStorage.setItem('manualEvents', JSON.stringify([]))
       }
     } catch (error) {
-      if (!import.meta.env.PROD) {
-        console.error('Error loading events:', error)
-      }
+      // Hata durumunda sadece local events'i göster
+      const storedEvents = localStorage.getItem('manualEvents')
+      const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
+      setEvents(manualEvents)
     } finally {
       setIsLoading(false)
     }
@@ -85,21 +93,32 @@ const AdminEventManagementPage = () => {
     setShowAddModal(true)
   }
 
-  const handleDeleteEvent = (eventId) => {
+  const handleDeleteEvent = async (eventId) => {
     const confirmMessage = language === 'TR' 
       ? 'Bu etkinliği silmek istediğinizden emin misiniz?'
       : 'Are you sure you want to delete this event?'
     
     if (window.confirm(confirmMessage)) {
-      // Manuel etkinlikleri localStorage'dan sil
-      const storedEvents = localStorage.getItem('manualEvents')
-      const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
-      const updatedManualEvents = manualEvents.filter(event => event.id !== eventId)
-      localStorage.setItem('manualEvents', JSON.stringify(updatedManualEvents))
-      
-      // UI'dan kaldır
-      const updatedEvents = events.filter(event => event.id !== eventId)
-      setEvents(updatedEvents)
+      try {
+        // Find the event to determine if it's database or local
+        const eventToDelete = events.find(e => e.id === eventId)
+        
+        if (eventToDelete?.event_id) {
+          // Database event - use API
+          await DatabaseService.deleteEvent(eventToDelete.event_id)
+        } else {
+          // Local event - remove from localStorage
+          const storedEvents = localStorage.getItem('manualEvents')
+          const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
+          const updatedManualEvents = manualEvents.filter(event => event.id !== eventId)
+          localStorage.setItem('manualEvents', JSON.stringify(updatedManualEvents))
+        }
+        
+        // Reload events to get updated data
+        await loadEvents()
+      } catch (error) {
+        alert(language === 'TR' ? 'Etkinlik silinirken hata oluştu' : 'Error deleting event')
+      }
     }
   }
 
@@ -119,28 +138,56 @@ const AdminEventManagementPage = () => {
     })
   }
 
-  const handleSaveEvent = (eventData) => {
-    if (editingEvent) {
-      // Update existing event
-      const updatedEvents = events.map(event => 
-        event.id === editingEvent.id ? { ...eventData, id: event.id } : event
-      )
-      setEvents(updatedEvents)
-      localStorage.setItem('manualEvents', JSON.stringify(updatedEvents))
-    } else {
-      // Add new event
-      const newEvent = {
-        ...eventData,
-        id: `manual_${Date.now()}`,
-        scraped_at: new Date().toISOString() || new Date('2024-07-29').toISOString(),
-        status: 'active'
+  const handleSaveEvent = async (eventData) => {
+    try {
+      if (editingEvent) {
+        // Update existing event
+        if (editingEvent.event_id) {
+          // Database event - use API
+          await DatabaseService.updateEvent(editingEvent.event_id, eventData)
+        } else {
+          // Local event - update localStorage
+          const storedEvents = localStorage.getItem('manualEvents')
+          const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
+          const updatedEvents = manualEvents.map(event => 
+            event.id === editingEvent.id ? { ...eventData, id: event.id } : event
+          )
+          localStorage.setItem('manualEvents', JSON.stringify(updatedEvents))
+        }
+      } else {
+        // Add new event - try database first, fallback to localStorage
+        try {
+          const newEventData = {
+            ...eventData,
+            event_id: `event_${Date.now()}`,
+            scraped_at: new Date().toISOString(),
+            status: 'active',
+            is_active: true
+          }
+          
+          await DatabaseService.createEvent(newEventData)
+        } catch (dbError) {
+          // Fallback to localStorage
+          const newEvent = {
+            ...eventData,
+            id: `manual_${Date.now()}`,
+            scraped_at: new Date().toISOString(),
+            status: 'active'
+          }
+          const storedEvents = localStorage.getItem('manualEvents')
+          const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
+          const updatedEvents = [...manualEvents, newEvent]
+          localStorage.setItem('manualEvents', JSON.stringify(updatedEvents))
+        }
       }
-      const updatedEvents = [...events, newEvent]
-      setEvents(updatedEvents)
-      localStorage.setItem('manualEvents', JSON.stringify(updatedEvents))
+      
+      // Reload events to get updated data
+      await loadEvents()
+      setShowAddModal(false)
+      setEditingEvent(null)
+    } catch (error) {
+      alert(language === 'TR' ? 'Etkinlik kaydedilirken hata oluştu' : 'Error saving event')
     }
-    setShowAddModal(false)
-    setEditingEvent(null)
   }
 
   if (isLoading) {

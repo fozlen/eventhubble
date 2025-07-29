@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 import CacheService from '../services/cacheService'
 import LogoService from '../services/logoService'
 import { EventService } from '../services/eventService'
+import DatabaseService from '../services/databaseService'
 import MobileHeader from '../components/MobileHeader'
 import MobileEventCard from '../components/MobileEventCard'
 import MobileFilters from '../components/MobileFilters'
@@ -107,8 +108,12 @@ const HomePage = () => {
     const loadEvents = async () => {
       setLoading(true)
       try {
-        // eventService.js kullanarak tüm eventleri yükle (Manuel + API)
-        const allEvents = await EventService.getEvents()
+        // Database ve eventService'den tüm eventleri yükle
+        const dbEvents = await DatabaseService.getEvents()
+        const apiEvents = await EventService.getEvents()
+        
+        // Database ve API eventlerini birleştir
+        const allEvents = [...dbEvents, ...apiEvents]
         setEvents(allEvents)
       } catch (error) {
         if (!import.meta.env.PROD) {

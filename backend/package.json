@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "EventHubble Backend - Otomatik Etkinlik Scraper",
   "main": "uploadServer.js",
+  "type": "module",
   "scripts": {
     "start": "node uploadServer.js",
     "scrape": "node scraper.js",
