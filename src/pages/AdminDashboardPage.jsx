@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { 
   Plus, Edit, Trash2, Save, X, LogOut, Globe, Settings, 
-  Megaphone, BarChart3, Tag, Eye, Calendar, User 
+  Megaphone, BarChart3, Tag, Eye, Calendar, User, FileText 
 } from 'lucide-react'
 import LogoService from '../services/logoService'
 
