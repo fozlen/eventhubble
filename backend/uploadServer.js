@@ -55,44 +55,45 @@ app.use((req, res, next) => {
   next()
 })
 
-// CORS ayarları - Production için dinamik
-const corsOrigins = process.env.CORS_ORIGINS 
-  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-  : [
-      'http://localhost:5173', 
-      'http://localhost:3000', 
-      'https://eventhubble.netlify.app',
-      'https://deploy-preview-*--eventhubble.netlify.app',
-      'https://eventhubble.com',
-      'https://*.netlify.app'
-    ]
-
+// CORS ayarları - Allow all origins for production fix
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, postman, etc.)
-    if (!origin) return callback(null, true)
-    
-    // Check if origin is in allowed list or matches pattern
-    const isAllowed = corsOrigins.some(allowedOrigin => {
-      if (allowedOrigin.includes('*')) {
-        const pattern = allowedOrigin.replace(/\*/g, '.*')
-        return new RegExp(pattern).test(origin)
-      }
-      return allowedOrigin === origin
-    })
-    
-    if (isAllowed) {
-      callback(null, true)
-    } else {
-      callback(null, true) // Allow all for now - can restrict later
-    }
-  },
+  origin: true, // Allow all origins
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
 }))
 
+// Additional CORS headers for problematic requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200)
+  } else {
+    next()
+  }
+})
+
 app.use(express.json())
+
+// Static assets'i en üstte serve et (CORS'dan sonra)
+app.use('/assets', express.static(assetsDir, {
+  setHeaders: (res, path) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Cache-Control', 'public, max-age=31536000')
+  }
+}))
+
+// Uploaded images'i serve et
+app.use('/images', express.static(uploadsDir, {
+  setHeaders: (res, path) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Cache-Control', 'public, max-age=86400')
+  }
+}))
 
 // Static dosya servisi için uploads klasörü
 const uploadsDir = path.join(__dirname, 'uploads')
@@ -677,23 +678,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
   }
 })
 
-// Static assets'i serve et - CORS headers ile
-app.use('/assets', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Methods', 'GET')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
-  res.header('Cache-Control', 'public, max-age=31536000') // 1 yıl cache
-  next()
-}, express.static(assetsDir))
-
-// Uploaded images'i serve et - CORS headers ile
-app.use('/images', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Methods', 'GET')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
-  res.header('Cache-Control', 'public, max-age=86400') // 1 gün cache
-  next()
-}, express.static(uploadsDir))
+// Static middleware moved to top of file - removing duplicates
 
 // Error handling middleware
 app.use((error, req, res, next) => {
