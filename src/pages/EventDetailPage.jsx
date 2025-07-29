@@ -95,7 +95,6 @@ const EventDetailPage = () => {
 
   useEffect(() => {
     const loadEventDetail = async () => {
-      setLoading(true)
       try {
         // EventService kullanarak event detaylarını yükle
         const eventDetail = await EventService.getEventDetails(eventId)
@@ -110,9 +109,8 @@ const EventDetailPage = () => {
           console.error('Event detail loading error:', error)
         }
         setEvent(null)
-      } finally {
-        setLoading(false)
       }
+      // Loading removed for better UX
     }
 
     loadEventDetail()

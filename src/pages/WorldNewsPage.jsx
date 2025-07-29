@@ -184,15 +184,8 @@ const WorldNewsPage = () => {
           </p>
         </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        )}
-
         {/* News Grid */}
-        {!loading && (
+        {(
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {newsData.map((post) => (
               <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -249,7 +242,7 @@ const WorldNewsPage = () => {
         )}
 
         {/* No Posts Message */}
-        {!loading && newsData.length === 0 && (
+        {newsData.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
               {language === 'TR' ? 'Henüz haber bulunmuyor.' : 'No news available yet.'}

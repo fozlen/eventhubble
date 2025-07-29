@@ -92,7 +92,7 @@ const MobileFooter = ({ language = "EN" }) => {
         {/* Copyright */}
         <div className="text-center">
           <span className="text-xs text-gray-400">
-            © 2024 EventHubble
+            © 2025 EventHubble
           </span>
         </div>
       </div>

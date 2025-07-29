@@ -27,7 +27,6 @@ import {
   ChefHat,
   GraduationCap,
   Star,
-  Clock,
   Users,
   Map,
   Filter,
@@ -395,14 +394,7 @@ const HomePage = () => {
             </div>
           </div>
           
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="flex justify-center mb-4">
-                <Clock className="text-text/50" size={48} />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-text">{language === 'TR' ? 'Etkinlikler yükleniyor...' : 'Loading events...'}</h3>
-            </div>
-          ) : filteredEvents.length > 0 ? (
+          {filteredEvents.length > 0 ? (
             <>
               {/* Mobile View Controls */}
               <div className="block sm:hidden mb-4">

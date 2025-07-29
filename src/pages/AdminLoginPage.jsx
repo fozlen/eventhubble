@@ -11,7 +11,7 @@ const AdminLoginPage = () => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  // Loading state removed for better UX
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('language') || 'EN'
   })
@@ -30,7 +30,7 @@ const AdminLoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsLoading(true)
+    // Loading removed for better UX
     setError('')
 
     // Simulate API call delay
@@ -45,7 +45,7 @@ const AdminLoginPage = () => {
       setError(language === 'TR' ? 'Geçersiz kullanıcı adı veya şifre' : 'Invalid username or password')
     }
     
-    setIsLoading(false)
+    // Loading removed for better UX
   }
 
   const togglePasswordVisibility = () => {
@@ -174,17 +174,10 @@ const AdminLoginPage = () => {
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={false}
                 className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                {isLoading ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    {language === 'TR' ? 'Giriş yapılıyor...' : 'Signing in...'}
-                  </div>
-                ) : (
-                  language === 'TR' ? 'Giriş Yap' : 'Sign In'
-                )}
+                {language === 'TR' ? 'Giriş Yap' : 'Sign In'}
               </button>
             </form>
 
