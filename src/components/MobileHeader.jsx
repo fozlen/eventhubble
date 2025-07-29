@@ -1,5 +1,5 @@
-import React
-import LogoService from '../services/logoService', { useState, useEffect } from 'react'
+import React from 'react'
+import LogoService from '../services/logoService'
 import { Menu, X, Globe, Search, Bell, User } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'

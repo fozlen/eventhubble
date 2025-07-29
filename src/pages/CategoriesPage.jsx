@@ -1,5 +1,5 @@
-import React
-import LogoService from '../services/logoService', { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import LogoService from '../services/logoService'
 import { useNavigate } from 'react-router-dom'
 import { 
   Megaphone, 

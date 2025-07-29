@@ -1,5 +1,5 @@
-import React
-import LogoService from '../services/logoService', { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import LogoService from '../services/logoService'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon, Tag, FileText, Settings, BarChart3, MapPin, Clock, DollarSign, Users, Star, Phone, ExternalLink } from 'lucide-react'
 // Image paths for API compatibility
