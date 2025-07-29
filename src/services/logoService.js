@@ -91,15 +91,13 @@ class LogoService {
   }
   
   static getLogoFilename(type) {
+    // Only logos that exist in database
     const logos = {
-      main: 'Logo.png',
-      new: 'eventhubble_new_logo.png',
-      large: 'MainLogo.png',  // Changed from 'mainLogo' to 'large'
-      transparent: 'Logo w_out background.png',  // Changed from 'withoutBg' to 'transparent'
-      dark: 'eventhubble_dark_transparent_logo.png',
-      light: 'eventhubble_light_transparent_logo.png'
+      main: 'Logo.png',           // ✅ Exists in DB
+      large: 'MainLogo.png',      // ✅ Exists in DB  
+      transparent: 'Logo w_out background.png'  // ✅ Exists in DB
     }
-    return logos[type] || 'Logo.png'
+    return logos[type] || 'Logo.png'  // Default to main logo
   }
   
   // Clear logo cache
@@ -125,9 +123,10 @@ class LogoService {
     return await this.getLogo(type)
   }
   
-  // Preload all logos for better performance
+  // Preload only existing logos for better performance
   static async preloadLogos() {
-    const logoTypes = ['main', 'new', 'transparent', 'large', 'light', 'dark']
+    // Only load logos that exist in database
+    const logoTypes = ['main', 'large', 'transparent']
     
     try {
       await Promise.allSettled(

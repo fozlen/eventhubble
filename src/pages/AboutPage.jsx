@@ -18,18 +18,16 @@ const AboutPage = () => {
   useEffect(() => {
     const loadLogos = async () => {
       try {
-        const [mainLogo, newLogo, logoWithoutBg, mainLogoLarge] = await Promise.all([
-          LogoService.getLogo('main'),
-          LogoService.getLogo('new'),
-          LogoService.getLogo('withoutBg'),
-          LogoService.getLogo('mainLogo')
+                const [mainLogo, largeLogo, transparentLogo] = await Promise.all([
+        LogoService.getLogo('main'),
+         LogoService.getLogo('large'),
+         LogoService.getLogo('transparent')
         ])
         
         setLogos({
           main: mainLogo,
-          new: newLogo,
-          withoutBg: logoWithoutBg,
-          mainLogo: mainLogoLarge
+          large: largeLogo,
+          transparent: transparentLogo
         })
       } catch (error) {
         console.error('Logo loading error:', error)
