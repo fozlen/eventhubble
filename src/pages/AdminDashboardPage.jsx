@@ -58,7 +58,7 @@ const AdminDashboardPage = () => {
 
   const loadBlogPosts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/blog-posts`)
+      const response = await fetch(`${API_BASE_URL}/api/blog-posts`)
       if (response.ok) {
         const posts = await response.json()
         setBlogPosts(posts)
@@ -107,7 +107,7 @@ const AdminDashboardPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`${API_BASE_URL}/blog-posts/${postId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/blog-posts/${postId}`, {
           method: 'DELETE'
         })
 
@@ -175,7 +175,7 @@ const AdminDashboardPage = () => {
 
       if (editingPost) {
         // Update existing post
-        const response = await fetch(`${API_BASE_URL}/blog-posts/${editingPost.id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/blog-posts/${editingPost.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ const AdminDashboardPage = () => {
         }
       } else {
         // Add new post
-        const response = await fetch(`${API_BASE_URL}/blog-posts`, {
+        const response = await fetch(`${API_BASE_URL}/api/blog-posts`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
