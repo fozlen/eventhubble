@@ -1,41 +1,81 @@
-// Logo service for static asset management
+// Logo service for API-based logo management with local fallbacks
 class LogoService {
-  // Use static assets from public directory (served by Vite)
-  static getStaticAssetPath(filename) {
-    // In production, assets are served from root
-    // In development, assets are served from public directory
-    return `/${filename}`
-  }
+  static API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+    ? 'http://localhost:3001' 
+    : 'https://eventhubble.onrender.com'
   
-  // Get logo without backend dependency
+  // Cache logos in localStorage to avoid repeated API calls
   static async getLogo(type = 'main') {
-    const filename = this.getLogoFilename(type)
+    const cacheKey = `logo_${type}`
+    const cacheExpiryKey = `logo_${type}_expiry`
     
     try {
-      // Return direct path to static asset
-      const logoPath = this.getStaticAssetPath(filename)
+      // Check if we have a cached version
+      const cachedLogo = localStorage.getItem(cacheKey)
+      const expiryTime = localStorage.getItem(cacheExpiryKey)
       
-      // Test if the file exists by creating an image element
-      return new Promise((resolve) => {
-        const img = new Image()
-        img.onload = () => {
-          resolve(logoPath)
+      // If cached and not expired, return cached version
+      if (cachedLogo && expiryTime && Date.now() < parseInt(expiryTime)) {
+        return cachedLogo
+      }
+      
+             // Try to get logo from API first  
+       try {
+         const logoUrl = `${this.API_BASE_URL}/api/logos/${type}`
+         const response = await fetch(logoUrl, {
+           method: 'GET',
+           headers: {
+             'Accept': 'application/json',
+           },
+         })
+         
+         if (response.ok) {
+           const logoData = await response.json()
+           if (logoData.success && logoData.logo && logoData.logo.file_path) {
+             // Use the file_path from database (can be base64 or URL)
+             const logoPath = logoData.logo.file_path.startsWith('data:') 
+               ? logoData.logo.file_path 
+               : `${this.API_BASE_URL}${logoData.logo.file_path}`
+             
+             // Cache for 24 hours
+             const expiry = Date.now() + (24 * 60 * 60 * 1000)
+             localStorage.setItem(cacheKey, logoPath)
+             localStorage.setItem(cacheExpiryKey, expiry.toString())
+             
+             return logoPath
+           }
+         }
+       } catch (apiError) {
+         console.warn('Logo API error:', apiError)
+         // Continue to fallback
+       }
+      
+      // Fallback to static assets from backend if API fails
+      try {
+        const staticLogoUrl = `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
+        const response = await fetch(staticLogoUrl)
+        
+        if (response.ok) {
+          return staticLogoUrl
         }
-        img.onerror = () => {
-          // Fallback to main logo if specific type fails
-          if (type !== 'main') {
-            resolve(this.getStaticAssetPath('Logo.png'))
-          } else {
-            // Ultimate fallback to a default image data URL
-            resolve('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzg5NTVGNiIvPgo8dGV4dCB4PSIyMCIgeT0iMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FSDwvdGV4dD4KPC9zdmc+')
-          }
-        }
-        img.src = logoPath
-      })
+      } catch (staticError) {
+        console.warn('Static logo error:', staticError)
+      }
+      
+      // Final fallback to local public assets
+      return `/${this.getLogoFilename(type)}`
+      
     } catch (error) {
-      console.warn('Logo loading error:', error)
-      // Return fallback
-      return this.getStaticAssetPath('Logo.png')
+      console.warn('Logo service error:', error)
+      
+      // Return cached version if available (even if expired)
+      const cachedLogo = localStorage.getItem(cacheKey)
+      if (cachedLogo) {
+        return cachedLogo
+      }
+      
+      // Ultimate fallback to local public asset
+      return `/${this.getLogoFilename(type)}`
     }
   }
   
@@ -49,6 +89,29 @@ class LogoService {
       light: 'eventhubble_light_transparent_logo.png'
     }
     return logos[type] || 'Logo.png'
+  }
+  
+  // Clear logo cache
+  static clearCache() {
+    const keys = Object.keys(localStorage)
+    keys.forEach(key => {
+      if (key.startsWith('logo_')) {
+        localStorage.removeItem(key)
+      }
+    })
+  }
+
+  // Force refresh a specific logo
+  static async refreshLogo(type = 'main') {
+    const cacheKey = `logo_${type}`
+    const cacheExpiryKey = `logo_${type}_expiry`
+    
+    // Clear cache for this logo
+    localStorage.removeItem(cacheKey)
+    localStorage.removeItem(cacheExpiryKey)
+    
+    // Reload logo
+    return await this.getLogo(type)
   }
   
   // Preload all logos for better performance
