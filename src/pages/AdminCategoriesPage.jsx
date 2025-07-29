@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 import { 
   Plus, Edit, Trash2, Save, X, LogOut, Globe, Settings, 
   Tag, Eye, Hash, Palette, ChevronRight, Star 
@@ -12,9 +13,7 @@ const AdminCategoriesPage = () => {
   const [categories, setCategories] = useState([])
   const [editingCategory, setEditingCategory] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'EN'
-  })
+  const { language, setLanguage, toggleLanguage } = useLanguage()
   const navigate = useNavigate()
 
   // Get logo function
@@ -67,11 +66,7 @@ const AdminCategoriesPage = () => {
     navigate('/admin/login')
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+
 
   const handleAddCategory = () => {
     setEditingCategory(null)

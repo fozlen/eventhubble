@@ -25,14 +25,54 @@ import { EventService } from '../services/eventService'
 const CategoriesPage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [categories, setCategories] = useState([
-    { id: 'music', name: 'Music', description: 'Concerts, festivals, and musical events', color: getCategoryColor('music') },
-    { id: 'theater', name: 'Theater', description: 'Plays, shows, and theatrical performances', color: getCategoryColor('theater') },
-    { id: 'sports', name: 'Sports', description: 'Matches, tournaments, and sporting events', color: getCategoryColor('sports') },
-    { id: 'art', name: 'Art', description: 'Exhibitions, workshops, and art events', color: getCategoryColor('art') },
-    { id: 'gastronomy', name: 'Gastronomy', description: 'Food tastings, cooking workshops', color: getCategoryColor('gastronomy') },
-    { id: 'education', name: 'Education', description: 'Seminars, courses, and learning events', color: getCategoryColor('education') },
-    { id: 'technology', name: 'Technology', description: 'Tech conferences and workshops', color: getCategoryColor('technology') },
-    { id: 'fashion', name: 'Fashion', description: 'Fashion shows and style events', color: getCategoryColor('fashion') }
+    { 
+      id: 'music', 
+      name: language === 'TR' ? 'Müzik' : 'Music', 
+      description: language === 'TR' ? 'Konserler, festivaller ve müzik etkinlikleri' : 'Concerts, festivals, and musical events', 
+      color: getCategoryColor('music') 
+    },
+    { 
+      id: 'theater', 
+      name: language === 'TR' ? 'Tiyatro' : 'Theater', 
+      description: language === 'TR' ? 'Oyunlar, gösteriler ve tiyatro performansları' : 'Plays, shows, and theatrical performances', 
+      color: getCategoryColor('theater') 
+    },
+    { 
+      id: 'sports', 
+      name: language === 'TR' ? 'Spor' : 'Sports', 
+      description: language === 'TR' ? 'Maçlar, turnuvalar ve spor etkinlikleri' : 'Matches, tournaments, and sporting events', 
+      color: getCategoryColor('sports') 
+    },
+    { 
+      id: 'art', 
+      name: language === 'TR' ? 'Sanat' : 'Art', 
+      description: language === 'TR' ? 'Sergiler, atölyeler ve sanat etkinlikleri' : 'Exhibitions, workshops, and art events', 
+      color: getCategoryColor('art') 
+    },
+    { 
+      id: 'gastronomy', 
+      name: language === 'TR' ? 'Gastronomi' : 'Gastronomy', 
+      description: language === 'TR' ? 'Yemek tadımları, aşçılık atölyeleri' : 'Food tastings, cooking workshops', 
+      color: getCategoryColor('gastronomy') 
+    },
+    { 
+      id: 'education', 
+      name: language === 'TR' ? 'Eğitim' : 'Education', 
+      description: language === 'TR' ? 'Seminerler, kurslar ve öğrenim etkinlikleri' : 'Seminars, courses, and learning events', 
+      color: getCategoryColor('education') 
+    },
+    { 
+      id: 'technology', 
+      name: language === 'TR' ? 'Teknoloji' : 'Technology', 
+      description: language === 'TR' ? 'Teknoloji konferansları ve atölyeleri' : 'Tech conferences and workshops', 
+      color: getCategoryColor('technology') 
+    },
+    { 
+      id: 'fashion', 
+      name: language === 'TR' ? 'Moda' : 'Fashion', 
+      description: language === 'TR' ? 'Moda gösterileri ve stil etkinlikleri' : 'Fashion shows and style events', 
+      color: getCategoryColor('fashion') 
+    }
   ])
   const [events, setEvents] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)

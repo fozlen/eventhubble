@@ -275,7 +275,7 @@ const HomePage = () => {
             {language === 'TR' ? 'Dünya Çapında En İyi' : 'Discover the Best'} <span className="text-primary">{language === 'TR' ? 'Etkinlikleri Keşfet' : 'Events Worldwide'}</span>
           </h1>
           <p className="text-lg md:text-xl mb-8 text-text/70 px-2 sm:px-4">
-            Your Gateway to Every Experience
+            {language === 'TR' ? 'Her Deneyime Açılan Kapınız' : 'Your Gateway to Every Experience'}
           </p>
           
           {/* Mobile Search Box */}

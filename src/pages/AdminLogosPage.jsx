@@ -404,8 +404,10 @@ const LogoModal = ({ logo, onClose, onSave, language = 'EN' }) => {
   const [formData, setFormData] = useState({
     logo_id: logo?.logo_id || '',
     filename: logo?.filename || '',
-    title: logo?.title || '',
-    alt_text: logo?.alt_text || '',
+    title_tr: logo?.title_tr || logo?.title || '',
+    title_en: logo?.title_en || logo?.title || '',
+    alt_text_tr: logo?.alt_text_tr || logo?.alt_text || '',
+    alt_text_en: logo?.alt_text_en || logo?.alt_text || '',
     file_path: logo?.file_path || '',
     file_size: logo?.file_size || '',
     mime_type: logo?.mime_type || '',
@@ -449,6 +451,16 @@ const LogoModal = ({ logo, onClose, onSave, language = 'EN' }) => {
         
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Language Tabs */}
+            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+              <div className="flex-1 text-center py-2 px-4 bg-white rounded-md shadow-sm">
+                <span className="text-sm font-medium text-text">🇹🇷 Türkçe</span>
+              </div>
+              <div className="flex-1 text-center py-2 px-4 bg-gray-100 rounded-md">
+                <span className="text-sm font-medium text-text/60">🇺🇸 English</span>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
@@ -479,133 +491,177 @@ const LogoModal = ({ logo, onClose, onSave, language = 'EN' }) => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'Başlık' : 'Title'} *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                placeholder={language === 'TR' ? 'EventHubble Ana Logo' : 'EventHubble Main Logo'}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'Alt Metin' : 'Alt Text'}
-              </label>
-              <input
-                type="text"
-                value={formData.alt_text}
-                onChange={(e) => setFormData({ ...formData, alt_text: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                placeholder={language === 'TR' ? 'Logo açıklaması...' : 'Logo description...'}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text mb-2">
-                {language === 'TR' ? 'Dosya Yolu' : 'File Path'} *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.file_path}
-                onChange={(e) => setFormData({ ...formData, file_path: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                placeholder="/assets/Logo.png"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Turkish Content */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-text border-b pb-2">🇹🇷 Türkçe İçerik</h3>
+              
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Dosya Boyutu (bytes)' : 'File Size (bytes)'}
+                  Başlık (Türkçe) *
                 </label>
                 <input
-                  type="number"
-                  value={formData.file_size}
-                  onChange={(e) => setFormData({ ...formData, file_size: e.target.value })}
+                  type="text"
+                  required
+                  value={formData.title_tr}
+                  onChange={(e) => setFormData({ ...formData, title_tr: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder="263000"
+                  placeholder="EventHubble Ana Logo"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Genişlik (px)' : 'Width (px)'}
+                  Alt Metin (Türkçe)
                 </label>
                 <input
-                  type="number"
-                  value={formData.width}
-                  onChange={(e) => setFormData({ ...formData, width: e.target.value })}
+                  type="text"
+                  value={formData.alt_text_tr}
+                  onChange={(e) => setFormData({ ...formData, alt_text_tr: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder="989"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Yükseklik (px)' : 'Height (px)'}
-                </label>
-                <input
-                  type="number"
-                  value={formData.height}
-                  onChange={(e) => setFormData({ ...formData, height: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder="989"
+                  placeholder="Logo açıklaması..."
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* English Content */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-text border-b pb-2">🇺🇸 English Content</h3>
+              
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'MIME Tipi' : 'MIME Type'}
+                  Title (English) *
                 </label>
-                <select
-                  value={formData.mime_type}
-                  onChange={(e) => setFormData({ ...formData, mime_type: e.target.value })}
+                <input
+                  type="text"
+                  required
+                  value={formData.title_en}
+                  onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                >
-                  <option value="">Seçiniz / Select</option>
-                  <option value="image/png">PNG</option>
-                  <option value="image/jpeg">JPEG</option>
-                  <option value="image/jpg">JPG</option>
-                  <option value="image/svg+xml">SVG</option>
-                  <option value="image/webp">WebP</option>
-                </select>
+                  placeholder="EventHubble Main Logo"
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Sıralama' : 'Display Order'}
+                  Alt Text (English)
                 </label>
                 <input
-                  type="number"
-                  value={formData.display_order}
-                  onChange={(e) => setFormData({ ...formData, display_order: e.target.value })}
+                  type="text"
+                  value={formData.alt_text_en}
+                  onChange={(e) => setFormData({ ...formData, alt_text_en: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder="0"
+                  placeholder="Logo description..."
                 />
               </div>
             </div>
 
-            <div>
-              <label className="flex items-center space-x-2">
+            {/* Technical Details */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-text border-b pb-2">
+                {language === 'TR' ? 'Teknik Detaylar' : 'Technical Details'}
+              </h3>
+
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
+                  {language === 'TR' ? 'Dosya Yolu' : 'File Path'} *
+                </label>
                 <input
-                  type="checkbox"
-                  checked={formData.is_active}
-                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                  className="rounded border-gray-300 text-primary focus:ring-primary"
+                  type="text"
+                  required
+                  value={formData.file_path}
+                  onChange={(e) => setFormData({ ...formData, file_path: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                  placeholder="/assets/Logo.png"
                 />
-                <span className="text-sm font-medium text-text">
-                  {language === 'TR' ? 'Aktif' : 'Active'}
-                </span>
-              </label>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Dosya Boyutu (bytes)' : 'File Size (bytes)'}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.file_size}
+                    onChange={(e) => setFormData({ ...formData, file_size: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="263000"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Genişlik (px)' : 'Width (px)'}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.width}
+                    onChange={(e) => setFormData({ ...formData, width: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="989"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Yükseklik (px)' : 'Height (px)'}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.height}
+                    onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="989"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'MIME Tipi' : 'MIME Type'}
+                  </label>
+                  <select
+                    value={formData.mime_type}
+                    onChange={(e) => setFormData({ ...formData, mime_type: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                  >
+                    <option value="">Seçiniz / Select</option>
+                    <option value="image/png">PNG</option>
+                    <option value="image/jpeg">JPEG</option>
+                    <option value="image/jpg">JPG</option>
+                    <option value="image/svg+xml">SVG</option>
+                    <option value="image/webp">WebP</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Sıralama' : 'Display Order'}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.display_order}
+                    onChange={(e) => setFormData({ ...formData, display_order: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.is_active}
+                    onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <span className="text-sm font-medium text-text">
+                    {language === 'TR' ? 'Aktif' : 'Active'}
+                  </span>
+                </label>
+              </div>
             </div>
 
             {/* Action Buttons */}

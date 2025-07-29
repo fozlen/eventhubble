@@ -146,10 +146,13 @@ const AboutPage = () => {
             {language === 'TR' ? 'Hakkımızda' : 'About Us'}
           </h1>
           <p className="text-lg font-bold text-primary mb-4">
-            Your Gateway to Every Experience
+            {language === 'TR' ? 'Her Deneyime Açılan Kapınız' : 'Your Gateway to Every Experience'}
           </p>
           <p className="text-sm text-text/80 px-4 leading-relaxed">
-            At EventHubble, we believe discovering great experiences should be effortless. That's why we bring together concerts, festivals, sports events, meetups, cultural gatherings, and even global spectacles all in one place. Whether you're searching by location, date, or budget, we help you find what to do, when and where instantly.
+            {language === 'TR' 
+              ? 'EventHubble\'da, harika deneyimler keşfetmenin kolay olması gerektiğine inanıyoruz. Bu yüzden konserler, festivaller, spor etkinlikleri, buluşmalar, kültürel toplantılar ve hatta küresel gösterileri tek bir yerde bir araya getiriyoruz. Konum, tarih veya bütçeye göre arama yaparken, ne yapacağınızı, ne zaman ve nerede anında bulmanıza yardımcı oluyoruz.'
+              : 'At EventHubble, we believe discovering great experiences should be effortless. That\'s why we bring together concerts, festivals, sports events, meetups, cultural gatherings, and even global spectacles all in one place. Whether you\'re searching by location, date, or budget, we help you find what to do, when and where instantly.'
+            }
           </p>
         </div>
 
@@ -159,10 +162,13 @@ const AboutPage = () => {
             {language === 'TR' ? 'Hakkımızda' : 'About Us'}
           </h1>
           <p className="text-2xl font-bold text-primary mb-6">
-            Your Gateway to Every Experience
+            {language === 'TR' ? 'Her Deneyime Açılan Kapınız' : 'Your Gateway to Every Experience'}
           </p>
           <p className="text-lg text-text/80 px-4 max-w-4xl mx-auto leading-relaxed">
-            At EventHubble, we believe discovering great experiences should be effortless. That's why we bring together concerts, festivals, sports events, meetups, cultural gatherings, and even global spectacles all in one place. Whether you're searching by location, date, or budget, we help you find what to do, when and where instantly.
+            {language === 'TR' 
+              ? 'EventHubble\'da, harika deneyimler keşfetmenin kolay olması gerektiğine inanıyoruz. Bu yüzden konserler, festivaller, spor etkinlikleri, buluşmalar, kültürel toplantılar ve hatta küresel gösterileri tek bir yerde bir araya getiriyoruz. Konum, tarih veya bütçeye göre arama yaparken, ne yapacağınızı, ne zaman ve nerede anında bulmanıza yardımcı oluyoruz.'
+              : 'At EventHubble, we believe discovering great experiences should be effortless. That\'s why we bring together concerts, festivals, sports events, meetups, cultural gatherings, and even global spectacles all in one place. Whether you\'re searching by location, date, or budget, we help you find what to do, when and where instantly.'
+            }
           </p>
         </div>
 
