@@ -25,22 +25,26 @@ export const LanguageProvider = ({ children }) => {
   useEffect(() => {
     const titles = {
       'TR': {
-        home: 'Event Hubble | Dünya Çapında Harika Etkinlikleri Keşfet',
-        about: 'Event Hubble | Hakkımızda',
-        worldNews: 'Event Hubble | Dünyadan Gelişmeler',
-        eventDetail: 'Event Hubble | Etkinlik Detayı',
-        searchResults: 'Event Hubble | Arama Sonuçları',
-        blogDetail: 'Event Hubble | Blog Detayı',
-        admin: 'Event Hubble | Admin Paneli'
+        home: 'EventHubble | Dünya Çapında Harika Etkinlikleri Keşfet',
+        about: 'EventHubble | Hakkımızda',
+        contact: 'EventHubble | İletişim',
+        categories: 'EventHubble | Kategoriler',
+        worldNews: 'EventHubble | Dünyadan Gelişmeler',
+        eventDetail: 'EventHubble | Etkinlik Detayı',
+        searchResults: 'EventHubble | Arama Sonuçları',
+        blogDetail: 'EventHubble | Blog Detayı',
+        admin: 'EventHubble | Admin Paneli'
       },
       'EN': {
-        home: 'Event Hubble | Discover Amazing Events Worldwide',
-        about: 'Event Hubble | About Us',
-        worldNews: 'Event Hubble | World News',
-        eventDetail: 'Event Hubble | Event Detail',
-        searchResults: 'Event Hubble | Search Results',
-        blogDetail: 'Event Hubble | Blog Detail',
-        admin: 'Event Hubble | Admin Panel'
+        home: 'EventHubble | Your Gateway to Every Experience',
+        about: 'EventHubble | About Us',
+        contact: 'EventHubble | Contact',
+        categories: 'EventHubble | Categories',
+        worldNews: 'EventHubble | World News',
+        eventDetail: 'EventHubble | Event Detail',
+        searchResults: 'EventHubble | Search Results',
+        blogDetail: 'EventHubble | Blog Detail',
+        admin: 'EventHubble | Admin Panel'
       }
     }
 
@@ -49,6 +53,8 @@ export const LanguageProvider = ({ children }) => {
     let pageType = 'home'
     
     if (path.includes('/about')) pageType = 'about'
+    else if (path.includes('/contact')) pageType = 'contact'
+    else if (path.includes('/categories')) pageType = 'categories'
     else if (path.includes('/world-news')) pageType = 'worldNews'
     else if (path.includes('/event/')) pageType = 'eventDetail'
     else if (path.includes('/search')) pageType = 'searchResults'

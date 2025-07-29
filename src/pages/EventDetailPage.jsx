@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Phone, Globe as GlobeIcon, Share2, Heart, ExternalLink } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 // Image paths for API compatibility
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
@@ -15,13 +16,10 @@ import MobileNavigation from '../components/MobileNavigation'
 const EventDetailPage = () => {
   const { eventId } = useParams()
   const navigate = useNavigate()
+  const { language, toggleLanguage } = useLanguage()
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
-  const [language, setLanguage] = useState(() => {
-    // Load language preference from localStorage
-    return localStorage.getItem('language') || 'EN'
-  })
 
   // Get logo
   const getLogo = () => {
@@ -49,11 +47,7 @@ const EventDetailPage = () => {
     localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+  // Language context handles language toggle
 
   const handleLogin = () => {
     // Login functionality

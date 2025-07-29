@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon, Tag, FileText, Settings, BarChart3 } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 // Image paths for API compatibility
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
@@ -9,12 +10,10 @@ import ImageSelector from '../components/ImageSelector'
 import LogoService from '../services/logoService'
 
 const AdminDashboardPage = () => {
+  const { language, toggleLanguage } = useLanguage()
   const [blogPosts, setBlogPosts] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPost, setEditingPost] = useState(null)
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'EN'
-  })
   const navigate = useNavigate()
 
   // Get logo function
@@ -121,11 +120,7 @@ const AdminDashboardPage = () => {
     }
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+  // Language context handles language toggle
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Tarih belirtilmemiş'

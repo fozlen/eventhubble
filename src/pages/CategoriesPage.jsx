@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import LogoService from '../services/logoService'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 import { 
   Megaphone, 
   Settings, 
@@ -21,6 +22,7 @@ const logo = `${API_BASE_URL}/assets/Logo.png`
 import { EventService } from '../services/eventService'
 
 const CategoriesPage = () => {
+  const { language, toggleLanguage } = useLanguage()
   const [categories, setCategories] = useState([
     { id: 'music', name: 'Music', description: 'Concerts, festivals, and musical events', color: '#473B73' },
     { id: 'theater', name: 'Theater', description: 'Plays, shows, and theatrical performances', color: '#8B5CF6' },
@@ -32,9 +34,6 @@ const CategoriesPage = () => {
     { id: 'fashion', name: 'Fashion', description: 'Fashion shows and style events', color: '#EC4899' }
   ])
   const [events, setEvents] = useState([])
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'EN'
-  })
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingCategory, setEditingCategory] = useState(null)
   const [formData, setFormData] = useState({
@@ -71,11 +70,7 @@ const CategoriesPage = () => {
     navigate('/admin/login')
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'EN' ? 'TR' : 'EN'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+  // Language context handles language toggle
 
   const handleAddCategory = () => {
     setFormData({
