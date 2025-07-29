@@ -389,46 +389,7 @@ const BlogDetailPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="hidden sm:block bg-primary text-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-8 items-center">
-            {/* Logo and Brand - Left Section */}
-            <div className="flex justify-center w-full sm:w-auto">
-              <div className="flex items-center space-x-2">
-                <img 
-                  src={getLogo()} 
-                  alt="EventHubble" 
-                  className="h-10 w-auto" 
-                />
-                <span className="text-xl font-bold">
-                  <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light"> Hubble</span>
-                </span>
-              </div>
-            </div>
-            
-            {/* Company Links - Center Section */}
-            <div className="flex justify-center w-full sm:w-auto">
-              <div className="text-center">
-                <h3 className="font-semibold mb-4">{language === 'TR' ? 'Şirket' : 'Company'}</h3>
-                <ul className="space-y-2 text-white/80">
-                  <li><a href="/about" className="hover:text-white transition-colors">{language === 'TR' ? 'Hakkımızda' : 'About'}</a></li>
-                </ul>
-              </div>
-            </div>
-            
-            {/* Blog Links - Right Section */}
-            <div className="flex justify-center w-full sm:w-auto">
-              <div className="text-center">
-                <h3 className="font-semibold mb-4">Blog</h3>
-                <ul className="space-y-2 text-white/80">
-                  <li><a href="/world-news" className="hover:text-white transition-colors">{language === 'TR' ? 'Dünyadan Gelişmeler' : 'World News'}</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer language={language} />
 
       {/* Mobile Navigation */}
       <MobileNavigation language={language} />
