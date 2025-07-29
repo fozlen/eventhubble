@@ -400,6 +400,12 @@ const HomePage = () => {
               <div className="block sm:hidden mb-4">
                 <div className="flex items-center justify-center space-x-3">
                   <button
+                    onClick={() => setShowFilters(true)}
+                    className="p-2 rounded-full transition-all duration-200 bg-white text-text/60 shadow-sm hover:shadow-md"
+                  >
+                    <Filter size={18} />
+                  </button>
+                  <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2 rounded-full transition-all duration-200 ${
                       viewMode === 'grid' 

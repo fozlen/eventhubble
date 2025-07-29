@@ -33,8 +33,8 @@ const MobileNavigation = ({ language = "EN" }) => {
   ]
 
   return (
-    <div className="block sm:hidden fixed bottom-4 left-4 right-4 z-40">
-      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <div className="block sm:hidden fixed bottom-0 left-0 right-0 z-40">
+      <div className="bg-white rounded-t-2xl shadow-2xl overflow-hidden">
         <div className="flex items-center">
           {navItems.map((item, index) => {
             const IconComponent = item.icon
