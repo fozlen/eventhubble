@@ -1,6 +1,6 @@
 // Logo service for caching and loading logos from backend API
 class LogoService {
-  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api'
+  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble-api.onrender.com' : 'http://localhost:3001'
   
   // Cache logos in localStorage to avoid repeated API calls
   static async getLogo(type = 'main') {

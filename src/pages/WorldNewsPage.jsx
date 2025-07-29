@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Sun, Moon, Globe, User, Calendar, ArrowRight } from 'lucide-react'
 import CacheService from '../services/cacheService'
+import LogoService from '../services/logoService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 
@@ -21,10 +22,10 @@ const WorldNewsPage = () => {
     const loadLogos = async () => {
       try {
         const [mainLogo, newLogo, logoWithoutBg, mainLogoLarge] = await Promise.all([
-          CacheService.getLogo('main'),
-          CacheService.getLogo('new'),
-          CacheService.getLogo('withoutBg'),
-          CacheService.getLogo('mainLogo')
+          LogoService.getLogo('main'),
+          LogoService.getLogo('new'),
+          LogoService.getLogo('withoutBg'),
+          LogoService.getLogo('mainLogo')
         ])
         
         setLogos({
@@ -92,7 +93,7 @@ const WorldNewsPage = () => {
 
   // Get appropriate logo based on theme
   const getLogo = () => {
-    return logos.main || CacheService.API_BASE_URL + '/assets/Logo.png'
+    return logos.main || LogoService.API_BASE_URL + '/assets/Logo.png'
   }
 
   return (
@@ -265,7 +266,7 @@ const WorldNewsPage = () => {
               <div className="flex justify-center w-full sm:w-auto">
                 <div className="flex items-center space-x-2">
                   <img 
-                    src={logo} 
+                    src={getLogo()} 
                     alt="EventHubble" 
                     className="h-10 w-auto" 
                   />
