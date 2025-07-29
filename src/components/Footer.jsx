@@ -109,7 +109,7 @@ const Footer = ({ language = "EN" }) => {
           {/* Social Media - Section 4 */}
           <div className="flex flex-col items-center md:items-start">
             <h3 className="font-semibold mb-4 text-center md:text-left">
-              {language === 'TR' ? 'Sosyal Medya' : 'Social Media'}
+              Follow Us
             </h3>
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
               {socialLinks.map((social) => {
