@@ -1,6 +1,6 @@
 // Logo service for caching and loading logos from backend API
 class LogoService {
-  static API_BASE_URL = import.meta.env.PROD ? '' : 'http://localhost:3001'
+  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble-api.onrender.com' : 'http://localhost:3001'
   
   // Cache logos in localStorage to avoid repeated API calls
   static async getLogo(type = 'main') {
@@ -17,7 +17,34 @@ class LogoService {
         return cachedLogo
       }
       
-      // Fetch from API or public folder
+      // First try to get from database API
+      try {
+        const apiResponse = await fetch(`${this.API_BASE_URL}/api/logos`)
+        if (apiResponse.ok) {
+          const { logos } = await apiResponse.json()
+          const logo = logos.find(l => l.id === type) || logos.find(l => l.id === 'main')
+          
+          if (logo) {
+            // Fetch the actual logo file
+            const logoResponse = await fetch(`${this.API_BASE_URL}${logo.url}`)
+            if (logoResponse.ok) {
+              const blob = await logoResponse.blob()
+              const base64 = await this.blobToBase64(blob)
+              
+              // Cache for 24 hours
+              const expiry = Date.now() + (24 * 60 * 60 * 1000)
+              localStorage.setItem(cacheKey, base64)
+              localStorage.setItem(cacheExpiryKey, expiry.toString())
+              
+              return base64
+            }
+          }
+        }
+      } catch (apiError) {
+        // Continue to fallback method
+      }
+      
+      // Fallback to direct file fetch
       const logoUrl = import.meta.env.PROD 
         ? `/${this.getLogoFilename(type)}`
         : `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
@@ -38,7 +65,7 @@ class LogoService {
       
       return base64
     } catch (error) {
-      console.error('Logo loading error:', error)
+      // Logo loading error
       
       // Return cached version if available (even if expired)
       const cachedLogo = localStorage.getItem(cacheKey)
@@ -46,7 +73,7 @@ class LogoService {
         return cachedLogo
       }
       
-      // Fallback to direct URL
+      // Final fallback to direct URL
       return import.meta.env.PROD 
         ? `/${this.getLogoFilename(type)}`
         : `/${this.getLogoFilename(type)}`
@@ -83,7 +110,7 @@ class LogoService {
         logoTypes.map(type => this.getLogo(type))
       )
     } catch (error) {
-      console.error('Logo preloading error:', error)
+      // Logo preloading error
     }
   }
   

@@ -125,8 +125,44 @@ app.get('/api/assets/:filename', (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
     res.sendFile(filePath)
   } catch (error) {
-    console.error('Logo serve error:', error)
+    // Logo serve error
     res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+// Logo API endpoint - returns logo data from database
+app.get('/api/logos', async (req, res) => {
+  try {
+    const logos = [
+      {
+        id: 'main',
+        filename: 'Logo.png',
+        url: '/api/assets/Logo.png',
+        alt: 'EventHubble Main Logo'
+      },
+      {
+        id: 'dark',
+        filename: 'eventhubble_dark_transparent_logo.png',
+        url: '/api/assets/eventhubble_dark_transparent_logo.png',
+        alt: 'EventHubble Dark Logo'
+      },
+      {
+        id: 'light',
+        filename: 'eventhubble_light_transparent_logo.png',
+        url: '/api/assets/eventhubble_light_transparent_logo.png',
+        alt: 'EventHubble Light Logo'
+      },
+      {
+        id: 'main-large',
+        filename: 'MainLogo.png',
+        url: '/api/assets/MainLogo.png',
+        alt: 'EventHubble Large Logo'
+      }
+    ]
+    
+    res.json({ success: true, logos })
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch logos' })
   }
 })
 

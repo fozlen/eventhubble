@@ -14,7 +14,7 @@ export const getBlogPosts = async () => {
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching blog posts:', error);
+          // Error fetching blog posts
     return [];
   }
 };
@@ -27,7 +27,7 @@ export const getBlogPostById = async (id) => {
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching blog post:', error);
+          // Error fetching blog post
     return null;
   }
 };
@@ -46,7 +46,7 @@ export const createBlogPost = async (blogData) => {
     }
     return await response.json();
   } catch (error) {
-    console.error('Error creating blog post:', error);
+          // Error creating blog post
     throw error;
   }
 };
@@ -65,7 +65,7 @@ export const updateBlogPost = async (id, blogData) => {
     }
     return await response.json();
   } catch (error) {
-    console.error('Error updating blog post:', error);
+          // Error updating blog post
     throw error;
   }
 };
@@ -80,7 +80,7 @@ export const deleteBlogPost = async (id) => {
     }
     return await response.json();
   } catch (error) {
-    console.error('Error deleting blog post:', error);
+          // Error deleting blog post
     throw error;
   }
 };
@@ -106,7 +106,7 @@ export class EventService {
       return await response.json()
     } catch (error) {
       if (!import.meta.env.PROD) {
-        console.error('Status Error:', error)
+        // Status Error
       }
       return { error: 'Backend bağlantısı yok' }
     }
@@ -127,7 +127,7 @@ export class EventService {
       return await response.json()
     } catch (error) {
       if (!import.meta.env.PROD) {
-        console.error('Stats Error:', error)
+        // Stats Error
       }
       return null
     }
@@ -150,7 +150,7 @@ export class EventService {
       return await response.json()
     } catch (error) {
       if (!import.meta.env.PROD) {
-        console.error('Scraping Error:', error)
+        // Scraping Error
       }
       throw error
     }
@@ -176,7 +176,7 @@ export class EventService {
       return this.localizeEvent(event, language)
     } catch (error) {
       if (!import.meta.env.PROD) {
-        console.error('Event Details Error:', error)
+        // Event Details Error
       }
       throw error
     }
@@ -249,7 +249,7 @@ export class EventService {
       return events.map(event => this.localizeEvent(event, language))
     } catch (error) {
       if (!import.meta.env.PROD) {
-        console.error('Manual Events Error:', error)
+        // Manual Events Error
       }
       // Hata durumunda boş array döndür
       return []
@@ -323,7 +323,7 @@ export class EventService {
       return newEvent
     } catch (error) {
       if (!import.meta.env.PROD) {
-        console.error('Add Manual Event Error:', error)
+        // Add Manual Event Error
       }
       throw error
     }
@@ -349,7 +349,7 @@ export class EventService {
       return events[eventIndex]
     } catch (error) {
       if (!import.meta.env.PROD) {
-        console.error('Update Manual Event Error:', error)
+        // Update Manual Event Error
       }
       throw error
     }
@@ -364,7 +364,7 @@ export class EventService {
       return true
     } catch (error) {
       if (!import.meta.env.PROD) {
-        console.error('Delete Manual Event Error:', error)
+        // Delete Manual Event Error
       }
       throw error
     }

@@ -74,7 +74,7 @@ class CacheService {
       
       return base64
     } catch (error) {
-      console.error(`Image cache error for ${cacheKey}:`, error)
+              // Image cache error for ${cacheKey}
       
       // Return cached version if available
       const cached = localStorage.getItem(imageCacheKey)
@@ -185,7 +185,7 @@ class CacheService {
         this.preloadCategories(language),
         this.preloadStats()
       ])
-      console.log('✅ All content preloaded successfully')
+      // Content preloaded successfully
     } catch (error) {
       console.error('❌ Preload error:', error)
     }
