@@ -9,7 +9,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD 
 
 const AdminCategoriesPage = () => {
   const [categories, setCategories] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
   const [editingCategory, setEditingCategory] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
   const [language, setLanguage] = useState(() => {
@@ -57,7 +56,7 @@ const AdminCategoriesPage = () => {
     } catch (error) {
       console.error('Error loading categories:', error)
     } finally {
-      setIsLoading(false)
+      // Loading removed for better UX
     }
   }
 
@@ -147,16 +146,7 @@ const AdminCategoriesPage = () => {
     }))
   }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-text">{language === 'TR' ? 'Yükleniyor...' : 'Loading...'}</p>
-        </div>
-      </div>
-    )
-  }
+  // Loading removed for better UX
 
   const organizedCategories = getOrganizedCategories()
 

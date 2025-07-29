@@ -10,7 +10,6 @@ import LogoService from '../services/logoService'
 
 const AdminDashboardPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPost, setEditingPost] = useState(null)
   const [language, setLanguage] = useState(() => {
@@ -73,7 +72,7 @@ const AdminDashboardPage = () => {
         setBlogPosts([])
       }
     } finally {
-      setIsLoading(false)
+      // Loading removed for better UX
     }
   }
 
@@ -226,16 +225,7 @@ const AdminDashboardPage = () => {
     setEditingPost(null)
   }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-text">{language === 'TR' ? 'Yükleniyor...' : 'Loading...'}</p>
-        </div>
-      </div>
-    )
-  }
+  // Loading removed for better UX
 
   return (
     <div className="min-h-screen bg-background">

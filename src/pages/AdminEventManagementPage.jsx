@@ -12,7 +12,6 @@ import DatabaseService from '../services/databaseService'
 
 const AdminEventManagementPage = () => {
   const [events, setEvents] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState(null)
   const [language, setLanguage] = useState(() => {
@@ -50,7 +49,7 @@ const AdminEventManagementPage = () => {
 
   const loadEvents = async () => {
     try {
-      setIsLoading(true)
+      // Loading removed for better UX
       
       // Database'den etkinlikleri yükle
       const dbEvents = await DatabaseService.getEvents()
@@ -73,7 +72,7 @@ const AdminEventManagementPage = () => {
       const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
       setEvents(manualEvents)
     } finally {
-      setIsLoading(false)
+      // Loading removed for better UX
     }
   }
 
@@ -190,16 +189,7 @@ const AdminEventManagementPage = () => {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-text">{language === 'TR' ? 'Yükleniyor...' : 'Loading...'}</p>
-        </div>
-      </div>
-    )
-  }
+  // Loading removed for better UX
 
   return (
     <div className="min-h-screen bg-background">

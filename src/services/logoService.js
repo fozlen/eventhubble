@@ -39,9 +39,7 @@ class LogoService {
       }
       
       // Fallback to direct file fetch
-      const logoUrl = import.meta.env.PROD 
-        ? `/${this.getLogoFilename(type)}`
-        : `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
+      const logoUrl = `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
       const response = await fetch(logoUrl)
       
       if (!response.ok) {
@@ -68,9 +66,7 @@ class LogoService {
       }
       
       // Final fallback to direct URL
-      return import.meta.env.PROD 
-        ? `/${this.getLogoFilename(type)}`
-        : `/${this.getLogoFilename(type)}`
+      return `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
     }
   }
   
@@ -116,6 +112,19 @@ class LogoService {
         localStorage.removeItem(key)
       }
     })
+  }
+
+  // Force refresh a specific logo
+  static async refreshLogo(type = 'main') {
+    const cacheKey = `logo_${type}`
+    const cacheExpiryKey = `logo_${type}_expiry`
+    
+    // Clear cache for this logo
+    localStorage.removeItem(cacheKey)
+    localStorage.removeItem(cacheExpiryKey)
+    
+    // Reload logo
+    return await this.getLogo(type)
   }
 }
 
