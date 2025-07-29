@@ -32,6 +32,8 @@ build/
 ehthumbs.db
 Thumbs.db
 
+# ===== EVENTHUBBLE GITIGNORE =====
+
 # Logs
 logs
 *.log

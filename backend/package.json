@@ -1,7 +1,7 @@
 {
   "name": "eventhubble-backend",
   "version": "1.0.0",
-  "description": "EventHubble Backend - Otomatik Etkinlik Scraper",
+  "description": "EventHubble Backend API - Event aggregation and management service",
   "main": "uploadServer.js",
   "type": "module",
   "scripts": {

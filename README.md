@@ -1,111 +1,200 @@
-# EventHubble 🎫
+# EventHubble 🎪
 
-Turkey's smart event discovery platform - Konser, tiyatro, spor, sanat etkinliklerini keşfedin!
+> **İstanbul'un en kapsamlı etkinlik platform** - Event discovery and management platform for Istanbul
 
-## 🚀 Production URLs
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org/)
+[![Deploy Status](https://api.netlify.com/api/v1/badges/your-badge-id/deploy-status)](https://app.netlify.com/sites/eventhubble/deploys)
 
-- **Frontend:** https://eventhubble.netlify.app
-- **Backend API:** https://eventhubble.onrender.com
-- **API Health:** https://eventhubble.onrender.com/health
-- **API Status:** https://eventhubble.onrender.com/api/status
+## 🌟 Overview
 
-## 📁 Project Structure
+EventHubble is a comprehensive event discovery and management platform designed specifically for Istanbul's vibrant cultural scene. The platform aggregates events from multiple sources and provides both public browsing and admin management capabilities.
+
+### 🎯 Key Features
+
+- **🎭 Multi-source Event Aggregation**: Automatically scrapes events from Biletix, Mobilet, and Biletinial
+- **📱 Mobile-First Design**: Responsive interface optimized for mobile devices  
+- **🌐 Multilingual Support**: Full Turkish/English localization
+- **⚡ Real-time Updates**: Live event data with automatic refresh
+- **👥 Admin Dashboard**: Complete CRUD operations for event management
+- **📊 Analytics & Insights**: Event popularity tracking and statistics
+- **🎨 Modern UI/UX**: Clean, professional interface with dark/light themes
+- **🔍 Advanced Search & Filtering**: Category, location, date, and price filters
+- **📝 Blog System**: Integrated content management for event guides and news
+
+## 🚀 Live Demo
+
+- **🌍 Public Site**: [https://eventhubble.netlify.app](https://eventhubble.netlify.app)
+- **⚙️ Admin Panel**: [https://eventhubble.netlify.app/admin](https://eventhubble.netlify.app/admin)
+- **🔗 API Endpoint**: [https://eventhubble-api.onrender.com](https://eventhubble-api.onrender.com)
+
+## 🏗️ Architecture
 
 ```
-EventHubble/
-├── src/                    # Frontend source code
-│   ├── components/         # React components
-│   ├── pages/             # Page components
-│   ├── services/          # API services
-│   └── ...
-├── backend/               # Backend API
-│   ├── uploadServer.js    # Main server
-│   ├── database.js        # MongoDB connection
-│   └── package.json       # Backend dependencies
-├── docs/                  # Documentation
-│   ├── production-checklist.md
-│   ├── database-setup.md
-│   └── ...
-├── scripts/               # Deployment scripts
-│   └── deploy.sh
-├── public/                # Static assets
-├── dist/                  # Build output
-└── package.json           # Frontend dependencies
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend API   │    │   Database      │
+│   (React/Vite)  │◄──►│   (Node.js)     │◄──►│   (Supabase)    │
+│   Netlify       │    │   Render        │    │   PostgreSQL    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## 🛠️ Development
+### 🛠️ Tech Stack
 
-### Frontend
-```bash
-npm install
-npm run dev
-```
+**Frontend:**
+- ⚛️ React 18 with Hooks
+- ⚡ Vite for build tooling
+- 🎨 Tailwind CSS for styling
+- 📱 Responsive design patterns
+- 🧭 React Router for navigation
 
-### Backend
-```bash
-cd backend
-npm install
-npm start
-```
+**Backend:**
+- 🟢 Node.js with Express
+- 🗄️ Supabase (PostgreSQL) database
+- 🔄 Automated web scraping
+- 📡 RESTful API design
+- ⏰ Scheduled data updates
+
+**Infrastructure:**
+- 🌐 Netlify (Frontend hosting)
+- ☁️ Render (Backend hosting)
+- 🗃️ Supabase (Database & Auth)
+- 🔄 GitHub Actions (CI/CD)
+
+## 📦 Installation
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- Git
+
+### Local Development Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/fozlen/eventhubble.git
+   cd eventhubble
+   ```
+
+2. **Install frontend dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Install backend dependencies**
+   ```bash
+   cd backend
+   npm install
+   cd ..
+   ```
+
+4. **Environment Configuration**
+   ```bash
+   # Frontend (.env)
+   VITE_API_BASE_URL=http://localhost:3001
+   
+   # Backend (backend/.env)
+   PORT=3001
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_ANON_KEY=your_supabase_key
+   NODE_ENV=development
+   ```
+
+5. **Start development servers**
+   ```bash
+   # Frontend (Port 5173)
+   npm run dev
+   
+   # Backend (Port 3001) - in separate terminal
+   cd backend && npm start
+   ```
+
+6. **Access the application**
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:3001
+   - Admin Panel: http://localhost:5173/admin
 
 ## 🚀 Deployment
 
-### Frontend (Netlify)
-- Auto-deploy from `main` branch
-- Environment variables configured in Netlify dashboard
+### Automated Deployment
 
-### Backend (Render.com)
-- Auto-deploy from `main` branch
-- MongoDB Atlas database connection
-- Health check: `/health`
+The project uses automatic deployment via GitHub integration:
 
-## 📚 Documentation
+- **Frontend**: Automatically deploys to Netlify on `main` branch pushes
+- **Backend**: Automatically deploys to Render on `main` branch pushes
 
-- [Production Checklist](docs/production-checklist.md)
-- [Database Setup](docs/database-setup.md)
-- [Netlify Setup](docs/netlify-simple-setup.md)
+### Manual Deployment
 
-## 🔧 Environment Variables
+See our comprehensive deployment guides:
 
-### Frontend (Netlify)
+- 📘 [Netlify Setup](./docs/netlify-setup.md)
+- 📗 [Render Setup](./docs/deployment-setup.md)
+- 📙 [Database Setup](./docs/database-setup-complete.md)
+
+## 🎯 Usage
+
+### Public Users
+
+1. **Browse Events**: View categorized events with filters
+2. **Search**: Find specific events by name, venue, or category
+3. **Event Details**: View comprehensive event information
+4. **Blog**: Read event guides and Istanbul culture content
+
+### Admin Users
+
+1. **Login**: Access admin panel at `/admin`
+2. **Event Management**: Create, edit, delete events
+3. **Blog Management**: Manage blog posts and content
+4. **Analytics**: View event statistics and insights
+
+## 📊 Project Structure
+
 ```
-VITE_API_BASE_URL=https://eventhubble.onrender.com/api
-VITE_APP_ENV=production
+EventHubble/
+├── 📁 src/                    # Frontend source code
+│   ├── 📁 components/         # Reusable UI components
+│   ├── 📁 pages/             # Page components
+│   ├── 📁 services/          # API services
+│   └── 📁 contexts/          # React contexts
+├── 📁 backend/               # Backend source code
+│   ├── 📄 uploadServer.js    # Main server file
+│   ├── 📄 supabaseService.js # Database service
+│   └── 📄 databaseService.js # Data layer
+├── 📁 docs/                  # Documentation
+├── 📁 database_imports/      # Sample data
+└── 📁 public/               # Static assets
 ```
 
-### Backend (Render.com)
-```
-NODE_ENV=production
-PORT=10000
-CORS_ORIGINS=https://eventhubble.netlify.app
-MONGODB_URI=mongodb+srv://...
-```
+## 🤝 Contributing
 
-## 📊 API Endpoints
+We welcome contributions! Please see our [Contributing Guide](./docs/contributing.md) for details.
 
-- `GET /health` - Health check
-- `GET /api/status` - API status
-- `GET /api/events` - Get events
-- `POST /upload` - Image upload
-- `GET /images/*` - Serve images
+### Development Workflow
 
-## 🎯 Features
-
-- ✅ Event discovery platform
-- ✅ Multi-language support (TR/EN)
-- ✅ Image upload functionality
-- ✅ Responsive design
-- ✅ Production deployment
-- ✅ MongoDB integration
-- ✅ API documentation
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- 📖 [Documentation](./docs/README.md)
+- 🐛 [Issue Tracker](https://github.com/fozlen/eventhubble/issues)
+- 💬 [Discussions](https://github.com/fozlen/eventhubble/discussions)
+
+## 👨‍💻 Author
+
+**Furkan Özlen**
+- GitHub: [@fozlen](https://github.com/fozlen)
+- Project: [EventHubble](https://github.com/fozlen/eventhubble)
 
 ---
 
-**Built with ❤️ by EventHubble Team**
-# Force rebuild for logo fix
-# Test deployment
-# Backend sync test
+<div align="center">
+  <strong>Made with ❤️ for Istanbul's event community</strong>
+</div>
