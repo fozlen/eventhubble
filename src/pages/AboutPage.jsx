@@ -5,6 +5,7 @@ import { Sun, Moon, Globe, User, ArrowLeft } from 'lucide-react'
 import LogoService from '../services/logoService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
+import Footer from '../components/Footer'
 
 
 const AboutPage = () => {
@@ -140,15 +141,15 @@ const AboutPage = () => {
       <main className="max-w-4xl mx-auto px-4 py-8 md:py-12">
         
         {/* Mobile Header */}
-        <div className="block sm:hidden text-center mb-6">
+        <div className="block sm:hidden text-center mb-8">
           <h1 className="text-2xl font-bold mb-2 text-text">
             {language === 'TR' ? 'Hakkımızda' : 'About Us'}
           </h1>
-          <p className="text-sm text-text/70 px-2">
-            {language === 'TR' 
-              ? 'Dünyanın en iyi etkinliklerini keşfetmenize yardımcı olan platform'
-              : 'The platform that helps you discover the world\'s best events'
-            }
+          <p className="text-lg font-bold text-primary mb-4">
+            Your Gateway to Every Experience
+          </p>
+          <p className="text-sm text-text/80 px-4 leading-relaxed">
+            At EventHubble, we believe discovering great experiences should be effortless. That's why we bring together concerts, festivals, sports events, meetups, cultural gatherings, and even global spectacles all in one place. Whether you're searching by location, date, or budget, we help you find what to do, when and where instantly.
           </p>
         </div>
 
@@ -157,57 +158,48 @@ const AboutPage = () => {
           <h1 className="text-4xl font-bold mb-4 text-text">
             {language === 'TR' ? 'Hakkımızda' : 'About Us'}
           </h1>
-          <p className="text-xl text-text/70 px-4">
-            {language === 'TR' 
-              ? 'Dünyanın en iyi etkinliklerini keşfetmenize yardımcı olan platform'
-              : 'The platform that helps you discover the world\'s best events'
-            }
+          <p className="text-2xl font-bold text-primary mb-6">
+            Your Gateway to Every Experience
+          </p>
+          <p className="text-lg text-text/80 px-4 max-w-4xl mx-auto leading-relaxed">
+            At EventHubble, we believe discovering great experiences should be effortless. That's why we bring together concerts, festivals, sports events, meetups, cultural gatherings, and even global spectacles all in one place. Whether you're searching by location, date, or budget, we help you find what to do, when and where instantly.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
           <div className="p-4 md:p-6 rounded-lg bg-background-secondary">
             <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-text">
-              {language === 'TR' ? 'Misyonumuz' : 'Our Mission'}
+              Our Mission
             </h2>
             <p className="text-sm md:text-base text-text/70">
-              {language === 'TR' 
-                ? 'İnsanları dünyanın en muhteşem etkinlikleriyle buluşturmak ve unutulmaz deneyimler yaşamalarına yardımcı olmak.'
-                : 'To connect people with the world\'s most amazing events and help them create unforgettable experiences.'
-              }
+              To connect people with the most exciting events around the world and make it easy to turn plans into unforgettable memories.
             </p>
           </div>
 
           <div className="p-4 md:p-6 rounded-lg bg-background-secondary">
             <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-text">
-              {language === 'TR' ? 'Vizyonumuz' : 'Our Vision'}
+              Our Vision
             </h2>
             <p className="text-sm md:text-base text-text/70">
-              {language === 'TR' 
-                ? 'Dünya çapında etkinlik keşfi için en güvenilir ve kullanıcı dostu platform olmak.'
-                : 'To become the most reliable and user-friendly platform for event discovery worldwide.'
-              }
+              To become the go-to global hub for discovering and accessing events, no matter where you are or what you're into.
             </p>
           </div>
         </div>
 
         <div className="p-6 md:p-8 rounded-lg bg-background-secondary">
           <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-center text-text">
-            {language === 'TR' ? 'Neden EventHubble?' : 'Why EventHubble?'}
+            Why Choose EventHubble?
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-primary/10">
                 <span className="text-2xl">🌍</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                {language === 'TR' ? 'Küresel Erişim' : 'Global Access'}
+                All Events, One Platform
               </h3>
               <p className="text-sm text-text/70">
-                {language === 'TR' 
-                  ? 'Dünyanın her yerinden etkinliklere erişim'
-                  : 'Access to events from around the world'
-                }
+                From hidden gems to global shows. Every event, all in one place.
               </p>
             </div>
 
@@ -216,13 +208,10 @@ const AboutPage = () => {
                 <span className="text-2xl">🔍</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                {language === 'TR' ? 'Akıllı Arama' : 'Smart Search'}
+                Smarter Search, Better Plans
               </h3>
               <p className="text-sm text-text/70">
-                {language === 'TR' 
-                  ? 'Gelişmiş filtrelerle mükemmel etkinliği bulun'
-                  : 'Find the perfect event with advanced filters'
-                }
+                Easily filter by location, date, category, or price to find the right event for you.
               </p>
             </div>
 
@@ -231,13 +220,22 @@ const AboutPage = () => {
                 <span className="text-2xl">🎯</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                {language === 'TR' ? 'Kişiselleştirme' : 'Personalization'}
+                Direct Ticket Links
               </h3>
               <p className="text-sm text-text/70">
-                {language === 'TR' 
-                  ? 'Kişiselleştirilmiş etkinlik önerileri'
-                  : 'Personalized event recommendations'
-                }
+                No confusion. No detours. We redirect you to trusted platforms to book tickets instantly.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-primary/10">
+                <span className="text-2xl">👀</span>
+              </div>
+              <h3 className="font-semibold mb-2 text-text">
+                Tailored for You
+              </h3>
+              <p className="text-sm text-text/70">
+                Get personalized recommendations based on your preferences and location.
               </p>
             </div>
           </div>

@@ -62,9 +62,7 @@ const Footer = ({ language = "EN" }) => {
               </span>
             </div>
             <p className="text-white/70 text-sm text-center md:text-left max-w-xs">
-              {language === 'TR' 
-                ? 'Dünyanın her yerinden en iyi etkinlikleri keşfedin.'
-                : 'Discover the best events from around the world.'}
+              Your Gateway to Every Experience
             </p>
           </div>
           
