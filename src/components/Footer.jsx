@@ -3,15 +3,17 @@ import { Facebook, Instagram, Twitter, Music } from 'lucide-react'
 import LogoService from '../services/logoService'
 
 const Footer = ({ language = "EN" }) => {
-  const [logo, setLogo] = React.useState('/assets/Logo.png')
+  const [footerLogo, setFooterLogo] = React.useState('/Logo.png')
 
   React.useEffect(() => {
     const loadLogo = async () => {
       try {
-        const logoUrl = await LogoService.getLogo('light')
-        setLogo(logoUrl)
+        const logoUrl = await LogoService.getLogo('main')
+        setFooterLogo(logoUrl)
       } catch (error) {
-        console.error('Logo loading error:', error)
+        console.error('Footer logo loading error:', error)
+        // Fallback to static asset
+        setFooterLogo('/Logo.png')
       }
     }
     loadLogo()
@@ -52,7 +54,7 @@ const Footer = ({ language = "EN" }) => {
           <div className="flex flex-col items-center md:items-start space-y-4">
             <div className="flex items-center space-x-2">
               <img 
-                src={logo} 
+                src={footerLogo} 
                 alt="EventHubble" 
                 className="h-10 w-auto" 
               />

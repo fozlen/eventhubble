@@ -33,9 +33,20 @@ class LogoService {
            const logoData = await response.json()
            if (logoData.success && logoData.logo && logoData.logo.file_path) {
              // Use the file_path from database (can be base64 or URL)
-             const logoPath = logoData.logo.file_path.startsWith('data:') 
-               ? logoData.logo.file_path 
-               : `${this.API_BASE_URL}${logoData.logo.file_path}`
+             let logoPath = logoData.logo.file_path
+             
+             // If it's base64, use as-is
+             if (logoPath.startsWith('data:')) {
+               logoPath = logoPath
+             } 
+             // If it's already a full URL, use as-is
+             else if (logoPath.startsWith('http')) {
+               logoPath = logoPath
+             }
+             // If it's a relative path, prepend backend URL
+             else {
+               logoPath = `${this.API_BASE_URL}${logoPath}`
+             }
              
              // Cache for 24 hours
              const expiry = Date.now() + (24 * 60 * 60 * 1000)
@@ -83,8 +94,8 @@ class LogoService {
     const logos = {
       main: 'Logo.png',
       new: 'eventhubble_new_logo.png',
-      withoutBg: 'Logo w_out background.png',
-      mainLogo: 'MainLogo.png',
+      large: 'MainLogo.png',  // Changed from 'mainLogo' to 'large'
+      transparent: 'Logo w_out background.png',  // Changed from 'withoutBg' to 'transparent'
       dark: 'eventhubble_dark_transparent_logo.png',
       light: 'eventhubble_light_transparent_logo.png'
     }
@@ -116,7 +127,7 @@ class LogoService {
   
   // Preload all logos for better performance
   static async preloadLogos() {
-    const logoTypes = ['main', 'new', 'withoutBg', 'mainLogo', 'light', 'dark']
+    const logoTypes = ['main', 'new', 'transparent', 'large', 'light', 'dark']
     
     try {
       await Promise.allSettled(
