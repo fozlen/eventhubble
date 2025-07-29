@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import LogoService from '../services/logoService'
 import { Menu, X, Globe, Search, Bell, User } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'

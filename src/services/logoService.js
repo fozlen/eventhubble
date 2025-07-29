@@ -49,7 +49,7 @@ class LogoService {
       // Fallback to direct URL
       return import.meta.env.PROD 
         ? `/${this.getLogoFilename(type)}`
-        : `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
+        : `/${this.getLogoFilename(type)}`
     }
   }
   
