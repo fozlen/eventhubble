@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 import { 
   Plus, Edit, Trash2, Save, X, LogOut, Globe, Settings, 
   Database, Shield, Mail, Phone, Twitter, Instagram, 
   Facebook, Youtube, CreditCard, Clock, Eye, Tag 
 } from 'lucide-react'
+import LogoService from '../services/logoService'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 
@@ -12,15 +14,22 @@ const AdminSiteSettingsPage = () => {
   const [settings, setSettings] = useState([])
   const [editingSettings, setEditingSettings] = useState({})
   const [showAddModal, setShowAddModal] = useState(false)
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'EN'
-  })
+  const { language, toggleLanguage } = useLanguage()
+  const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
 
-  // Get logo function
-  const getLogo = () => {
-    return import.meta.env.PROD ? '/Logo.png' : `${API_BASE_URL}/assets/Logo.png`
-  }
+  // Load logo
+  useEffect(() => {
+    const loadLogo = async () => {
+      try {
+        const logoUrl = await LogoService.getLogo('main')
+        setLogo(logoUrl)
+      } catch (error) {
+        console.error('Logo loading error:', error)
+      }
+    }
+    loadLogo()
+  }, [])
 
   // Check authentication
   useEffect(() => {
@@ -65,12 +74,6 @@ const AdminSiteSettingsPage = () => {
     localStorage.removeItem('adminAuthenticated')
     localStorage.removeItem('adminLoginTime')
     navigate('/admin/login')
-  }
-
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
   }
 
   const startEditing = (setting) => {

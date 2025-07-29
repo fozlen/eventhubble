@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from 'react'
-import LogoService from '../services/logoService'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Sun, Moon, Tag, FileText, Settings, BarChart3, MapPin, Clock, DollarSign, Users, Star, Phone, ExternalLink } from 'lucide-react'
-// Image paths for API compatibility
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
-const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
-const logo = `${API_BASE_URL}/assets/Logo.png`
+import { useLanguage } from '../contexts/LanguageContext'
+import { 
+  Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Settings, 
+  BarChart3, MapPin, Clock, DollarSign, Users, Star, Phone, ExternalLink 
+} from 'lucide-react'
+import LogoService from '../services/logoService'
 import ImageSelector from '../components/ImageSelector'
 import { EventService } from '../services/eventService'
 import DatabaseService from '../services/databaseService'
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 
 const AdminEventManagementPage = () => {
   const [events, setEvents] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState(null)
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'EN'
-  })
+  const { language, toggleLanguage } = useLanguage()
+  const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
 
-  // Get logo function
-  const getLogo = () => {
-    return import.meta.env.PROD ? '/Logo.png' : '/assets/Logo.png'
-  }
+  // Load logo
+  useEffect(() => {
+    const loadLogo = async () => {
+      try {
+        const logoUrl = await LogoService.getLogo('main')
+        setLogo(logoUrl)
+      } catch (error) {
+        console.error('Logo loading error:', error)
+      }
+    }
+    loadLogo()
+  }, [])
 
   // Check authentication
   useEffect(() => {
