@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 import { 
   Plus, Edit, Trash2, Save, X, LogOut, Globe, Settings, 
   Image, Eye, Upload, Download, Star, Tag 
@@ -11,9 +12,7 @@ const AdminLogosPage = () => {
   const [logos, setLogos] = useState([])
   const [editingLogo, setEditingLogo] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'EN'
-  })
+  const { language, toggleLanguage } = useLanguage()
   const navigate = useNavigate()
 
   // Get logo function
@@ -46,7 +45,7 @@ const AdminLogosPage = () => {
 
   const loadLogos = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/logos`)
+      const response = await fetch(`${API_BASE_URL}/api/logos`)
       if (response.ok) {
         const result = await response.json()
         if (result.success) {
@@ -66,11 +65,7 @@ const AdminLogosPage = () => {
     navigate('/admin/login')
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+
 
   const handleAddLogo = () => {
     setEditingLogo(null)
