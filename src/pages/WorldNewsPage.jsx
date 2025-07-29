@@ -6,12 +6,12 @@ import CacheService from '../services/cacheService'
 import LogoService from '../services/logoService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
+import Footer from '../components/Footer'
 
 const WorldNewsPage = () => {
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
   const [newsData, setNewsData] = useState([])
-  const [loading, setLoading] = useState(true)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [logos, setLogos] = useState({})
 
@@ -60,7 +60,7 @@ const WorldNewsPage = () => {
         }
         setNewsData([])
       } finally {
-        setLoading(false)
+        // Loading removed for better UX
       }
     }
 

@@ -11,6 +11,7 @@ const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
+import Footer from '../components/Footer'
 
 
 const EventDetailPage = () => {
@@ -18,7 +19,6 @@ const EventDetailPage = () => {
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
   const [event, setEvent] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
 
   // Get logo
@@ -118,18 +118,7 @@ const EventDetailPage = () => {
     loadEventDetail()
   }, [eventId, language])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4 text-gray-400">⏳</div>
-          <h3 className="text-xl font-semibold text-text">
-            {language === 'TR' ? 'Etkinlik detayları yükleniyor...' : 'Loading event details...'}
-          </h3>
-        </div>
-      </div>
-    )
-  }
+  // Loading removed for better UX
 
   if (!event) {
     return (

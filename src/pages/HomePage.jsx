@@ -37,7 +37,6 @@ import {
 const HomePage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [events, setEvents] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -106,7 +105,6 @@ const HomePage = () => {
   // Etkinlikleri yükle
   useEffect(() => {
     const loadEvents = async () => {
-      setLoading(true)
       try {
         // Database ve eventService'den tüm eventleri yükle
         const dbEvents = await DatabaseService.getEvents()
@@ -122,7 +120,7 @@ const HomePage = () => {
         setError(error.message || 'Failed to load events')
         setEvents([])
       } finally {
-        setLoading(false)
+        // Loading removed for better UX
       }
     }
 

@@ -10,13 +10,13 @@ const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
 const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
+import Footer from '../components/Footer'
 
 
 const BlogDetailPage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
   const [blogPost, setBlogPost] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
   const { id } = useParams()
   const navigate = useNavigate()
 
@@ -96,7 +96,7 @@ const BlogDetailPage = () => {
         setBlogPost(null)
       }
     } finally {
-      setIsLoading(false)
+      // Loading removed for better UX
     }
   }
 
@@ -167,18 +167,7 @@ const BlogDetailPage = () => {
     return translations[category] || category
   }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4 text-gray-400">📖</div>
-          <h3 className="text-xl font-semibold text-text">
-            {language === 'TR' ? 'Blog yazısı yükleniyor...' : 'Loading blog post...'}
-          </h3>
-        </div>
-      </div>
-    )
-  }
+  // Loading removed for better UX
 
   if (!blogPost) {
     return (

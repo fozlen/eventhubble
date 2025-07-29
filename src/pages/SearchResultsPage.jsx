@@ -7,6 +7,7 @@ import LogoService from '../services/logoService'
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
+import Footer from '../components/Footer'
 
 
 const SearchResultsPage = () => {
@@ -15,7 +16,6 @@ const SearchResultsPage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [events, setEvents] = useState([])
   const [filteredEvents, setFilteredEvents] = useState([])
-  const [loading, setLoading] = useState(true)
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
   const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'price'
   const [showMap, setShowMap] = useState(false)
@@ -84,7 +84,6 @@ const SearchResultsPage = () => {
   // Load events and filter based on search criteria
   useEffect(() => {
     const loadEvents = async () => {
-      setLoading(true)
       try {
         // eventService.js kullanarak tüm eventleri yükle (Manuel + API)
         const allEvents = await EventService.getEvents()
@@ -95,7 +94,7 @@ const SearchResultsPage = () => {
         }
         setEvents([])
       } finally {
-        setLoading(false)
+        // Loading removed for better UX
       }
     }
 
@@ -180,17 +179,7 @@ const SearchResultsPage = () => {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h3 className="text-xl font-semibold text-text">
-            {language === 'TR' ? 'Arama sonuçları yükleniyor...' : 'Loading search results...'}
-          </h3>
-        </div>
-      </div>
-    )
-  }
+  // Loading removed for better UX
 
   return (
     <div className="min-h-screen bg-background pb-24 sm:pb-0">
