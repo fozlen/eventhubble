@@ -175,26 +175,32 @@ const AboutPage = () => {
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
           <div className="p-4 md:p-6 rounded-lg bg-background-secondary">
             <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-text">
-              Our Mission
+              {language === 'TR' ? 'Misyonumuz' : 'Our Mission'}
             </h2>
             <p className="text-sm md:text-base text-text/70">
-              To connect people with the most exciting events around the world and make it easy to turn plans into unforgettable memories.
+              {language === 'TR' 
+                ? 'İnsanları dünyadaki en heyecan verici etkinliklerle buluşturmak ve planları unutulmaz anılara dönüştürmeyi kolaylaştırmak.'
+                : 'To connect people with the most exciting events around the world and make it easy to turn plans into unforgettable memories.'
+              }
             </p>
           </div>
 
           <div className="p-4 md:p-6 rounded-lg bg-background-secondary">
             <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-text">
-              Our Vision
+              {language === 'TR' ? 'Vizyonumuz' : 'Our Vision'}
             </h2>
             <p className="text-sm md:text-base text-text/70">
-              To become the go-to global hub for discovering and accessing events, no matter where you are or what you're into.
+              {language === 'TR' 
+                ? 'Nerede olursanız olun ve neyle ilgilenirseniz ilgilenin, etkinlikleri keşfetmek ve erişmek için başvurulan küresel merkez olmak.'
+                : 'To become the go-to global hub for discovering and accessing events, no matter where you are or what you\'re into.'
+              }
             </p>
           </div>
         </div>
 
         <div className="p-6 md:p-8 rounded-lg bg-background-secondary">
           <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-center text-text">
-            Why Choose EventHubble?
+            {language === 'TR' ? 'Neden EventHubble?' : 'Why Choose EventHubble?'}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             <div className="text-center">
@@ -202,10 +208,13 @@ const AboutPage = () => {
                 <span className="text-2xl">🌍</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                All Events, One Platform
+                {language === 'TR' ? 'Tüm Etkinlikler, Tek Platform' : 'All Events, One Platform'}
               </h3>
               <p className="text-sm text-text/70">
-                From hidden gems to global shows. Every event, all in one place.
+                {language === 'TR' 
+                  ? 'Gizli değerlerden küresel gösterilere. Her etkinlik, tek bir yerde.'
+                  : 'From hidden gems to global shows. Every event, all in one place.'
+                }
               </p>
             </div>
 
@@ -214,10 +223,13 @@ const AboutPage = () => {
                 <span className="text-2xl">🔍</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                Smarter Search, Better Plans
+                {language === 'TR' ? 'Akıllı Arama, Daha İyi Planlar' : 'Smarter Search, Better Plans'}
               </h3>
               <p className="text-sm text-text/70">
-                Easily filter by location, date, category, or price to find the right event for you.
+                {language === 'TR' 
+                  ? 'Konum, tarih, kategori veya fiyata göre kolayca filtreleyin ve size uygun etkinliği bulun.'
+                  : 'Easily filter by location, date, category, or price to find the right event for you.'
+                }
               </p>
             </div>
 
@@ -226,10 +238,13 @@ const AboutPage = () => {
                 <span className="text-2xl">🎯</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                Direct Ticket Links
+                {language === 'TR' ? 'Doğrudan Bilet Bağlantıları' : 'Direct Ticket Links'}
               </h3>
               <p className="text-sm text-text/70">
-                No confusion. No detours. We redirect you to trusted platforms to book tickets instantly.
+                {language === 'TR' 
+                  ? 'Karışıklık yok. Dolambaç yok. Sizi anında bilet rezervasyonu için güvenilir platformlara yönlendiriyoruz.'
+                  : 'No confusion. No detours. We redirect you to trusted platforms to book tickets instantly.'
+                }
               </p>
             </div>
 
@@ -238,10 +253,13 @@ const AboutPage = () => {
                 <span className="text-2xl">👀</span>
               </div>
               <h3 className="font-semibold mb-2 text-text">
-                Tailored for You
+                {language === 'TR' ? 'Size Özel' : 'Tailored for You'}
               </h3>
               <p className="text-sm text-text/70">
-                Get personalized recommendations based on your preferences and location.
+                {language === 'TR' 
+                  ? 'Tercihleriniz ve konumunuza göre kişiselleştirilmiş öneriler alın.'
+                  : 'Get personalized recommendations based on your preferences and location.'
+                }
               </p>
             </div>
           </div>

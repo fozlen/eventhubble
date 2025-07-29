@@ -46,7 +46,7 @@ const AdminCategoriesPage = () => {
 
   const loadCategories = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories`)
+      const response = await fetch(`${API_BASE_URL}/api/categories`)
       if (response.ok) {
         const result = await response.json()
         if (result.success) {
@@ -85,7 +85,7 @@ const AdminCategoriesPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/categories/${categoryId}`, {
           method: 'DELETE'
         })
 
@@ -103,8 +103,8 @@ const AdminCategoriesPage = () => {
   const handleSaveCategory = async (categoryData) => {
     try {
       const url = editingCategory 
-        ? `${API_BASE_URL}/categories/${editingCategory.category_id}`
-        : `${API_BASE_URL}/categories`
+        ? `${API_BASE_URL}/api/categories/${editingCategory.category_id}`
+        : `${API_BASE_URL}/api/categories`
       
       const method = editingCategory ? 'PUT' : 'POST'
       

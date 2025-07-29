@@ -84,7 +84,7 @@ const AdminLogosPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`${API_BASE_URL}/logos/${logoId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/logos/${logoId}`, {
           method: 'DELETE'
         })
 
@@ -102,8 +102,8 @@ const AdminLogosPage = () => {
   const handleSaveLogo = async (logoData) => {
     try {
       const url = editingLogo 
-        ? `${API_BASE_URL}/logos/${editingLogo.logo_id}`
-        : `${API_BASE_URL}/logos`
+        ? `${API_BASE_URL}/api/logos/${editingLogo.logo_id}`
+        : `${API_BASE_URL}/api/logos`
       
       const method = editingLogo ? 'PUT' : 'POST'
       
