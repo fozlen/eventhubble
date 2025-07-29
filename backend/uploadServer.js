@@ -688,7 +688,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 
     // Image URL'ini oluştur (CDN olmadan direkt API'den serve et)
     const imageUrl = process.env.NODE_ENV === 'production' 
-      ? `https://eventhubble-api.onrender.com/images/${fileName}`
+      ? `https://eventhubble.onrender.com/images/${fileName}`
       : `http://localhost:${PORT}/images/${fileName}`
 
     // Başarılı response

@@ -20,7 +20,7 @@ Add these environment variables in Netlify dashboard:
 ```bash
 NODE_VERSION=18
 NODE_ENV=production
-VITE_API_BASE_URL=https://eventhubble-api.onrender.com
+VITE_API_BASE_URL=https://eventhubble.onrender.com
 ```
 
 ### Step 3: Build Settings
@@ -34,7 +34,7 @@ Netlify automatically reads from `netlify.toml`:
 [build.environment]
   NODE_VERSION = "18"
   NODE_ENV = "production"
-  VITE_API_BASE_URL = "https://eventhubble-api.onrender.com"
+  VITE_API_BASE_URL = "https://eventhubble.onrender.com"
 ```
 
 ## 🔧 Advanced Configuration

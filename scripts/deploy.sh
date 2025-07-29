@@ -32,6 +32,6 @@ fi
 echo "✅ Frontend deployment tamamlandı!"
 
 echo "🎉 Deployment tamamlandı!"
-echo "📊 API URL: https://eventhubble-api.onrender.com"
+echo "📊 API URL: https://eventhubble.onrender.com"
 echo "🌐 CDN URL: https://cdn.eventhubble.com"
 echo "🔗 Frontend URL: https://eventhubble.netlify.app" 

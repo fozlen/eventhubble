@@ -26,7 +26,7 @@ EventHubble is a comprehensive event discovery and management platform designed 
 
 - **🌍 Public Site**: [https://eventhubble.netlify.app](https://eventhubble.netlify.app)
 - **⚙️ Admin Panel**: [https://eventhubble.netlify.app/admin](https://eventhubble.netlify.app/admin)
-- **🔗 API Endpoint**: [https://eventhubble-api.onrender.com](https://eventhubble-api.onrender.com)
+- **🔗 API Endpoint**: [https://eventhubble.onrender.com](https://eventhubble.onrender.com)
 
 ## 🏗️ Architecture
 

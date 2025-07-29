@@ -9,7 +9,7 @@
 ```
 Type: CNAME
 Name: cdn
-Target: eventhubble-api.onrender.com
+Target: eventhubble.onrender.com
 Proxy: Enabled (Orange Cloud)
 ```
 

@@ -66,7 +66,7 @@ npm run migrate-blog
 ### Frontend (Netlify)
 1. Environment variables ekleyin:
    ```
-   VITE_API_BASE_URL=https://eventhubble-api.onrender.com/api
+   VITE_API_BASE_URL=https://eventhubble.onrender.com/api
    ```
 
 ## Test Etme
@@ -74,10 +74,10 @@ npm run migrate-blog
 ### API Test
 ```bash
 # Tüm blog yazılarını getir
-curl https://eventhubble-api.onrender.com/api/blog-posts
+curl https://eventhubble.onrender.com/api/blog-posts
 
 # Belirli bir blog yazısını getir
-curl https://eventhubble-api.onrender.com/api/blog-posts/1753806307708
+curl https://eventhubble.onrender.com/api/blog-posts/1753806307708
 ```
 
 ### Frontend Test

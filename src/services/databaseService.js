@@ -1,6 +1,6 @@
 // Frontend database service for fetching all content from database APIs
 class DatabaseService {
-  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble-api.onrender.com' : 'http://localhost:3001'
+  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001'
 
   // ===== LOGOS =====
   static async getLogos() {

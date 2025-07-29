@@ -10,7 +10,7 @@
   - [ ] CORS_ORIGINS=https://eventhubble.netlify.app
   - [ ] CDN_BASE_URL=https://cdn.eventhubble.com
   - [ ] MONGODB_URI=mongodb+srv://...
-- [ ] Deploy et ve URL'i al: https://eventhubble-api.onrender.com
+- [ ] Deploy et ve URL'i al: https://eventhubble.onrender.com
 
 ## ✅ Database (MongoDB Atlas)
 - [ ] MongoDB Atlas hesabı oluştur
@@ -24,7 +24,7 @@
 - [ ] Cloudflare hesabı oluştur
 - [ ] Domain ekle (eventhubble.com veya subdomain)
 - [ ] DNS ayarları:
-  - [ ] CNAME: cdn → eventhubble-api.onrender.com
+  - [ ] CNAME: cdn → eventhubble.onrender.com
   - [ ] Proxy: Enabled (Orange Cloud)
 - [ ] SSL/TLS ayarları
 - [ ] Cache ayarları
@@ -32,14 +32,14 @@
 
 ## ✅ Frontend (Netlify)
 - [ ] Environment variables güncelle:
-  - [ ] VITE_API_BASE_URL=https://eventhubble-api.onrender.com/api
+  - [ ] VITE_API_BASE_URL=https://eventhubble.onrender.com/api
   - [ ] VITE_CDN_BASE_URL=https://cdn.eventhubble.com
 - [ ] Production build oluştur
 - [ ] Deploy et
 
 ## ✅ Testing
-- [ ] API health check: https://eventhubble-api.onrender.com/health
-- [ ] API status: https://eventhubble-api.onrender.com/api/status
+- [ ] API health check: https://eventhubble.onrender.com/health
+- [ ] API status: https://eventhubble.onrender.com/api/status
 - [ ] Image upload test
 - [ ] CDN image access test
 - [ ] Frontend API bağlantısı test
@@ -51,7 +51,7 @@
 - [ ] Performance monitoring aktif
 
 ## 🔗 URLs
-- **API**: https://eventhubble-api.onrender.com
+- **API**: https://eventhubble.onrender.com
 - **CDN**: https://cdn.eventhubble.com
 - **Frontend**: https://eventhubble.netlify.app
-- **Health Check**: https://eventhubble-api.onrender.com/health 
+- **Health Check**: https://eventhubble.onrender.com/health 
