@@ -1,22 +1,23 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs').promises;
-const path = require('path');
+import fs from 'fs/promises'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// ES modules'da __dirname alternatifi
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 class EventScraper {
   constructor() {
     this.browser = null;
-    this.dataDir = path.join(__dirname, '../data');
+    this.dataDir = path.join(__dirname, 'data');
   }
 
   async init() {
     try {
-      this.browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
-      console.log('🌐 Browser başlatıldı');
+      // Puppeteer kaldırıldı - mock data kullanılacak
+      console.log('🌐 Scraper başlatıldı (mock mode)');
     } catch (error) {
-      console.error('❌ Browser başlatma hatası:', error);
+      console.error('❌ Scraper başlatma hatası:', error);
       throw error;
     }
   }
@@ -469,7 +470,7 @@ class EventScraper {
   }
 }
 
-module.exports = EventScraper;
+export default EventScraper;
 
 // Test için
 if (require.main === module) {

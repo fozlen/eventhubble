@@ -1,15 +1,20 @@
-const cron = require('node-cron');
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs').promises;
-const path = require('path');
-const EventScraper = require('./scraper');
+import cron from 'node-cron'
+import express from 'express'
+import cors from 'cors'
+import fs from 'fs/promises'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import EventScraper from './scraper.js'
+
+// ES modules'da __dirname alternatifi
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 class EventScheduler {
   constructor() {
     this.app = express();
     this.scraper = new EventScraper();
-    this.dataDir = path.join(__dirname, '../data');
+    this.dataDir = path.join(__dirname, 'data');
     this.isRunning = false;
     this.lastScrapeTime = null;
     this.stats = {
@@ -269,4 +274,4 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-module.exports = EventScheduler; 
+export default EventScheduler; 

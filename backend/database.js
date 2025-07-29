@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb')
+import { MongoClient } from 'mongodb'
 
 class Database {
   constructor() {
@@ -191,4 +191,4 @@ class Database {
 // Singleton instance
 const database = new Database()
 
-module.exports = database 
+export default database 
