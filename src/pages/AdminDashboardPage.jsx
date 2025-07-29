@@ -58,11 +58,12 @@ const AdminDashboardPage = () => {
 
   const loadBlogPosts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/blog-posts`)
+      const response = await fetch(`${API_BASE_URL}/blog-posts`)
       if (response.ok) {
         const posts = await response.json()
         setBlogPosts(posts)
       } else {
+        console.error('API Error:', response.status, response.statusText)
         // API hatası durumunda localStorage'dan çek (fallback)
         const storedPosts = localStorage.getItem('blogPosts')
         if (storedPosts) {
@@ -72,9 +73,7 @@ const AdminDashboardPage = () => {
         }
       }
     } catch (error) {
-      if (!import.meta.env.PROD) {
-        console.error('Error loading blog posts:', error)
-      }
+      console.error('Error loading blog posts:', error)
       // Hata durumunda localStorage'dan çek
       const storedPosts = localStorage.getItem('blogPosts')
       if (storedPosts) {
@@ -82,8 +81,6 @@ const AdminDashboardPage = () => {
       } else {
         setBlogPosts([])
       }
-    } finally {
-      // Loading removed for better UX
     }
   }
 
@@ -110,20 +107,21 @@ const AdminDashboardPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/blog-posts/${postId}`, {
+        const response = await fetch(`${API_BASE_URL}/blog-posts/${postId}`, {
           method: 'DELETE'
         })
 
         if (response.ok) {
-          const updatedPosts = blogPosts.filter(post => post._id !== postId)
+          const updatedPosts = blogPosts.filter(post => post.id !== postId)
           setBlogPosts(updatedPosts)
+          console.log('Blog post deleted successfully')
         } else {
+          const errorText = await response.text()
+          console.error('Delete failed:', response.status, errorText)
           throw new Error('Failed to delete blog post')
         }
       } catch (error) {
-        if (!import.meta.env.PROD) {
-          console.error('Error deleting blog post:', error)
-        }
+        console.error('Error deleting blog post:', error)
         // Hata durumunda localStorage'dan sil (fallback)
         const updatedPosts = blogPosts.filter(post => post.id !== postId)
         setBlogPosts(updatedPosts)
@@ -162,14 +160,22 @@ const AdminDashboardPage = () => {
   const handleSavePost = async (postData) => {
     try {
       const postToSave = {
-        ...postData,
-        date: new Date().toISOString().split('T')[0] || '2024-07-29',
-        author: 'Admin'
+        title_tr: postData.title_tr,
+        title_en: postData.title_en,
+        content_tr: postData.content_tr,
+        content_en: postData.content_en,
+        excerpt_tr: postData.excerpt_tr,
+        excerpt_en: postData.excerpt_en,
+        image_url: postData.image,
+        author: 'Admin',
+        category: postData.category,
+        tags: postData.tags,
+        url: postData.url
       }
 
       if (editingPost) {
         // Update existing post
-        const response = await fetch(`${API_BASE_URL}/api/blog-posts/${editingPost.id}`, {
+        const response = await fetch(`${API_BASE_URL}/blog-posts/${editingPost.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -178,16 +184,17 @@ const AdminDashboardPage = () => {
         })
 
         if (response.ok) {
-          const updatedPosts = blogPosts.map(post => 
-            post._id === editingPost._id ? { ...post, ...postToSave } : post
-          )
-          setBlogPosts(updatedPosts)
+          const result = await response.json()
+          console.log('Blog post updated successfully:', result)
+          await loadBlogPosts() // Reload to get updated data
         } else {
+          const errorText = await response.text()
+          console.error('Update failed:', response.status, errorText)
           throw new Error('Failed to update blog post')
         }
       } else {
         // Add new post
-        const response = await fetch(`${API_BASE_URL}/api/blog-posts`, {
+        const response = await fetch(`${API_BASE_URL}/blog-posts`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -197,17 +204,17 @@ const AdminDashboardPage = () => {
 
         if (response.ok) {
           const result = await response.json()
-          const newPost = { ...postToSave, _id: result.postId }
-          const updatedPosts = [...blogPosts, newPost]
-          setBlogPosts(updatedPosts)
+          console.log('Blog post created successfully:', result)
+          await loadBlogPosts() // Reload to get updated data
         } else {
+          const errorText = await response.text()
+          console.error('Create failed:', response.status, errorText)
           throw new Error('Failed to create blog post')
         }
       }
     } catch (error) {
-      if (!import.meta.env.PROD) {
-        console.error('Error saving blog post:', error)
-      }
+      console.error('Error saving blog post:', error)
+      alert(language === 'TR' ? 'Blog yazısı kaydedilirken hata oluştu. Lütfen tekrar deneyin.' : 'Error saving blog post. Please try again.')
       // Hata durumunda localStorage'a kaydet (fallback)
       if (editingPost) {
         const updatedPosts = blogPosts.map(post => 
