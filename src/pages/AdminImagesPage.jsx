@@ -78,7 +78,7 @@ const AdminImagesPage = () => {
 
   const loadImages = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/images`)
+      const response = await fetch(`${API_BASE_URL}/images`)
       if (response.ok) {
         const result = await response.json()
         if (result.success) {
@@ -115,7 +115,7 @@ const AdminImagesPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/images/${imageId}`, {
+        const response = await fetch(`${API_BASE_URL}/images/${imageId}`, {
           method: 'DELETE'
         })
 
@@ -133,8 +133,8 @@ const AdminImagesPage = () => {
   const handleSaveImage = async (imageData) => {
     try {
       const url = editingImage 
-        ? `${API_BASE_URL}/api/images/${editingImage.image_id}`
-        : `${API_BASE_URL}/api/images`
+        ? `${API_BASE_URL}/images/${editingImage.image_id}`
+        : `${API_BASE_URL}/images`
       
       const method = editingImage ? 'PUT' : 'POST'
       

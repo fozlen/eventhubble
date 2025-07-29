@@ -56,7 +56,7 @@ const AdminSiteSettingsPage = () => {
 
   const loadSettings = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/settings`)
+      const response = await fetch(`${API_BASE_URL}/settings`)
       if (response.ok) {
         const result = await response.json()
         if (result.success) {
@@ -112,7 +112,7 @@ const AdminSiteSettingsPage = () => {
         description: setting.description
       }))
 
-      const response = await fetch(`${API_BASE_URL}/api/settings`, {
+      const response = await fetch(`${API_BASE_URL}/settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const AdminSiteSettingsPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/settings/${settingKey}`, {
+        const response = await fetch(`${API_BASE_URL}/settings/${settingKey}`, {
           method: 'DELETE'
         })
 
@@ -524,7 +524,7 @@ const AddSettingModal = ({ onClose, onSave, language = 'EN' }) => {
     e.preventDefault()
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/settings`, {
+      const response = await fetch(`${API_BASE_URL}/settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
