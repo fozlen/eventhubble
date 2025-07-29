@@ -3,20 +3,26 @@ const multer = require('multer')
 const cors = require('cors')
 const path = require('path')
 const fs = require('fs-extra')
-const database = require('./database')
+const supabaseService = require('./supabaseService')
 
 const app = express()
 const PORT = process.env.PORT || 3001
 
-// Database bağlantısını başlat
+// Supabase bağlantısını başlat
 async function startServer() {
   try {
-    // Database bağlantısını dene
+    // Supabase bağlantısını test et
     try {
-      await database.connect()
-      console.log('✅ MongoDB bağlantısı başarılı')
+      const isConnected = await supabaseService.testConnection()
+      if (isConnected) {
+        console.log('✅ Supabase bağlantısı başarılı')
+        // Blog posts tablosunu oluştur
+        await supabaseService.createBlogPostsTable()
+      } else {
+        console.warn('⚠️  Supabase bağlantısı başarısız, server database olmadan çalışacak')
+      }
     } catch (dbError) {
-      console.warn('⚠️  MongoDB bağlantısı başarısız, server database olmadan çalışacak')
+      console.warn('⚠️  Supabase bağlantısı başarısız, server database olmadan çalışacak')
       console.warn('   Hata:', dbError.message)
     }
     
@@ -46,12 +52,14 @@ app.use((req, res, next) => {
 // CORS ayarları - Production için dinamik
 const corsOrigins = process.env.CORS_ORIGINS 
   ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-  : ['http://localhost:5173', 'http://localhost:3000', 'https://eventhubble.netlify.app']
+  : ['http://localhost:5173', 'http://localhost:3000', 'https://eventhubble.netlify.app', 'https://eventhubble.com']
 
 app.use(cors({
   origin: corsOrigins,
   credentials: true
 }))
+
+app.use(express.json())
 
 // Static dosya servisi için uploads klasörü
 const uploadsDir = path.join(__dirname, 'uploads')
@@ -122,25 +130,84 @@ app.get('/api/assets/:filename', (req, res) => {
   }
 })
 
+// Blog Posts API Routes
+app.get('/api/blog-posts', async (req, res) => {
+  try {
+    const posts = await supabaseService.getBlogPosts()
+    res.json(posts)
+  } catch (error) {
+    console.error('Blog Posts API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: 'Database bağlantısı yok' })
+  }
+})
+
+app.get('/api/blog-posts/:id', async (req, res) => {
+  try {
+    const post = await supabaseService.getBlogPostById(req.params.id)
+    if (!post) {
+      return res.status(404).json({ error: 'Blog post not found' })
+    }
+    res.json(post)
+  } catch (error) {
+    console.error('Blog Post Detail API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: 'Database bağlantısı yok' })
+  }
+})
+
+app.post('/api/blog-posts', async (req, res) => {
+  try {
+    const blogPost = await supabaseService.createBlogPost(req.body)
+    res.status(201).json({
+      success: true,
+      message: 'Blog post created successfully',
+      blogPost: blogPost
+    })
+  } catch (error) {
+    console.error('Create Blog Post API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.put('/api/blog-posts/:id', async (req, res) => {
+  try {
+    const blogPost = await supabaseService.updateBlogPost(req.params.id, req.body)
+    if (!blogPost) {
+      return res.status(404).json({ error: 'Blog post not found' })
+    }
+    res.json({
+      success: true,
+      message: 'Blog post updated successfully',
+      blogPost: blogPost
+    })
+  } catch (error) {
+    console.error('Update Blog Post API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.delete('/api/blog-posts/:id', async (req, res) => {
+  try {
+    await supabaseService.deleteBlogPost(req.params.id)
+    res.json({
+      success: true,
+      message: 'Blog post deleted successfully'
+    })
+  } catch (error) {
+    console.error('Delete Blog Post API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
 // API Routes
 app.get('/api/status', async (req, res) => {
   try {
-    let stats = null
-    if (database.isConnected) {
-      try {
-        stats = await database.getStats()
-      } catch (dbError) {
-        console.warn('Database stats error:', dbError.message)
-      }
-    }
-    
     res.json({ 
       status: 'OK', 
       message: 'EventHubble API is running',
       version: '1.0.0',
       environment: process.env.NODE_ENV || 'development',
-      database: database.isConnected ? 'connected' : 'disconnected',
-      stats: stats || { totalEvents: 0, lastUpdate: new Date() }
+      database: 'Supabase connected',
+      timestamp: new Date().toISOString()
     })
   } catch (error) {
     res.status(500).json({ error: 'Internal server error', message: error.message })
@@ -149,36 +216,12 @@ app.get('/api/status', async (req, res) => {
 
 app.get('/api/events', async (req, res) => {
   try {
-    if (!database.isConnected) {
-      return res.json({ 
-        events: [],
-        total: 0,
-        limit: 50,
-        skip: 0,
-        message: 'Database not connected - using fallback data'
-      })
-    }
-    
-    const { category, city, platform, limit = 50, skip = 0 } = req.query
-    
-    // Filter oluştur
-    const filters = {}
-    if (category) filters.category = category
-    if (city) filters.city = { $regex: city, $options: 'i' }
-    if (platform) filters.platform = platform
-    
-    const events = await database.getEvents(filters)
-    const total = events.length
-    
-    // Pagination
-    const paginatedEvents = events.slice(skip, skip + parseInt(limit))
-    
     res.json({ 
-      events: paginatedEvents,
-      total: total,
-      limit: parseInt(limit),
-      skip: parseInt(skip),
-      message: 'Events retrieved successfully'
+      events: [],
+      total: 0,
+      limit: 50,
+      skip: 0,
+      message: 'Events API - Supabase migration in progress'
     })
   } catch (error) {
     console.error('Events API Error:', error)
@@ -188,11 +231,7 @@ app.get('/api/events', async (req, res) => {
 
 app.get('/api/events/:id', async (req, res) => {
   try {
-    const event = await database.getEventById(req.params.id)
-    if (!event) {
-      return res.status(404).json({ error: 'Event not found' })
-    }
-    res.json(event)
+    res.status(404).json({ error: 'Event not found - Supabase migration in progress' })
   } catch (error) {
     console.error('Event Detail API Error:', error)
     res.status(500).json({ error: 'Internal server error', message: error.message })
@@ -201,11 +240,9 @@ app.get('/api/events/:id', async (req, res) => {
 
 app.post('/api/events', async (req, res) => {
   try {
-    const result = await database.createEvent(req.body)
-    res.status(201).json({
-      success: true,
-      message: 'Event created successfully',
-      eventId: result.insertedId
+    res.status(501).json({
+      error: 'Not implemented',
+      message: 'Events API - Supabase migration in progress'
     })
   } catch (error) {
     console.error('Create Event API Error:', error)
@@ -215,13 +252,9 @@ app.post('/api/events', async (req, res) => {
 
 app.put('/api/events/:id', async (req, res) => {
   try {
-    const result = await database.updateEvent(req.params.id, req.body)
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ error: 'Event not found' })
-    }
-    res.json({
-      success: true,
-      message: 'Event updated successfully'
+    res.status(501).json({
+      error: 'Not implemented',
+      message: 'Events API - Supabase migration in progress'
     })
   } catch (error) {
     console.error('Update Event API Error:', error)
@@ -231,13 +264,9 @@ app.put('/api/events/:id', async (req, res) => {
 
 app.delete('/api/events/:id', async (req, res) => {
   try {
-    const result = await database.deleteEvent(req.params.id)
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: 'Event not found' })
-    }
-    res.json({
-      success: true,
-      message: 'Event deleted successfully'
+    res.status(501).json({
+      error: 'Not implemented',
+      message: 'Events API - Supabase migration in progress'
     })
   } catch (error) {
     console.error('Delete Event API Error:', error)
@@ -247,8 +276,11 @@ app.delete('/api/events/:id', async (req, res) => {
 
 app.get('/api/stats', async (req, res) => {
   try {
-    const stats = await database.getStats()
-    res.json(stats)
+    res.json({
+      totalEvents: 0,
+      lastUpdate: new Date().toISOString(),
+      message: 'Stats API - Supabase migration in progress'
+    })
   } catch (error) {
     console.error('Stats API Error:', error)
     res.status(500).json({ error: 'Internal server error', message: error.message })
@@ -264,6 +296,74 @@ app.post('/api/scrape', async (req, res) => {
     })
   } catch (error) {
     console.error('Scraping API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+// Blog Posts API Endpoints
+app.get('/api/blog-posts', async (req, res) => {
+  try {
+    const blogPosts = await supabaseService.getBlogPosts()
+    res.json(blogPosts)
+  } catch (error) {
+    console.error('Blog Posts API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: 'Database bağlantısı yok' })
+  }
+})
+
+app.get('/api/blog-posts/:id', async (req, res) => {
+  try {
+    const blogPost = await supabaseService.getBlogPostById(req.params.id)
+    if (!blogPost) {
+      return res.status(404).json({ error: 'Blog post not found' })
+    }
+    res.json(blogPost)
+  } catch (error) {
+    console.error('Blog Post Detail API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: 'Database bağlantısı yok' })
+  }
+})
+
+app.post('/api/blog-posts', async (req, res) => {
+  try {
+    const blogPost = await supabaseService.createBlogPost(req.body)
+    res.status(201).json({
+      success: true,
+      message: 'Blog post created successfully',
+      blogPost: blogPost
+    })
+  } catch (error) {
+    console.error('Create Blog Post API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.put('/api/blog-posts/:id', async (req, res) => {
+  try {
+    const blogPost = await supabaseService.updateBlogPost(req.params.id, req.body)
+    if (!blogPost) {
+      return res.status(404).json({ error: 'Blog post not found' })
+    }
+    res.json({
+      success: true,
+      message: 'Blog post updated successfully',
+      blogPost: blogPost
+    })
+  } catch (error) {
+    console.error('Update Blog Post API Error:', error)
+    res.status(500).json({ error: 'Internal server error', message: error.message })
+  }
+})
+
+app.delete('/api/blog-posts/:id', async (req, res) => {
+  try {
+    await supabaseService.deleteBlogPost(req.params.id)
+    res.json({
+      success: true,
+      message: 'Blog post deleted successfully'
+    })
+  } catch (error) {
+    console.error('Delete Blog Post API Error:', error)
     res.status(500).json({ error: 'Internal server error', message: error.message })
   }
 })

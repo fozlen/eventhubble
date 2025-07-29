@@ -1,21 +1,21 @@
 services:
   - type: web
-    name: eventhubble-api
+    name: eventhubble-backend
     env: node
-    plan: free
     buildCommand: npm install
     startCommand: npm start
-    rootDir: backend
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000
+        value: 3001
       - key: CORS_ORIGINS
-        value: https://eventhubble.netlify.app
-      - key: CDN_BASE_URL
-        value: https://cdn.eventhubble.com
-      - key: MONGODB_URI
+        value: https://eventhubble.com,https://eventhubble.netlify.app
+      - key: SUPABASE_URL
         sync: false
-    healthCheckPath: /health
-    autoDeploy: true 
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: MAX_FILE_SIZE
+        value: 10485760
+      - key: UPLOAD_DIR
+        value: uploads 

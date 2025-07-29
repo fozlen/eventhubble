@@ -121,11 +121,19 @@ class CacheService {
     return this.getCached(
       `blogPosts_${language}`,
       async () => {
-        const storedPosts = localStorage.getItem('blogPosts')
-        if (!storedPosts) return []
-        
-        const posts = JSON.parse(storedPosts)
-        return posts.filter(post => post.language === language)
+        try {
+          // API'den blog yazılarını çek
+          const response = await fetch(`${this.API_BASE_URL}/blog-posts?language=${language}`)
+          if (!response.ok) throw new Error('Failed to fetch blog posts')
+          return response.json()
+        } catch (error) {
+          // API hatası durumunda localStorage'dan çek (fallback)
+          const storedPosts = localStorage.getItem('blogPosts')
+          if (!storedPosts) return []
+          
+          const posts = JSON.parse(storedPosts)
+          return posts.filter(post => post.language === language)
+        }
       },
       this.CACHE_CONFIG.blogPosts.ttl
     )

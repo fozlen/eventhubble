@@ -9,10 +9,13 @@
     "dev": "nodemon uploadServer.js",
     "test": "node scraper.js",
     "upload-server": "node uploadServer.js",
-    "upload-dev": "nodemon uploadServer.js"
+    "upload-dev": "nodemon uploadServer.js",
+    "migrate-blog": "node migrateBlogPosts.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.53.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "express": "^4.18.2",
     "fs-extra": "^11.1.1",
     "mongodb": "^6.18.0",

@@ -40,14 +40,50 @@ const BlogDetailPage = () => {
     loadBlogPost()
   }, [id, language])
 
-  const loadBlogPost = () => {
+  const loadBlogPost = async () => {
     try {
+      const response = await fetch(`${API_BASE_URL}/blog-posts/${id}`)
+      if (response.ok) {
+        const post = await response.json()
+        // Localize the blog post based on current language
+        const localizedPost = {
+          ...post,
+          title: language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title),
+          excerpt: language === 'TR' ? (post.excerpt_tr || post.excerpt) : (post.excerpt_en || post.excerpt),
+          content: language === 'TR' ? (post.content_tr || post.content) : (post.content_en || post.content)
+        }
+        setBlogPost(localizedPost)
+      } else {
+        // API'den bulunamadı, localStorage'dan dene (fallback)
+        const storedPosts = localStorage.getItem('blogPosts')
+        if (storedPosts) {
+          const posts = JSON.parse(storedPosts)
+          const post = posts.find(p => p.id === parseInt(id))
+          if (post) {
+            const localizedPost = {
+              ...post,
+              title: language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title),
+              excerpt: language === 'TR' ? (post.excerpt_tr || post.excerpt) : (post.excerpt_en || post.excerpt),
+              content: language === 'TR' ? (post.content_tr || post.content) : (post.content_en || post.content)
+            }
+            setBlogPost(localizedPost)
+          } else {
+            setBlogPost(null)
+          }
+        } else {
+          setBlogPost(null)
+        }
+      }
+    } catch (error) {
+      if (!import.meta.env.PROD) {
+        console.error('Error loading blog post:', error)
+      }
+      // Hata durumunda localStorage'dan çek (fallback)
       const storedPosts = localStorage.getItem('blogPosts')
       if (storedPosts) {
         const posts = JSON.parse(storedPosts)
         const post = posts.find(p => p.id === parseInt(id))
         if (post) {
-          // Localize the blog post based on current language
           const localizedPost = {
             ...post,
             title: language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title),
@@ -56,16 +92,10 @@ const BlogDetailPage = () => {
           }
           setBlogPost(localizedPost)
         } else {
-          // Blog yazısı bulunamadı
           setBlogPost(null)
         }
       } else {
-        // Blog yazısı yok
         setBlogPost(null)
-      }
-    } catch (error) {
-      if (!import.meta.env.PROD) {
-        console.error('Error loading blog post:', error)
       }
     } finally {
       setIsLoading(false)

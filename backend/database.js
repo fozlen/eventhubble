@@ -40,6 +40,9 @@ class Database {
       // Uploads collection (image metadata)
       await this.db.createCollection('uploads')
       
+      // Blog posts collection
+      await this.db.createCollection('blog_posts')
+      
       console.log('✅ Collections oluşturuldu')
     } catch (error) {
       // Collection zaten varsa hata verme
@@ -140,6 +143,48 @@ class Database {
   async getUploadById(id) {
     const collection = this.getCollection('uploads')
     return await collection.findOne({ _id: id })
+  }
+
+  // Blog Posts CRUD operations
+  async getBlogPosts(language = 'EN') {
+    const collection = this.getCollection('blog_posts')
+    return await collection.find({}).sort({ created_at: -1 }).toArray()
+  }
+
+  async getBlogPostById(id) {
+    const collection = this.getCollection('blog_posts')
+    return await collection.findOne({ _id: parseInt(id) })
+  }
+
+  async createBlogPost(blogData) {
+    const collection = this.getCollection('blog_posts')
+    const result = await collection.insertOne({
+      ...blogData,
+      _id: Date.now(), // Unique ID for blog posts
+      created_at: new Date(),
+      updated_at: new Date()
+    })
+    return result
+  }
+
+  async updateBlogPost(id, blogData) {
+    const collection = this.getCollection('blog_posts')
+    const result = await collection.updateOne(
+      { _id: parseInt(id) },
+      { 
+        $set: {
+          ...blogData,
+          updated_at: new Date()
+        }
+      }
+    )
+    return result
+  }
+
+  async deleteBlogPost(id) {
+    const collection = this.getCollection('blog_posts')
+    const result = await collection.deleteOne({ _id: parseInt(id) })
+    return result
   }
 }
 

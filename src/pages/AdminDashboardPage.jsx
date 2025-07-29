@@ -40,19 +40,31 @@ const AdminDashboardPage = () => {
     loadBlogPosts()
   }, [navigate])
 
-  const loadBlogPosts = () => {
+  const loadBlogPosts = async () => {
     try {
-      const storedPosts = localStorage.getItem('blogPosts')
-      if (storedPosts) {
-        setBlogPosts(JSON.parse(storedPosts))
+      const response = await fetch(`${API_BASE_URL}/blog-posts`)
+      if (response.ok) {
+        const posts = await response.json()
+        setBlogPosts(posts)
       } else {
-        // Blog yazısı yok, boş array kullan
-        setBlogPosts([])
-        localStorage.setItem('blogPosts', JSON.stringify([]))
+        // API hatası durumunda localStorage'dan çek (fallback)
+        const storedPosts = localStorage.getItem('blogPosts')
+        if (storedPosts) {
+          setBlogPosts(JSON.parse(storedPosts))
+        } else {
+          setBlogPosts([])
+        }
       }
     } catch (error) {
       if (!import.meta.env.PROD) {
         console.error('Error loading blog posts:', error)
+      }
+      // Hata durumunda localStorage'dan çek
+      const storedPosts = localStorage.getItem('blogPosts')
+      if (storedPosts) {
+        setBlogPosts(JSON.parse(storedPosts))
+      } else {
+        setBlogPosts([])
       }
     } finally {
       setIsLoading(false)
@@ -75,15 +87,32 @@ const AdminDashboardPage = () => {
     setShowAddModal(true)
   }
 
-  const handleDeletePost = (postId) => {
+  const handleDeletePost = async (postId) => {
     const confirmMessage = language === 'TR' 
       ? 'Bu blog yazısını silmek istediğinizden emin misiniz?'
       : 'Are you sure you want to delete this blog post?'
     
     if (window.confirm(confirmMessage)) {
-      const updatedPosts = blogPosts.filter(post => post.id !== postId)
-      setBlogPosts(updatedPosts)
-      localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
+      try {
+        const response = await fetch(`${API_BASE_URL}/blog-posts/${postId}`, {
+          method: 'DELETE'
+        })
+
+        if (response.ok) {
+          const updatedPosts = blogPosts.filter(post => post._id !== postId)
+          setBlogPosts(updatedPosts)
+        } else {
+          throw new Error('Failed to delete blog post')
+        }
+      } catch (error) {
+        if (!import.meta.env.PROD) {
+          console.error('Error deleting blog post:', error)
+        }
+        // Hata durumunda localStorage'dan sil (fallback)
+        const updatedPosts = blogPosts.filter(post => post.id !== postId)
+        setBlogPosts(updatedPosts)
+        localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
+      }
     }
   }
 
@@ -118,26 +147,75 @@ const AdminDashboardPage = () => {
     return imageMap[category] || imageMap['Other']
   }
 
-  const handleSavePost = (postData) => {
-    if (editingPost) {
-      // Update existing post
-      const updatedPosts = blogPosts.map(post => 
-        post.id === editingPost.id ? { ...postData, id: post.id, date: post.date } : post
-      )
-      setBlogPosts(updatedPosts)
-      localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
-    } else {
-      // Add new post
-      const newPost = {
+  const handleSavePost = async (postData) => {
+    try {
+      const postToSave = {
         ...postData,
-        id: Date.now(),
         date: new Date().toISOString().split('T')[0] || '2024-07-29',
         author: 'Admin'
       }
-      const updatedPosts = [...blogPosts, newPost]
-      setBlogPosts(updatedPosts)
-      localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
+
+      if (editingPost) {
+        // Update existing post
+        const response = await fetch(`${API_BASE_URL}/blog-posts/${editingPost.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postToSave)
+        })
+
+        if (response.ok) {
+          const updatedPosts = blogPosts.map(post => 
+            post._id === editingPost._id ? { ...post, ...postToSave } : post
+          )
+          setBlogPosts(updatedPosts)
+        } else {
+          throw new Error('Failed to update blog post')
+        }
+      } else {
+        // Add new post
+        const response = await fetch(`${API_BASE_URL}/blog-posts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postToSave)
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          const newPost = { ...postToSave, _id: result.postId }
+          const updatedPosts = [...blogPosts, newPost]
+          setBlogPosts(updatedPosts)
+        } else {
+          throw new Error('Failed to create blog post')
+        }
+      }
+    } catch (error) {
+      if (!import.meta.env.PROD) {
+        console.error('Error saving blog post:', error)
+      }
+      // Hata durumunda localStorage'a kaydet (fallback)
+      if (editingPost) {
+        const updatedPosts = blogPosts.map(post => 
+          post.id === editingPost.id ? { ...postData, id: post.id, date: post.date } : post
+        )
+        setBlogPosts(updatedPosts)
+        localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
+      } else {
+        const newPost = {
+          ...postData,
+          id: Date.now(),
+          date: new Date().toISOString().split('T')[0] || '2024-07-29',
+          author: 'Admin'
+        }
+        const updatedPosts = [...blogPosts, newPost]
+        setBlogPosts(updatedPosts)
+        localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
+      }
     }
+    
     setShowAddModal(false)
     setEditingPost(null)
   }
@@ -300,10 +378,10 @@ const AdminDashboardPage = () => {
                         </span>
                       </div>
                       <h3 className="text-lg font-semibold text-text mb-2 line-clamp-2">
-                        {post.title}
+                        {language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title)}
                       </h3>
                       <p className="text-text/70 text-sm mb-3 line-clamp-2">
-                        {post.excerpt}
+                        {language === 'TR' ? (post.excerpt_tr || post.excerpt) : (post.excerpt_en || post.excerpt)}
                       </p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4 text-sm text-text/60">
@@ -325,7 +403,7 @@ const AdminDashboardPage = () => {
                             <span>{language === 'TR' ? 'Düzenle' : 'Edit'}</span>
                           </button>
                           <button
-                            onClick={() => handleDeletePost(post.id)}
+                            onClick={() => handleDeletePost(post._id || post.id)}
                             className="flex items-center space-x-1 text-text-accent hover:text-primary-light text-sm font-medium hover:bg-text-accent/10 px-3 py-1 rounded-md transition-colors"
                           >
                             <Trash2 className="h-4 w-4" />

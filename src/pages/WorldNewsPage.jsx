@@ -199,7 +199,7 @@ const WorldNewsPage = () => {
                 <div className="aspect-video bg-gray-200 overflow-hidden">
                   <img 
                     src={post.image} 
-                    alt={language === 'TR' ? post.title_tr : post.title_en}
+                    alt={language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title)}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -225,12 +225,12 @@ const WorldNewsPage = () => {
                   
                   {/* Title */}
                   <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
-                    {language === 'TR' ? post.title_tr : post.title_en}
+                    {language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title)}
                   </h2>
                   
                   {/* Excerpt */}
                   <p className="text-gray-600 mb-4 line-clamp-3">
-                    {language === 'TR' ? post.excerpt_tr : post.excerpt_en}
+                    {language === 'TR' ? (post.excerpt_tr || post.excerpt) : (post.excerpt_en || post.excerpt)}
                   </p>
                   
                   {/* Read More Button */}

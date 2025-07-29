@@ -1,5 +1,90 @@
 import CacheService from './cacheService'
 
+// API base URL - Production vs Development
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://eventhubble-backend.onrender.com'
+  : 'http://localhost:3001';
+
+// Blog posts API
+export const getBlogPosts = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blog-posts`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch blog posts');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching blog posts:', error);
+    return [];
+  }
+};
+
+export const getBlogPostById = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blog-posts/${id}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch blog post');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+    return null;
+  }
+};
+
+export const createBlogPost = async (blogData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blog-posts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(blogData),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to create blog post');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating blog post:', error);
+    throw error;
+  }
+};
+
+export const updateBlogPost = async (id, blogData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blog-posts/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(blogData),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update blog post');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating blog post:', error);
+    throw error;
+  }
+};
+
+export const deleteBlogPost = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blog-posts/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete blog post');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting blog post:', error);
+    throw error;
+  }
+};
+
 export class EventService {
   // Gerçek etkinlik verilerini çek (cached)
   static async getEvents(filters = {}, language = 'EN') {
