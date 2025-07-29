@@ -1,55 +1,60 @@
 import React, { useState } from 'react'
-import LogoService from '../services/logoService'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Lock, User, ArrowLeft } from 'lucide-react'
-// Image paths for API compatibility
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
-const logo = `${API_BASE_URL}/assets/Logo.png`
+import { ArrowLeft, Eye, EyeOff, LogIn } from 'lucide-react'
+import LogoService from '../services/logoService'
 
 const AdminLoginPage = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  // Loading state removed for better UX
+  const [loading, setLoading] = useState(false)
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('language') || 'EN'
   })
+  const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
 
-  // Get logo function
-  const getLogo = () => {
-    return import.meta.env.PROD ? '/Logo.png' : '/assets/Logo.png'
-  }
+  // Load logo
+  React.useEffect(() => {
+    const loadLogo = async () => {
+      try {
+        const logoUrl = await LogoService.getLogo('main')
+        setLogo(logoUrl)
+      } catch (error) {
+        console.error('Logo loading error:', error)
+      }
+    }
+    loadLogo()
+  }, [])
 
   // Admin credentials from environment variables
-  const ADMIN_CREDENTIALS = {
-    username: import.meta.env.VITE_ADMIN_USERNAME || 'admin',
-    password: import.meta.env.VITE_ADMIN_PASSWORD || 'eventhubble2024'
-  }
+  const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || 'admin'
+  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123'
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    // Loading removed for better UX
+    setLoading(true)
     setError('')
 
-    // Simulate API call delay
+    // Simulate loading time
     await new Promise(resolve => setTimeout(resolve, 1000))
 
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-      // Store admin session
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
       localStorage.setItem('adminAuthenticated', 'true')
       localStorage.setItem('adminLoginTime', Date.now().toString())
       navigate('/admin/dashboard')
     } else {
-      setError(language === 'TR' ? 'Geçersiz kullanıcı adı veya şifre' : 'Invalid username or password')
+      setError(language === 'TR' ? 'Geçersiz kullanıcı adı veya şifre!' : 'Invalid username or password!')
     }
     
-    // Loading removed for better UX
+    setLoading(false)
   }
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
+  const toggleLanguage = () => {
+    const newLanguage = language === 'TR' ? 'EN' : 'TR'
+    setLanguage(newLanguage)
+    localStorage.setItem('language', newLanguage)
   }
 
   return (
@@ -60,20 +65,20 @@ const AdminLoginPage = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo and Brand */}
             <div className="flex items-center space-x-3">
-              <img src={getLogo()} alt="EventHubble" className="h-8 w-auto" />
-              <div className="text-white">
+              <img src={logo} alt="EventHubble" className="h-8 w-auto" />
+              <div>
                 <span className="text-xl font-bold">
-                  <span className="text-primary-cream">Event</span>
+                  <span className="text-white">Event</span>
                   <span className="text-primary-light"> Hubble</span>
                 </span>
-                <span className="ml-2 text-sm text-primary-cream/80">Admin Panel</span>
+                <span className="ml-2 text-sm text-white/80">Admin Panel</span>
               </div>
             </div>
 
             {/* Back to Site */}
             <button
               onClick={() => navigate('/')}
-              className="flex items-center space-x-2 text-primary-cream/80 hover:text-primary-cream transition-colors"
+              className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               <span className="text-sm">{language === 'TR' ? 'Siteye Dön' : 'Back to Site'}</span>
@@ -84,116 +89,113 @@ const AdminLoginPage = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
-          {/* Login Card */}
-          <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-8">
-            {/* Logo and Header */}
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-xl shadow-2xl border border-gray-100 p-8">
+            {/* Header */}
             <div className="text-center mb-8">
-              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <img
-                  className="h-10 w-auto"
-                  src={getLogo()}
-                  alt="EventHubble"
-                />
+              <div className="w-20 h-20 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
+                <LogIn className="h-10 w-10 text-primary" />
               </div>
               <h1 className="text-2xl font-bold text-text mb-2">
                 {language === 'TR' ? 'Admin Girişi' : 'Admin Login'}
               </h1>
-                              <p className="text-text/60">
-                  {language === 'TR' 
-                    ? 'Event Hubble Blog Yönetim Paneli'
-                    : 'Event Hubble Blog Management Panel'
-                  }
-                </p>
+              <p className="text-text/60">
+                {language === 'TR' 
+                  ? 'Yönetim paneline erişmek için giriş yapın'
+                  : 'Sign in to access the admin panel'
+                }
+              </p>
             </div>
 
             {/* Login Form */}
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* Username Field */}
+            <form onSubmit={handleLogin} className="space-y-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-red-600 text-sm font-medium">{error}</p>
+                </div>
+              )}
+
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-text mb-2">
+                <label className="block text-sm font-medium text-text mb-2">
                   {language === 'TR' ? 'Kullanıcı Adı' : 'Username'}
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-text/40" />
-                  </div>
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    required
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                    placeholder={language === 'TR' ? 'Kullanıcı adınızı girin' : 'Enter your username'}
-                  />
-                </div>
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                  placeholder={language === 'TR' ? 'Kullanıcı adınızı girin' : 'Enter your username'}
+                />
               </div>
 
-              {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-text mb-2">
+                <label className="block text-sm font-medium text-text mb-2">
                   {language === 'TR' ? 'Şifre' : 'Password'}
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-text/40" />
-                  </div>
                   <input
-                    id="password"
-                    name="password"
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
                     placeholder={language === 'TR' ? 'Şifrenizi girin' : 'Enter your password'}
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-text/40 hover:text-text/60 transition-colors"
-                    onClick={togglePasswordVisibility}
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text/40 hover:text-text/60"
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
               </div>
 
-              {/* Error Message */}
-              {error && (
-                <div className="text-text-accent text-sm text-center bg-text-accent/10 p-3 rounded-lg border border-text-accent/20">
-                  {error}
-                </div>
-              )}
-
-              {/* Submit Button */}
               <button
                 type="submit"
-                disabled={false}
-                className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                disabled={loading}
+                className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
               >
-                {language === 'TR' ? 'Giriş Yap' : 'Sign In'}
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    <span>{language === 'TR' ? 'Giriş yapılıyor...' : 'Signing in...'}</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="h-5 w-5" />
+                    <span>{language === 'TR' ? 'Giriş Yap' : 'Sign In'}</span>
+                  </>
+                )}
               </button>
             </form>
 
-            {/* Demo Credentials - Only in Development */}
-            {import.meta.env.DEV && (
-              <div className="mt-6 p-4 bg-background-secondary rounded-lg">
-                <h3 className="text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Demo Bilgileri (Sadece Geliştirme)' : 'Demo Credentials (Development Only)'}
-                </h3>
-                <div className="text-xs text-text/60 space-y-1">
-                  <p><strong>{language === 'TR' ? 'Kullanıcı Adı:' : 'Username:'}</strong> admin</p>
-                  <p><strong>{language === 'TR' ? 'Şifre:' : 'Password:'}</strong> eventhubble2024</p>
-                </div>
-              </div>
-            )}
+            {/* Language Toggle */}
+            <div className="mt-6 pt-6 border-t border-gray-100">
+              <button
+                onClick={toggleLanguage}
+                className="w-full text-center text-sm text-text/60 hover:text-text transition-colors"
+              >
+                {language === 'TR' ? '🇺🇸 Switch to English' : '🇹🇷 Türkçe\'ye geç'}
+              </button>
+            </div>
           </div>
+
+          {/* Demo Credentials */}
+          {!import.meta.env.PROD && (
+            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-blue-800 text-sm font-medium mb-2">
+                {language === 'TR' ? 'Demo Bilgileri:' : 'Demo Credentials:'}
+              </p>
+              <p className="text-blue-700 text-sm">
+                <strong>{language === 'TR' ? 'Kullanıcı' : 'Username'}:</strong> {ADMIN_USERNAME}
+              </p>
+              <p className="text-blue-700 text-sm">
+                <strong>{language === 'TR' ? 'Şifre' : 'Password'}:</strong> {ADMIN_PASSWORD}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -197,52 +197,52 @@ const AdminSiteSettingsPage = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo and Brand */}
             <div className="flex items-center space-x-3">
-              <img src={getLogo()} alt="EventHubble" className="h-8 w-auto" />
+              <img src={logo} alt="EventHubble" className="h-8 w-auto" />
               <div className="text-white">
                 <span className="text-xl font-bold">
-                  <span className="text-primary-cream">Event</span>
+                  <span className="text-white">Event</span>
                   <span className="text-primary-light"> Hubble</span>
                 </span>
-                <span className="ml-2 text-sm text-primary-cream/80">Admin Panel</span>
+                <span className="ml-2 text-sm text-white/80">Admin Panel</span>
               </div>
             </div>
 
             {/* Admin Navigation */}
             <nav className="hidden lg:flex items-center space-x-6">
-              <a href="/" className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm">
+              <a href="/" className="text-white/80 hover:text-white transition-colors text-sm">
                 {language === 'TR' ? 'Site' : 'Site'}
               </a>
               <button 
                 onClick={() => navigate('/admin/dashboard')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Blog' : 'Blog'}
               </button>
               <button 
                 onClick={() => navigate('/admin/events')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Etkinlikler' : 'Events'}
               </button>
               <button 
                 onClick={() => navigate('/admin/categories')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Kategoriler' : 'Categories'}
               </button>
               <button 
                 onClick={() => navigate('/admin/images')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Resimler' : 'Images'}
               </button>
               <button 
                 onClick={() => navigate('/admin/logos')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Logolar' : 'Logos'}
               </button>
-              <button className="text-primary-cream transition-colors">
+              <button className="text-white transition-colors">
                 <Settings className="h-5 w-5" />
               </button>
             </nav>
@@ -251,7 +251,7 @@ const AdminSiteSettingsPage = () => {
             <div className="flex items-center space-x-4">
               <button 
                 onClick={toggleLanguage}
-                className="flex items-center space-x-1 text-primary-cream/80 hover:text-primary-cream transition-colors"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
                 title={language === 'TR' ? 'Language' : 'Dil'}
               >
                 <Globe size={16} />
@@ -259,7 +259,7 @@ const AdminSiteSettingsPage = () => {
               </button>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1 text-primary-cream/80 hover:text-primary-cream transition-colors"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
                 title={language === 'TR' ? 'Çıkış Yap' : 'Logout'}
               >
                 <LogOut size={16} />

@@ -5,6 +5,7 @@ import {
   Plus, Edit, Trash2, Save, X, LogOut, Globe, Settings, 
   Image, Eye, Upload, Download, Star, Tag, Filter 
 } from 'lucide-react'
+import LogoService from '../services/logoService'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 
@@ -15,12 +16,21 @@ const AdminImagesPage = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('')
   const { language, setLanguage, toggleLanguage } = useLanguage()
+  const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
 
-  // Get logo function
-  const getLogo = () => {
-    return import.meta.env.PROD ? '/Logo.png' : `${API_BASE_URL}/assets/Logo.png`
-  }
+  // Load logo
+  useEffect(() => {
+    const loadLogo = async () => {
+      try {
+        const logoUrl = await LogoService.getLogo('main')
+        setLogo(logoUrl)
+      } catch (error) {
+        console.error('Logo loading error:', error)
+      }
+    }
+    loadLogo()
+  }, [])
 
   // Image categories
   const imageCategories = [
@@ -177,51 +187,51 @@ const AdminImagesPage = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo and Brand */}
             <div className="flex items-center space-x-3">
-              <img src={getLogo()} alt="EventHubble" className="h-8 w-auto" />
-              <div className="text-white">
+              <img src={logo} alt="EventHubble" className="h-8 w-auto" />
+              <div>
                 <span className="text-xl font-bold">
-                  <span className="text-primary-cream">Event</span>
+                  <span className="text-white">Event</span>
                   <span className="text-primary-light"> Hubble</span>
                 </span>
-                <span className="ml-2 text-sm text-primary-cream/80">Admin Panel</span>
+                <span className="ml-2 text-sm text-white/80">Admin Panel</span>
               </div>
             </div>
 
             {/* Admin Navigation */}
             <nav className="hidden lg:flex items-center space-x-6">
-              <a href="/" className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm">
+              <a href="/" className="text-white/80 hover:text-white transition-colors text-sm">
                 {language === 'TR' ? 'Site' : 'Site'}
               </a>
               <button 
                 onClick={() => navigate('/admin/dashboard')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Blog' : 'Blog'}
               </button>
               <button 
                 onClick={() => navigate('/admin/events')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Etkinlikler' : 'Events'}
               </button>
               <button 
                 onClick={() => navigate('/admin/categories')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Kategoriler' : 'Categories'}
               </button>
-              <button className="text-primary-cream transition-colors text-sm font-medium">
+              <button className="text-white transition-colors text-sm font-medium">
                 {language === 'TR' ? 'Resimler' : 'Images'}
               </button>
               <button 
                 onClick={() => navigate('/admin/logos')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+                className="text-white/80 hover:text-white transition-colors text-sm"
               >
                 {language === 'TR' ? 'Logolar' : 'Logos'}
               </button>
               <button 
                 onClick={() => navigate('/admin/settings')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors"
+                className="text-white/80 hover:text-white transition-colors"
                 title={language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
               >
                 <Settings className="h-5 w-5" />
@@ -232,7 +242,7 @@ const AdminImagesPage = () => {
             <div className="flex items-center space-x-4">
               <button 
                 onClick={toggleLanguage}
-                className="flex items-center space-x-1 text-primary-cream/80 hover:text-primary-cream transition-colors"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
                 title={language === 'TR' ? 'Language' : 'Dil'}
               >
                 <Globe size={16} />
@@ -240,7 +250,7 @@ const AdminImagesPage = () => {
               </button>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1 text-primary-cream/80 hover:text-primary-cream transition-colors"
+                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
                 title={language === 'TR' ? 'Çıkış Yap' : 'Logout'}
               >
                 <LogOut size={16} />
