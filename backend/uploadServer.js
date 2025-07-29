@@ -130,39 +130,139 @@ app.get('/api/assets/:filename', (req, res) => {
   }
 })
 
-// Logo API endpoint - returns logo data from database
+// ===== DATABASE CONTENT APIS =====
+import DatabaseService from './databaseService.js'
+
+// Logos API
 app.get('/api/logos', async (req, res) => {
   try {
-    const logos = [
-      {
-        id: 'main',
-        filename: 'Logo.png',
-        url: '/api/assets/Logo.png',
-        alt: 'EventHubble Main Logo'
-      },
-      {
-        id: 'dark',
-        filename: 'eventhubble_dark_transparent_logo.png',
-        url: '/api/assets/eventhubble_dark_transparent_logo.png',
-        alt: 'EventHubble Dark Logo'
-      },
-      {
-        id: 'light',
-        filename: 'eventhubble_light_transparent_logo.png',
-        url: '/api/assets/eventhubble_light_transparent_logo.png',
-        alt: 'EventHubble Light Logo'
-      },
-      {
-        id: 'main-large',
-        filename: 'MainLogo.png',
-        url: '/api/assets/MainLogo.png',
-        alt: 'EventHubble Large Logo'
-      }
-    ]
-    
-    res.json({ success: true, logos })
+    const result = await DatabaseService.getLogos()
+    res.json(result)
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to fetch logos' })
+  }
+})
+
+app.get('/api/logos/:logoId', async (req, res) => {
+  try {
+    const result = await DatabaseService.getLogoById(req.params.logoId)
+    if (!result.success) {
+      return res.status(404).json(result)
+    }
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch logo' })
+  }
+})
+
+// Images API
+app.get('/api/images', async (req, res) => {
+  try {
+    const category = req.query.category
+    const result = await DatabaseService.getImages(category)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch images' })
+  }
+})
+
+app.get('/api/images/:imageId', async (req, res) => {
+  try {
+    const result = await DatabaseService.getImageById(req.params.imageId)
+    if (!result.success) {
+      return res.status(404).json(result)
+    }
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch image' })
+  }
+})
+
+// Events API (Enhanced)
+app.get('/api/events/db', async (req, res) => {
+  try {
+    const filters = {
+      category: req.query.category,
+      city: req.query.city,
+      is_featured: req.query.featured === 'true',
+      date_from: req.query.date_from,
+      date_to: req.query.date_to
+    }
+    const result = await DatabaseService.getEvents(filters)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch events' })
+  }
+})
+
+app.get('/api/events/db/:eventId', async (req, res) => {
+  try {
+    const result = await DatabaseService.getEventById(req.params.eventId)
+    if (!result.success) {
+      return res.status(404).json(result)
+    }
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch event' })
+  }
+})
+
+// Categories API
+app.get('/api/categories', async (req, res) => {
+  try {
+    const result = await DatabaseService.getCategories()
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch categories' })
+  }
+})
+
+app.get('/api/categories/:categoryId', async (req, res) => {
+  try {
+    const result = await DatabaseService.getCategoryById(req.params.categoryId)
+    if (!result.success) {
+      return res.status(404).json(result)
+    }
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch category' })
+  }
+})
+
+// Site Settings API
+app.get('/api/settings', async (req, res) => {
+  try {
+    const category = req.query.category
+    const result = await DatabaseService.getSiteSettings(category)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch settings' })
+  }
+})
+
+// Blog Posts API (Enhanced)
+app.get('/api/blog-posts/db', async (req, res) => {
+  try {
+    const filters = {
+      category: req.query.category,
+      is_featured: req.query.featured === 'true'
+    }
+    const result = await DatabaseService.getBlogPosts(filters)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch blog posts' })
+  }
+})
+
+app.get('/api/blog-posts/db/:slug', async (req, res) => {
+  try {
+    const result = await DatabaseService.getBlogPostBySlug(req.params.slug)
+    if (!result.success) {
+      return res.status(404).json(result)
+    }
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch blog post' })
   }
 })
 
