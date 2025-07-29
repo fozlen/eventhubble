@@ -358,7 +358,7 @@ const AdminDashboardPage = () => {
                 </div>
               </div>
               <button
-                onClick={() => navigate('/admin/categories')}
+                onClick={() => navigate('/categories')}
                 className="text-primary hover:text-primary-light transition-colors text-sm font-medium"
               >
                 {language === 'TR' ? 'Yönet' : 'Manage'} →
