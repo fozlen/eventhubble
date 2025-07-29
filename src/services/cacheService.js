@@ -12,12 +12,42 @@ class CacheService {
     stats: { ttl: 5 * 60 * 1000 } // 5 minutes
   }
 
+  // Clear old cache entries to prevent localStorage overflow
+  static clearOldCache() {
+    try {
+      const keys = Object.keys(localStorage)
+      const cacheKeys = keys.filter(key => key.startsWith('cache_'))
+      
+      // If we have too many cache entries, clear old ones
+      if (cacheKeys.length > 50) {
+        // Sort by access time and remove oldest 25%
+        const entriesToRemove = cacheKeys.slice(0, Math.floor(cacheKeys.length * 0.25))
+        entriesToRemove.forEach(key => {
+          localStorage.removeItem(key)
+          localStorage.removeItem(key + '_expiry')
+        })
+      }
+      
+      // Also clear any oversized fallback data
+      if (localStorage.getItem('blogPosts')?.length > 100000) {
+        localStorage.removeItem('blogPosts')
+      }
+    } catch (error) {
+      console.warn('Cache cleanup error:', error)
+    }
+  }
+
   // Generic cache method
   static async getCached(key, fetchFunction, ttl = 5 * 60 * 1000) {
     const cacheKey = `cache_${key}`
     const expiryKey = `cache_${key}_expiry`
     
     try {
+      // Clear old cache periodically
+      if (Math.random() < 0.1) { // 10% chance
+        this.clearOldCache()
+      }
+      
       // Check cache
       const cached = localStorage.getItem(cacheKey)
       const expiry = localStorage.getItem(expiryKey)
@@ -29,9 +59,12 @@ class CacheService {
       // Fetch fresh data
       const data = await fetchFunction()
       
-      // Cache with expiry
-      localStorage.setItem(cacheKey, JSON.stringify(data))
-      localStorage.setItem(expiryKey, (Date.now() + ttl).toString())
+      // Cache with expiry (with size limit)
+      const dataString = JSON.stringify(data)
+      if (dataString.length < 50000) { // Only cache if under 50KB
+        localStorage.setItem(cacheKey, dataString)
+        localStorage.setItem(expiryKey, (Date.now() + ttl).toString())
+      }
       
       return data
     } catch (error) {
@@ -108,7 +141,7 @@ class CacheService {
         }
         
         // Development'da API'den çek
-        const response = await fetch(`${this.API_BASE_URL}/events?language=${language}`)
+                  const response = await fetch(`${this.API_BASE_URL}/api/events?language=${language}`)
         if (!response.ok) throw new Error('Failed to fetch events')
         return response.json()
       },
@@ -123,7 +156,7 @@ class CacheService {
       async () => {
         try {
           // API'den blog yazılarını çek
-          const response = await fetch(`${this.API_BASE_URL}/blog-posts?language=${language}`)
+          const response = await fetch(`${this.API_BASE_URL}/api/blog-posts?language=${language}`)
           if (!response.ok) throw new Error('Failed to fetch blog posts')
           return response.json()
         } catch (error) {
@@ -164,7 +197,7 @@ class CacheService {
       'stats',
       async () => {
         try {
-          const response = await fetch(`${this.API_BASE_URL}/status`)
+          const response = await fetch(`${this.API_BASE_URL}/api/status`)
           if (!response.ok) throw new Error('Failed to fetch stats')
           return response.json()
         } catch (error) {
