@@ -8,7 +8,7 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
   const [isScrolled, setIsScrolled] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [headerLogo, setHeaderLogo] = useState('/assets/Logo.png')
+  const [headerLogo, setHeaderLogo] = useState('/Logo.png')
   const navigate = useNavigate()
 
   // Load logo using LogoService
@@ -20,7 +20,7 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
       } catch (error) {
         console.error('Header logo loading error:', error)
         // Fallback to static asset
-        setHeaderLogo('/assets/Logo.png')
+        setHeaderLogo('/Logo.png')
       }
     }
     loadLogo()
