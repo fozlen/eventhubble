@@ -35,8 +35,8 @@ class DatabaseService {
         .insert({
           logo_id: logoData.logo_id,
           filename: logoData.filename,
-          title: logoData.title,
-          alt_text: logoData.alt_text,
+          title: logoData.title_tr || logoData.title_en || logoData.title || 'Logo',
+          alt_text: logoData.alt_text_tr || logoData.alt_text_en || logoData.alt_text || '',
           file_path: logoData.file_path,
           file_size: logoData.file_size || null,
           mime_type: logoData.mime_type || null,
@@ -61,7 +61,17 @@ class DatabaseService {
       const { data, error } = await supabaseService.supabase
         .from('logos')
         .update({
-          ...logoData,
+          logo_id: logoData.logo_id,
+          filename: logoData.filename,
+          title: logoData.title_tr || logoData.title_en || logoData.title || 'Logo',
+          alt_text: logoData.alt_text_tr || logoData.alt_text_en || logoData.alt_text || '',
+          file_path: logoData.file_path,
+          file_size: logoData.file_size || null,
+          mime_type: logoData.mime_type || null,
+          width: logoData.width || null,
+          height: logoData.height || null,
+          is_active: logoData.is_active !== undefined ? logoData.is_active : true,
+          display_order: logoData.display_order || 0,
           updated_at: new Date().toISOString()
         })
         .eq('logo_id', logoId)
@@ -126,8 +136,8 @@ class DatabaseService {
         .insert({
           image_id: imageData.image_id,
           category: imageData.category || null,
-          title: imageData.title,
-          alt_text: imageData.alt_text || null,
+          title: imageData.title_tr || imageData.title_en || imageData.title || 'Image',
+          alt_text: imageData.alt_text_tr || imageData.alt_text_en || imageData.alt_text || '',
           filename: imageData.filename,
           file_path: imageData.file_path,
           file_size: imageData.file_size || null,
@@ -154,7 +164,19 @@ class DatabaseService {
       const { data, error } = await supabaseService.supabase
         .from('images')
         .update({
-          ...imageData,
+          image_id: imageData.image_id,
+          category: imageData.category || null,
+          title: imageData.title_tr || imageData.title_en || imageData.title || 'Image',
+          alt_text: imageData.alt_text_tr || imageData.alt_text_en || imageData.alt_text || '',
+          filename: imageData.filename,
+          file_path: imageData.file_path,
+          file_size: imageData.file_size || null,
+          mime_type: imageData.mime_type || null,
+          width: imageData.width || null,
+          height: imageData.height || null,
+          tags: imageData.tags || [],
+          metadata: imageData.metadata || {},
+          is_active: imageData.is_active !== undefined ? imageData.is_active : true,
           updated_at: new Date().toISOString()
         })
         .eq('image_id', imageId)
