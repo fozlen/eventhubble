@@ -4,11 +4,13 @@ services:
     name: eventhubble-api
     env: node
     plan: free
-    buildCommand: cd backend && npm install
+    buildCommand: cd backend && npm ci
     startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: 18
       - key: PORT
         value: 10000
       - key: CORS_ORIGINS
