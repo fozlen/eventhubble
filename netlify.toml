@@ -6,6 +6,20 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Auto-deploy settings
+[build.processing]
+  skip_processing = false
+
+# Branch deploy settings
+[context.production]
+  command = "npm run build"
+
+[context.deploy-preview]
+  command = "npm run build"
+
+[context.branch-deploy]
+  command = "npm run build"
+
 [[headers]]
   for = "/*"
   [headers.values]

@@ -22,7 +22,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx",
-    "start": "cd backend && npm start"
+    "start": "cd backend && npm start",
+    "test": "npm run lint && cd backend && npm test",
+    "deploy": "npm run build && echo 'Build completed. Push to GitHub to trigger deployment.'"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",
