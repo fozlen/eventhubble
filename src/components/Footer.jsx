@@ -66,39 +66,39 @@ const Footer = ({ language = "EN" }) => {
             </p>
           </div>
           
-          {/* Company Links - Section 2 */}
+          {/* About Us - Section 2 */}
           <div className="flex flex-col items-center md:items-start">
             <h3 className="font-semibold mb-4 text-center md:text-left">
-              {language === 'TR' ? 'Şirket' : 'Company'}
+              About Us
             </h3>
             <ul className="space-y-2 text-white/80 text-center md:text-left">
               <li>
                 <a href="/about" className="hover:text-white transition-colors">
-                  {language === 'TR' ? 'Hakkımızda' : 'About'}
+                  About
                 </a>
               </li>
               <li>
-                <a href="/categories" className="hover:text-white transition-colors">
-                  {language === 'TR' ? 'Kategoriler' : 'Categories'}
+                <a href="/contact" className="hover:text-white transition-colors">
+                  Contact
                 </a>
               </li>
             </ul>
           </div>
           
-          {/* Blog Links - Section 3 */}
+          {/* Magazine - Section 3 */}
           <div className="flex flex-col items-center md:items-start">
             <h3 className="font-semibold mb-4 text-center md:text-left">
-              {language === 'TR' ? 'İçerik' : 'Content'}
+              Magazine
             </h3>
             <ul className="space-y-2 text-white/80 text-center md:text-left">
               <li>
                 <a href="/world-news" className="hover:text-white transition-colors">
-                  {language === 'TR' ? 'Dünya Haberleri' : 'World News'}
+                  World News
                 </a>
               </li>
               <li>
                 <a href="/" className="hover:text-white transition-colors">
-                  {language === 'TR' ? 'Etkinlikler' : 'Events'}
+                  Events
                 </a>
               </li>
             </ul>
