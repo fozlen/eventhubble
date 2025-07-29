@@ -86,7 +86,8 @@ class SupabaseService {
           excerpt_tr: blogData.excerpt_tr,
           excerpt_en: blogData.excerpt_en,
           image_url: blogData.image_url,
-          author: blogData.author || 'Admin',
+          slug: `${blogData.title_en || blogData.title_tr || 'blog'}-${Date.now()}`.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
+          author_name: blogData.author || 'Admin',
           created_at: new Date().toISOString()
         }])
         .select()
