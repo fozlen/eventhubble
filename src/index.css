@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* EventHubble Color Palette CSS Variables */
+:root {
+  /* Primary Colors */
+  --color-primary: #3C2C7A;
+  --color-primary-light: #40B3E5;
+  --color-primary-accent: #F390B5;
+  --color-primary-cream: #FCF2C5;
+  
+  /* Background Colors */
+  --color-background: #FCF2C5;
+  --color-background-secondary: #F8F6F0;
+  
+  /* Text Colors */
+  --color-text-primary: #3C2C7A;
+  --color-text-secondary: #40B3E5;
+  --color-text-accent: #F390B5;
+  
+  /* Status Colors */
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+}
+
 /* Mobile responsive optimizations */
 @media (max-width: 640px) {
   /* Prevent horizontal scrolling */

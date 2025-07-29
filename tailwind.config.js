@@ -8,21 +8,26 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#473B73', // Koyu mor/indigo
-          light: '#6FB5D3',   // Mavi
-          accent: '#EF88AE',  // Pembe
-          cream: '#EDE9D8',   // Krem
+          DEFAULT: 'var(--color-primary)',
+          light: 'var(--color-primary-light)',
+          accent: 'var(--color-primary-accent)',
+          cream: 'var(--color-primary-cream)',
         },
         background: {
-          DEFAULT: '#EDE9D8', // Krem arka plan
-          secondary: '#F8F6F0', // Açık krem
+          DEFAULT: 'var(--color-background)',
+          secondary: 'var(--color-background-secondary)',
         },
         text: {
-          DEFAULT: '#473B73', // Koyu mor metin
-          secondary: '#6FB5D3', // Mavi metin
-          accent: '#EF88AE',  // Pembe metin
+          DEFAULT: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+          accent: 'var(--color-text-accent)',
         },
-        vanilla: '#F5F5DC', // Vanilya rengi
+        vanilla: 'var(--color-primary-cream)',
+        // Status colors
+        success: 'var(--color-success)',
+        error: 'var(--color-error)',
+        warning: 'var(--color-warning)',
+        info: 'var(--color-info)',
       },
     },
   },

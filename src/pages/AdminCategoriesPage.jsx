@@ -4,6 +4,7 @@ import {
   Plus, Edit, Trash2, Save, X, LogOut, Globe, Settings, 
   Tag, Eye, Hash, Palette, ChevronRight, Star 
 } from 'lucide-react'
+import { COLORS, getAdminColors } from '../constants/colors'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 
@@ -326,7 +327,7 @@ const AdminCategoriesPage = () => {
                     <div className="flex items-center space-x-4">
                       <div 
                         className="w-6 h-6 rounded-full"
-                        style={{ backgroundColor: category.color_code || '#8B5CF6' }}
+                        style={{ backgroundColor: category.color_code || COLORS.PRIMARY }}
                       ></div>
                       <div>
                         <h3 className="font-semibold text-text text-lg">
@@ -380,7 +381,7 @@ const AdminCategoriesPage = () => {
                           <div className="flex items-center space-x-3">
                             <div 
                               className="w-4 h-4 rounded-full"
-                              style={{ backgroundColor: child.color_code || '#8B5CF6' }}
+                              style={{ backgroundColor: child.color_code || COLORS.PRIMARY }}
                             ></div>
                             <div>
                               <h4 className="font-medium text-text">
@@ -472,7 +473,7 @@ const CategoryModal = ({ category, onClose, onSave, language = 'EN', categories 
     name_en: category?.name_en || '',
     description_tr: category?.description_tr || '',
     description_en: category?.description_en || '',
-    color_code: category?.color_code || '#8B5CF6',
+            color_code: category?.color_code || COLORS.PRIMARY,
     parent_id: category?.parent_id || '',
     is_active: category?.is_active !== undefined ? category.is_active : true,
     display_order: category?.display_order || 0
@@ -480,10 +481,7 @@ const CategoryModal = ({ category, onClose, onSave, language = 'EN', categories 
 
   const parentCategories = categories.filter(cat => !cat.parent_id && cat.id !== category?.id)
 
-  const predefinedColors = [
-    '#8B5CF6', '#F97316', '#EF4444', '#10B981', '#3B82F6', 
-    '#F59E0B', '#EC4899', '#14B8A6', '#6366F1', '#84CC16'
-  ]
+  const predefinedColors = getAdminColors()
 
   const handleSubmit = (e) => {
     e.preventDefault()

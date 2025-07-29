@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import LogoService from '../services/logoService'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
+import { COLORS, getCategoryColor } from '../constants/colors'
 import { 
   Megaphone, 
   Settings, 
@@ -24,14 +25,14 @@ import { EventService } from '../services/eventService'
 const CategoriesPage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [categories, setCategories] = useState([
-    { id: 'music', name: 'Music', description: 'Concerts, festivals, and musical events', color: '#473B73' },
-    { id: 'theater', name: 'Theater', description: 'Plays, shows, and theatrical performances', color: '#8B5CF6' },
-    { id: 'sports', name: 'Sports', description: 'Matches, tournaments, and sporting events', color: '#10B981' },
-    { id: 'art', name: 'Art', description: 'Exhibitions, workshops, and art events', color: '#F59E0B' },
-    { id: 'gastronomy', name: 'Gastronomy', description: 'Food tastings, cooking workshops', color: '#EF4444' },
-    { id: 'education', name: 'Education', description: 'Seminars, courses, and learning events', color: '#3B82F6' },
-    { id: 'technology', name: 'Technology', description: 'Tech conferences and workshops', color: '#6366F1' },
-    { id: 'fashion', name: 'Fashion', description: 'Fashion shows and style events', color: '#EC4899' }
+    { id: 'music', name: 'Music', description: 'Concerts, festivals, and musical events', color: getCategoryColor('music') },
+    { id: 'theater', name: 'Theater', description: 'Plays, shows, and theatrical performances', color: getCategoryColor('theater') },
+    { id: 'sports', name: 'Sports', description: 'Matches, tournaments, and sporting events', color: getCategoryColor('sports') },
+    { id: 'art', name: 'Art', description: 'Exhibitions, workshops, and art events', color: getCategoryColor('art') },
+    { id: 'gastronomy', name: 'Gastronomy', description: 'Food tastings, cooking workshops', color: getCategoryColor('gastronomy') },
+    { id: 'education', name: 'Education', description: 'Seminars, courses, and learning events', color: getCategoryColor('education') },
+    { id: 'technology', name: 'Technology', description: 'Tech conferences and workshops', color: getCategoryColor('technology') },
+    { id: 'fashion', name: 'Fashion', description: 'Fashion shows and style events', color: getCategoryColor('fashion') }
   ])
   const [events, setEvents] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
@@ -39,7 +40,7 @@ const CategoriesPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    color: '#473B73'
+    color: COLORS.PRIMARY
   })
   const navigate = useNavigate()
 
@@ -76,7 +77,7 @@ const CategoriesPage = () => {
     setFormData({
       name: '',
       description: '',
-      color: '#473B73'
+      color: COLORS.PRIMARY
     })
     setEditingCategory(null)
     setShowAddModal(true)
