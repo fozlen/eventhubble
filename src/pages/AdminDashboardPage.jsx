@@ -266,7 +266,11 @@ const AdminDashboardPage = () => {
               >
                 {language === 'TR' ? 'Etkinlik Yönetimi' : 'Event Management'}
               </button>
-              <button className="text-primary-cream/80 hover:text-primary-cream transition-colors">
+              <button 
+                onClick={() => navigate('/admin/settings')}
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors"
+                title={language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
+              >
                 <Settings className="h-5 w-5" />
               </button>
               <button className="text-primary-cream/80 hover:text-primary-cream transition-colors">

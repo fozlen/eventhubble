@@ -10,6 +10,7 @@ import SearchResultsPage from './pages/SearchResultsPage'
 import AdminLoginPage from './pages/AdminLoginPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import AdminEventManagementPage from './pages/AdminEventManagementPage'
+import AdminSiteSettingsPage from './pages/AdminSiteSettingsPage'
 import CategoriesPage from './pages/CategoriesPage'
 import BlogDetailPage from './pages/BlogDetailPage'
 import './App.css'
@@ -34,6 +35,7 @@ function App() {
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/events" element={<AdminEventManagementPage />} />
+            <Route path="/admin/settings" element={<AdminSiteSettingsPage />} />
             <Route path="/admin/categories" element={<CategoriesPage />} />
           </Routes>
         </div>

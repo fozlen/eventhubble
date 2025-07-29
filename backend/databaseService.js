@@ -244,19 +244,124 @@ class DatabaseService {
   // ===== SITE SETTINGS =====
   static async getSiteSettings(category = null) {
     try {
-      const settings = {
-        site_title_tr: 'EventHubble - İstanbul\'un Etkinlik Platformu',
-        site_title_en: 'EventHubble - Istanbul\'s Event Platform',
-        contact_email: 'info@eventhubble.com',
-        currency_default: 'TRY',
-        language_default: 'tr',
-        max_events_per_page: 20,
-        featured_events_count: 8
+      let query = supabaseService.supabase
+        .from('site_settings')
+        .select('*')
+        .eq('is_active', true)
+      
+      if (category) {
+        query = query.eq('category', category)
       }
       
-      return { success: true, settings }
+      const { data, error } = await query.order('setting_key', { ascending: true })
+      
+      if (error) throw error
+      
+      // Convert array to key-value object for easier use
+      const settings = {}
+      if (data) {
+        data.forEach(setting => {
+          let value = setting.setting_value
+          // Convert based on setting_type
+          if (setting.setting_type === 'number') {
+            value = Number(value)
+          } else if (setting.setting_type === 'boolean') {
+            value = value === 'true' || value === true
+          } else if (setting.setting_type === 'json') {
+            try {
+              value = JSON.parse(value)
+            } catch (e) {
+              // Keep as string if JSON parsing fails
+            }
+          }
+          settings[setting.setting_key] = value
+        })
+      }
+      
+      return { success: true, settings, raw_data: data || [] }
     } catch (error) {
-      return { success: false, error: error.message, settings: {} }
+      console.error('Error fetching site settings:', error)
+      return { success: false, error: error.message, settings: {}, raw_data: [] }
+    }
+  }
+
+  static async updateSiteSettings(settingsArray) {
+    try {
+      const results = []
+      
+      for (const setting of settingsArray) {
+        const { setting_key, setting_value, setting_type, category, description } = setting
+        
+        // Check if setting exists
+        const { data: existing, error: checkError } = await supabaseService.supabase
+          .from('site_settings')
+          .select('id')
+          .eq('setting_key', setting_key)
+          .single()
+        
+        let result
+        if (existing) {
+          // Update existing setting
+          const { data, error } = await supabaseService.supabase
+            .from('site_settings')
+            .update({
+              setting_value: String(setting_value),
+              setting_type: setting_type || 'string',
+              category: category || 'general',
+              description: description || null,
+              updated_at: new Date().toISOString()
+            })
+            .eq('setting_key', setting_key)
+            .select()
+          
+          if (error) throw error
+          result = { action: 'updated', setting_key, data }
+        } else {
+          // Create new setting
+          const { data, error } = await supabaseService.supabase
+            .from('site_settings')
+            .insert({
+              setting_key,
+              setting_value: String(setting_value),
+              setting_type: setting_type || 'string',
+              category: category || 'general',
+              description: description || null,
+              is_active: true
+            })
+            .select()
+          
+          if (error) throw error
+          result = { action: 'created', setting_key, data }
+        }
+        
+        results.push(result)
+      }
+      
+      return { success: true, results, message: 'Settings updated successfully' }
+    } catch (error) {
+      console.error('Error updating site settings:', error)
+      return { success: false, error: error.message, results: [] }
+    }
+  }
+
+  static async deleteSiteSetting(settingKey) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('site_settings')
+        .delete()
+        .eq('setting_key', settingKey)
+        .select()
+      
+      if (error) throw error
+      
+      if (!data || data.length === 0) {
+        return { success: false, error: 'Setting not found' }
+      }
+      
+      return { success: true, message: 'Setting deleted successfully', data }
+    } catch (error) {
+      console.error('Error deleting site setting:', error)
+      return { success: false, error: error.message }
     }
   }
 
