@@ -5,44 +5,14 @@ class DatabaseService {
   // ===== LOGOS =====
   static async getLogos() {
     try {
-      // Use direct SQL query through supabaseService
-      const logos = [
-        {
-          id: 1,
-          logo_id: 'main',
-          filename: 'Logo.png',
-          title: 'EventHubble Ana Logo',
-          alt_text: 'EventHubble resmi logosu',
-          file_path: '/Logo.png',
-          mime_type: 'image/png',
-          is_active: true,
-          display_order: 1
-        },
-        {
-          id: 2,
-          logo_id: 'dark',
-          filename: 'eventhubble_dark_transparent_logo.png',
-          title: 'EventHubble Koyu Logo',
-          alt_text: 'Koyu tema için EventHubble logosu',
-          file_path: '/eventhubble_dark_transparent_logo.png',
-          mime_type: 'image/png',
-          is_active: true,
-          display_order: 2
-        },
-        {
-          id: 3,
-          logo_id: 'light',
-          filename: 'eventhubble_light_transparent_logo.png',
-          title: 'EventHubble Açık Logo',
-          alt_text: 'Açık tema için EventHubble logosu',
-          file_path: '/eventhubble_light_transparent_logo.png',
-          mime_type: 'image/png',
-          is_active: true,
-          display_order: 3
-        }
-      ]
+      const { data, error } = await supabaseService.supabase
+        .from('logos')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
       
-      return { success: true, logos }
+      if (error) throw error
+      return { success: true, logos: data || [] }
     } catch (error) {
       return { success: false, error: error.message, logos: [] }
     }
@@ -133,60 +103,33 @@ class DatabaseService {
   // ===== EVENTS =====
   static async getEvents(filters = {}) {
     try {
-      const events = [
-        {
-          id: 1,
-          event_id: 'sezen_aksu_concert_2024',
-          title_tr: 'Sezen Aksu Konseri - İstanbul',
-          title_en: 'Sezen Aksu Concert - Istanbul',
-          description_tr: 'Türk pop müziğinin kraliçesi Sezen Aksu büyüleyici şarkılarıyla İstanbul\'da hayranlarıyla buluşuyor.',
-          category: 'music',
-          subcategory: 'pop',
-          price_min: 150.00,
-          price_max: 500.00,
-          currency: 'TRY',
-          start_date: '2024-06-15T20:00:00Z',
-          venue_name: 'Volkswagen Arena',
-          city: 'İstanbul',
-          is_featured: true,
-          is_active: true,
-          view_count: 1250,
-          like_count: 89
-        },
-        {
-          id: 2,
-          event_id: 'hamlet_devlet_tiyatrosu',
-          title_tr: 'Hamlet - İstanbul Devlet Tiyatrosu',
-          title_en: 'Hamlet - Istanbul State Theater',
-          description_tr: 'Shakespeare\'in ölümsüz eseri Hamlet modern yorumuyla İstanbul Devlet Tiyatrosu sahnesinde.',
-          category: 'theater',
-          subcategory: 'drama',
-          price_min: 80.00,
-          price_max: 200.00,
-          currency: 'TRY',
-          start_date: '2024-07-20T19:30:00Z',
-          venue_name: 'İstanbul Devlet Tiyatrosu',
-          city: 'İstanbul',
-          is_featured: false,
-          is_active: true,
-          view_count: 680,
-          like_count: 42
-        }
-      ]
+      let query = supabaseService.supabase
+        .from('events')
+        .select('*')
+        .eq('is_active', true)
+        .order('start_date', { ascending: true })
       
-      let filteredEvents = events.filter(e => e.is_active)
-      
+      // Apply filters
       if (filters.category) {
-        filteredEvents = filteredEvents.filter(e => e.category === filters.category)
+        query = query.eq('category', filters.category)
       }
       if (filters.city) {
-        filteredEvents = filteredEvents.filter(e => e.city === filters.city)
+        query = query.eq('city', filters.city)
       }
       if (filters.is_featured) {
-        filteredEvents = filteredEvents.filter(e => e.is_featured === true)
+        query = query.eq('is_featured', true)
+      }
+      if (filters.date_from) {
+        query = query.gte('start_date', filters.date_from)
+      }
+      if (filters.date_to) {
+        query = query.lte('start_date', filters.date_to)
       }
       
-      return { success: true, events: filteredEvents }
+      const { data, error } = await query
+      
+      if (error) throw error
+      return { success: true, events: data || [] }
     } catch (error) {
       return { success: false, error: error.message, events: [] }
     }

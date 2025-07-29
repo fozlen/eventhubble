@@ -134,6 +134,26 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Upload server is running' })
 })
 
+// API Health check endpoint
+app.get('/api/health', async (req, res) => {
+  try {
+    // Test database service
+    const dbTest = await DatabaseService.getEvents()
+    res.json({ 
+      status: 'OK', 
+      message: 'API is running',
+      database: 'connected',
+      events: Array.isArray(dbTest) ? dbTest.length : 0
+    })
+  } catch (error) {
+    res.status(503).json({ 
+      status: 'ERROR', 
+      message: 'API service unavailable',
+      error: error.message 
+    })
+  }
+})
+
 // Logo endpoint'i
 app.get('/api/assets/:filename', (req, res) => {
   try {

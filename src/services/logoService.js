@@ -17,28 +17,22 @@ class LogoService {
         return cachedLogo
       }
       
-      // First try to get from database API
+      // Try to get logo directly from backend assets
       try {
-        const apiResponse = await fetch(`${this.API_BASE_URL}/api/logos`)
-        if (apiResponse.ok) {
-          const { logos } = await apiResponse.json()
-          const logo = logos.find(l => l.id === type) || logos.find(l => l.id === 'main')
+        const logoUrl = `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
+        const response = await fetch(logoUrl)
+        
+        if (response.ok) {
+          // Convert to base64 for caching
+          const blob = await response.blob()
+          const base64 = await this.blobToBase64(blob)
           
-          if (logo) {
-            // Fetch the actual logo file
-            const logoResponse = await fetch(`${this.API_BASE_URL}${logo.url}`)
-            if (logoResponse.ok) {
-              const blob = await logoResponse.blob()
-              const base64 = await this.blobToBase64(blob)
-              
-              // Cache for 24 hours
-              const expiry = Date.now() + (24 * 60 * 60 * 1000)
-              localStorage.setItem(cacheKey, base64)
-              localStorage.setItem(cacheExpiryKey, expiry.toString())
-              
-              return base64
-            }
-          }
+          // Cache for 24 hours
+          const expiry = Date.now() + (24 * 60 * 60 * 1000)
+          localStorage.setItem(cacheKey, base64)
+          localStorage.setItem(cacheExpiryKey, expiry.toString())
+          
+          return base64
         }
       } catch (apiError) {
         // Continue to fallback method
