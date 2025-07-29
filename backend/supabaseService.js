@@ -85,10 +85,18 @@ class SupabaseService {
           content_en: blogData.content_en,
           excerpt_tr: blogData.excerpt_tr,
           excerpt_en: blogData.excerpt_en,
-          image_url: blogData.image_url,
+          // Schema'ya uygun mapping
+          cover_image_id: blogData.cover_image_id || null,
           slug: `${blogData.title_en || blogData.title_tr || 'blog'}-${Date.now()}`.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
-          author_name: blogData.author || 'Admin',
-          created_at: new Date().toISOString()
+          author_name: blogData.author_name || blogData.author || 'Admin',
+          category: blogData.category || 'General',
+          tags: blogData.tags || [],
+          is_published: blogData.is_published || false,
+          is_featured: blogData.is_featured || false,
+          seo_title: blogData.seo_title || '',
+          seo_description: blogData.seo_description || '',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }])
         .select()
         .single();
@@ -113,7 +121,15 @@ class SupabaseService {
           content_en: blogData.content_en,
           excerpt_tr: blogData.excerpt_tr,
           excerpt_en: blogData.excerpt_en,
-          image_url: blogData.image_url,
+          // Schema'ya uygun mapping
+          cover_image_id: blogData.cover_image_id || null,
+          author_name: blogData.author_name || blogData.author || 'Admin',
+          category: blogData.category,
+          tags: blogData.tags || [],
+          is_published: blogData.is_published,
+          is_featured: blogData.is_featured,
+          seo_title: blogData.seo_title || '',
+          seo_description: blogData.seo_description || '',
           updated_at: new Date().toISOString()
         })
         .eq('id', id)

@@ -166,11 +166,15 @@ const AdminDashboardPage = () => {
         content_en: postData.content_en,
         excerpt_tr: postData.excerpt_tr,
         excerpt_en: postData.excerpt_en,
-        image_url: postData.image,
-        author: 'Admin',
+        // Schema'ya uygun mapping
+        cover_image_id: null, // Image handling ileride eklenecek
+        author_name: 'Admin', // Schema: author_name
         category: postData.category,
         tags: postData.tags,
-        url: postData.url
+        is_published: postData.is_published || false,
+        is_featured: postData.is_featured || false,
+        seo_title: postData.seo_title || '',
+        seo_description: postData.seo_description || ''
       }
 
       if (editingPost) {
@@ -480,7 +484,12 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
     category: post?.category || 'Music',
     image: post?.image || '',
     url: post?.url || '',
-    tags: post?.tags?.join(', ') || ''
+    tags: post?.tags?.join(', ') || '',
+    // Schema'ya uygun yeni alanlar
+    is_published: post?.is_published || false,
+    is_featured: post?.is_featured || false,
+    seo_title: post?.seo_title || '',
+    seo_description: post?.seo_description || ''
   })
 
   const categories = [
@@ -630,6 +639,35 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
             {/* Common Fields */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-text border-b pb-2">📝 Ortak Bilgiler / Common Information</h3>
+              
+              {/* Publishing Settings */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="is_published"
+                    checked={formData.is_published}
+                    onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
+                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                  />
+                  <label htmlFor="is_published" className="text-sm font-medium text-text">
+                    {language === 'TR' ? '🌐 Yayınla' : '🌐 Publish'}
+                  </label>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="is_featured"
+                    checked={formData.is_featured}
+                    onChange={(e) => setFormData({ ...formData, is_featured: e.target.checked })}
+                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                  />
+                  <label htmlFor="is_featured" className="text-sm font-medium text-text">
+                    {language === 'TR' ? '⭐ Öne Çıkar' : '⭐ Feature'}
+                  </label>
+                </div>
+              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
