@@ -13,6 +13,13 @@ dotenv.config()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Directory paths - bunları en başta tanımlayalım
+const uploadsDir = path.join(__dirname, 'uploads')
+const assetsDir = path.join(__dirname, 'assets')
+
+// Ensure directories exist
+fs.ensureDirSync(uploadsDir)
+
 const app = express()
 const PORT = process.env.PORT || 3001
 
@@ -95,12 +102,7 @@ app.use('/images', express.static(uploadsDir, {
   }
 }))
 
-// Static dosya servisi için uploads klasörü
-const uploadsDir = path.join(__dirname, 'uploads')
-fs.ensureDirSync(uploadsDir)
-
-// Logo dosyaları için assets klasörü
-const assetsDir = path.join(__dirname, 'assets')
+// Directories already defined at the top
 
 // Multer konfigürasyonu
 const storage = multer.diskStorage({
@@ -292,6 +294,40 @@ app.get('/api/settings', async (req, res) => {
     res.json(result)
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to fetch settings' })
+  }
+})
+
+// Site Settings CRUD - Update multiple settings
+app.put('/api/settings', async (req, res) => {
+  try {
+    const { settings } = req.body
+    if (!settings || !Array.isArray(settings)) {
+      return res.status(400).json({ success: false, error: 'Settings array is required' })
+    }
+    
+    const result = await DatabaseService.updateSiteSettings(settings)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(400).json(result)
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update settings' })
+  }
+})
+
+// Site Settings CRUD - Delete a setting
+app.delete('/api/settings/:settingKey', async (req, res) => {
+  try {
+    const { settingKey } = req.params
+    const result = await DatabaseService.deleteSiteSetting(settingKey)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(404).json(result)
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to delete setting' })
   }
 })
 
