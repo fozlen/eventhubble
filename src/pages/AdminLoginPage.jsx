@@ -54,7 +54,7 @@ const AdminLoginPage = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo and Brand */}
             <div className="flex items-center space-x-3">
-              <img src={logo} alt="EventHubble" className="h-8 w-auto" />
+              <img src={getLogo()} alt="EventHubble" className="h-8 w-auto" />
               <div className="text-white">
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
@@ -86,7 +86,7 @@ const AdminLoginPage = () => {
               <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <img
                   className="h-10 w-auto"
-                  src={logo}
+                  src={getLogo()}
                   alt="EventHubble"
                 />
               </div>

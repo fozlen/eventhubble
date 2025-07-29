@@ -147,7 +147,7 @@ const CategoriesPage = () => {
                 <span className="text-sm">{language === 'TR' ? 'Geri' : 'Back'}</span>
               </button>
               <div className="flex items-center space-x-3">
-                <img src={logo} alt="EventHubble" className="h-8 w-auto" />
+                <img src={getLogo()} alt="EventHubble" className="h-8 w-auto" />
                 <div className="flex items-center space-x-2">
                   <Megaphone className="h-5 w-5 text-primary-cream" />
                   <span className="text-lg font-bold text-primary-cream">EventHubble</span>

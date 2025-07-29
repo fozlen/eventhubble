@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import CacheService from '../services/cacheService'
+import LogoService from '../services/logoService'
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
 import MobileEventCard from '../components/MobileEventCard'
@@ -81,10 +82,10 @@ const HomePage = () => {
     const loadLogos = async () => {
       try {
         const [mainLogo, newLogo, logoWithoutBg, mainLogoLarge] = await Promise.all([
-          CacheService.getLogo('main'),
-          CacheService.getLogo('new'),
-          CacheService.getLogo('withoutBg'),
-          CacheService.getLogo('mainLogo')
+          LogoService.getLogo('main'),
+          LogoService.getLogo('new'),
+          LogoService.getLogo('withoutBg'),
+          LogoService.getLogo('mainLogo')
         ])
         
         setLogos({
@@ -152,7 +153,7 @@ const HomePage = () => {
 
   // Get logo
   const getLogo = () => {
-    return logos.main || CacheService.API_BASE_URL + '/assets/Logo.png'
+    return logos.main || LogoService.API_BASE_URL + '/assets/Logo.png'
   }
 
   const getSortLabel = () => {
@@ -549,7 +550,7 @@ const HomePage = () => {
             <div className="flex justify-center w-full sm:w-auto">
               <div className="flex items-center space-x-2">
                 <img 
-                  src={logo} 
+                  src={getLogo()} 
                   alt="EventHubble" 
                   className="h-10 w-auto" 
                 />

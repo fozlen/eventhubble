@@ -415,7 +415,7 @@ const EventDetailPage = () => {
             <div className="flex justify-center w-full sm:w-auto">
               <div className="flex items-center space-x-2">
                 <img 
-                  src={logo} 
+                  src={getLogo()} 
                   alt="EventHubble" 
                   className="h-10 w-auto" 
                 />

@@ -239,7 +239,7 @@ const AdminDashboardPage = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo and Brand */}
             <div className="flex items-center space-x-3">
-              <img src={logo} alt="EventHubble" className="h-8 w-auto" />
+              <img src={getLogo()} alt="EventHubble" className="h-8 w-auto" />
               <div className="text-white">
                 <span className="text-xl font-bold">
                   <span className="text-primary-cream">Event</span>

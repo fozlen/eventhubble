@@ -49,7 +49,7 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-2">
               <img 
-                src={logo} 
+                src={getLogo()} 
                 alt="EventHubble" 
                 className="h-6 w-auto" 
               />

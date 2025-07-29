@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Filter, ChevronDown, Map, ExternalLink } from 'lucide-react'
-import CacheService from '../services/cacheService'
+import CacheService from
+import LogoService from '../services/logoService' '../services/cacheService'
 import { EventService } from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
@@ -27,7 +28,7 @@ const SearchResultsPage = () => {
 
   // Get logo
   const getLogo = () => {
-    return logos.main || CacheService.API_BASE_URL + '/assets/Logo.png'
+    return logos.main || LogoService.API_BASE_URL + '/assets/Logo.png'
   }
 
   // Load logos
@@ -35,10 +36,10 @@ const SearchResultsPage = () => {
     const loadLogos = async () => {
       try {
         const [mainLogo, newLogo, logoWithoutBg, mainLogoLarge] = await Promise.all([
-          CacheService.getLogo('main'),
-          CacheService.getLogo('new'),
-          CacheService.getLogo('withoutBg'),
-          CacheService.getLogo('mainLogo')
+          LogoService.getLogo('main'),
+          LogoService.getLogo('new'),
+          LogoService.getLogo('withoutBg'),
+          LogoService.getLogo('mainLogo')
         ])
         
         setLogos({
@@ -477,7 +478,7 @@ const SearchResultsPage = () => {
             <div className="flex justify-center w-full sm:w-auto">
               <div className="flex items-center space-x-2">
                 <img 
-                  src={logo} 
+                  src={getLogo()} 
                   alt="EventHubble" 
                   className="h-10 w-auto" 
                 />
