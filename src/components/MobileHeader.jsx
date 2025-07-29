@@ -8,12 +8,23 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
   const [isScrolled, setIsScrolled] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [headerLogo, setHeaderLogo] = useState('/assets/Logo.png')
   const navigate = useNavigate()
 
-  // Get logo function
-  const getLogo = () => {
-    return import.meta.env.PROD ? '/Logo.png' : '/assets/Logo.png'
-  }
+  // Load logo using LogoService
+  useEffect(() => {
+    const loadLogo = async () => {
+      try {
+        const logoUrl = await LogoService.getLogo('main')
+        setHeaderLogo(logoUrl)
+      } catch (error) {
+        console.error('Header logo loading error:', error)
+        // Fallback to static asset
+        setHeaderLogo('/assets/Logo.png')
+      }
+    }
+    loadLogo()
+  }, [])
   const location = useLocation()
 
   useEffect(() => {
@@ -55,7 +66,7 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-2">
               <img 
-                src={getLogo()} 
+                src={headerLogo} 
                 alt="EventHubble" 
                 className="h-6 w-auto" 
               />

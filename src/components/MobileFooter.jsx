@@ -65,8 +65,8 @@ const MobileFooter = ({ language = "EN" }) => {
         {/* EventHubble Brand */}
         <div className="flex items-center justify-center mb-3">
           <span className="text-sm font-semibold text-gray-700">
-            <span className="text-primary">Event</span>
-            <span className="text-primary-light">Hubble</span>
+            <span className="text-primary-cream">Event</span>
+            <span className="text-primary-light"> Hubble</span>
           </span>
         </div>
         
