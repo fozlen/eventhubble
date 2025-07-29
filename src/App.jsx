@@ -5,6 +5,7 @@ import CacheService from './services/cacheService'
 import HomePage from './pages/HomePage'
 import EventDetailPage from './pages/EventDetailPage'
 import AboutPage from './pages/AboutPage'
+import ContactPage from './pages/ContactPage'
 import WorldNewsPage from './pages/WorldNewsPage'
 import SearchResultsPage from './pages/SearchResultsPage'
 import AdminLoginPage from './pages/AdminLoginPage'
@@ -32,6 +33,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/event/:eventId" element={<EventDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/world-news" element={<WorldNewsPage />} />
             <Route path="/search" element={<SearchResultsPage />} />
             <Route path="/blog/:id" element={<BlogDetailPage />} />
