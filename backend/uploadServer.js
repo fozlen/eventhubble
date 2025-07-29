@@ -647,9 +647,9 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' })
 })
 
-module.exports = app
+export default app
 
 // Server'ı başlat
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   startServer()
 } 

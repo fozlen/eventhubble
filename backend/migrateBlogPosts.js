@@ -1,4 +1,4 @@
-const database = require('./database')
+import database from './database.js'
 
 // Örnek blog yazıları - localStorage'dan alınan veriler
 const sampleBlogPosts = [
@@ -77,8 +77,8 @@ async function migrateBlogPosts() {
 }
 
 // Script'i çalıştır
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   migrateBlogPosts()
 }
 
-module.exports = { migrateBlogPosts } 
+export { migrateBlogPosts } 
