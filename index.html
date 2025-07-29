@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- EventHubble Meta Tags -->
+    <title>EventHubble - İstanbul'un Etkinlik Platformu</title>
+    <meta name="description" content="İstanbul'da konser, tiyatro, spor ve sanat etkinliklerini keşfedin. EventHubble ile tüm etkinlikler tek platformda!" />
+    <meta name="keywords" content="etkinlik, konser, tiyatro, spor, İstanbul, bilet, sanat, festival" />
+    <meta name="author" content="EventHubble" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://eventhubble.netlify.app/" />
+    <meta property="og:title" content="EventHubble - İstanbul'un Etkinlik Platformu" />
+    <meta property="og:description" content="İstanbul'da konser, tiyatro, spor ve sanat etkinliklerini keşfedin." />
+    <meta property="og:image" content="/Logo.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://eventhubble.netlify.app/" />
+    <meta property="twitter:title" content="EventHubble - İstanbul'un Etkinlik Platformu" />
+    <meta property="twitter:description" content="İstanbul'da konser, tiyatro, spor ve sanat etkinliklerini keşfedin." />
+    <meta property="twitter:image" content="/Logo.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#8B5CF6" />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://eventhubble-api.onrender.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    
+    <!-- Loading styles -->
+    <style>
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      
+      .loading-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+      }
+      
+      .loading-text {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      
+      .loading-subtext {
+        font-size: 16px;
+        opacity: 0.8;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+      }
+      
+      @media (max-width: 768px) {
+        .loading-text { font-size: 20px; }
+        .loading-subtext { font-size: 14px; }
+        .loading-logo { width: 60px; height: 60px; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading">
+      <img src="/Logo.png" alt="EventHubble" class="loading-logo" />
+      <div class="loading-text">EventHubble</div>
+      <div class="loading-subtext">İstanbul'un Etkinlik Platformu</div>
+    </div>
+    
+    <!-- React App Root -->
+    <div id="root"></div>
+    
+    <!-- Load React App -->
+    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Hide loading screen when app loads -->
+    <script>
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const loading = document.getElementById('loading');
+          if (loading) {
+            loading.style.opacity = '0';
+            loading.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => loading.remove(), 500);
+          }
+        }, 1000);
+      });
+    </script>
+  </body>
+</html> 

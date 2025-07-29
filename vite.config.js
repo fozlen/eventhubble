@@ -13,7 +13,7 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     rollupOptions: {
-      input: 'app.html'
+      input: 'index.html'
     }
   },
   // Custom HTML entry point
