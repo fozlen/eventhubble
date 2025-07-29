@@ -130,11 +130,7 @@ const AdminEventManagementPage = () => {
     }
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Tarih belirtilmemiş'
