@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React
+import LogoService from '../services/logoService', { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
   Megaphone, 
@@ -42,6 +43,11 @@ const CategoriesPage = () => {
     color: '#473B73'
   })
   const navigate = useNavigate()
+
+  // Get logo function
+  const getLogo = () => {
+    return import.meta.env.PROD ? '/Logo.png' : '/assets/Logo.png'
+  }
 
   // Load events for dynamic counts
   useEffect(() => {

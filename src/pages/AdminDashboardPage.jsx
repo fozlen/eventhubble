@@ -6,6 +6,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD 
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
 import ImageSelector from '../components/ImageSelector'
+import LogoService from '../services/logoService'
 
 const AdminDashboardPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
@@ -16,6 +17,11 @@ const AdminDashboardPage = () => {
     return localStorage.getItem('language') || 'EN'
   })
   const navigate = useNavigate()
+
+  // Get logo function
+  const getLogo = () => {
+    return import.meta.env.PROD ? '/Logo.png' : `${API_BASE_URL}/assets/Logo.png`
+  }
 
   // Check authentication
   useEffect(() => {

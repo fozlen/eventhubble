@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React
+import LogoService from '../services/logoService', { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Lock, User, ArrowLeft } from 'lucide-react'
 // Image paths for API compatibility
@@ -15,6 +16,11 @@ const AdminLoginPage = () => {
     return localStorage.getItem('language') || 'EN'
   })
   const navigate = useNavigate()
+
+  // Get logo function
+  const getLogo = () => {
+    return import.meta.env.PROD ? '/Logo.png' : '/assets/Logo.png'
+  }
 
   // Admin credentials from environment variables
   const ADMIN_CREDENTIALS = {

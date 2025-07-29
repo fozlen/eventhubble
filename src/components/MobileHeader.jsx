@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React
+import LogoService from '../services/logoService', { useState, useEffect } from 'react'
 import { Menu, X, Globe, Search, Bell, User } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -8,6 +9,11 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
   const [showSearch, setShowSearch] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const navigate = useNavigate()
+
+  // Get logo function
+  const getLogo = () => {
+    return import.meta.env.PROD ? '/Logo.png' : '/assets/Logo.png'
+  }
   const location = useLocation()
 
   useEffect(() => {
