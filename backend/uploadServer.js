@@ -62,9 +62,16 @@ app.use((req, res, next) => {
   next()
 })
 
-// CORS ayarları - Allow all origins for production fix
+// CORS ayarları - Allow both localhost and production domains
 app.use(cors({
-  origin: true, // Allow all origins
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173', 
+    'https://eventhubble.com',
+    'https://www.eventhubble.com',
+    'https://eventhubble.netlify.app',
+    'https://eventhubble.onrender.com'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -73,9 +80,23 @@ app.use(cors({
 
 // Additional CORS headers for problematic requests
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
+  const origin = req.headers.origin
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:5173', 
+    'https://eventhubble.com',
+    'https://www.eventhubble.com',
+    'https://eventhubble.netlify.app',
+    'https://eventhubble.onrender.com'
+  ]
+  
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin)
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
+  res.header('Access-Control-Allow-Credentials', 'true')
   
   if (req.method === 'OPTIONS') {
     res.sendStatus(200)
@@ -149,6 +170,7 @@ app.get('/api/health', async (req, res) => {
       events: Array.isArray(dbTest) ? dbTest.length : 0
     })
   } catch (error) {
+    console.error('API Health check error:', error)
     res.status(503).json({ 
       status: 'ERROR', 
       message: 'API service unavailable',
@@ -181,9 +203,19 @@ app.get('/api/assets/:filename', (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
     res.sendFile(filePath)
   } catch (error) {
-    // Logo serve error
+    console.error('Logo serve error:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
+})
+
+// Global error handler
+app.use((error, req, res, next) => {
+  console.error('🚨 Global error handler:', error)
+  res.status(500).json({
+    error: 'Internal server error',
+    message: error.message,
+    timestamp: new Date().toISOString()
+  })
 })
 
 import DatabaseService from './databaseService.js'
