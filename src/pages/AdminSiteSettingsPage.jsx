@@ -218,21 +218,39 @@ const AdminSiteSettingsPage = () => {
             </div>
 
             {/* Admin Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="/" className="text-primary-cream/80 hover:text-primary-cream transition-colors">
-                {language === 'TR' ? 'Siteyi Görüntüle' : 'View Site'}
+            <nav className="hidden lg:flex items-center space-x-6">
+              <a href="/" className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm">
+                {language === 'TR' ? 'Site' : 'Site'}
               </a>
               <button 
                 onClick={() => navigate('/admin/dashboard')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors"
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
               >
-                {language === 'TR' ? 'Blog Yönetimi' : 'Blog Management'}
+                {language === 'TR' ? 'Blog' : 'Blog'}
               </button>
               <button 
                 onClick={() => navigate('/admin/events')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors"
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
               >
-                {language === 'TR' ? 'Etkinlik Yönetimi' : 'Event Management'}
+                {language === 'TR' ? 'Etkinlikler' : 'Events'}
+              </button>
+              <button 
+                onClick={() => navigate('/admin/categories')}
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+              >
+                {language === 'TR' ? 'Kategoriler' : 'Categories'}
+              </button>
+              <button 
+                onClick={() => navigate('/admin/images')}
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+              >
+                {language === 'TR' ? 'Resimler' : 'Images'}
+              </button>
+              <button 
+                onClick={() => navigate('/admin/logos')}
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+              >
+                {language === 'TR' ? 'Logolar' : 'Logos'}
               </button>
               <button className="text-primary-cream transition-colors">
                 <Settings className="h-5 w-5" />

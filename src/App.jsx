@@ -11,6 +11,9 @@ import AdminLoginPage from './pages/AdminLoginPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import AdminEventManagementPage from './pages/AdminEventManagementPage'
 import AdminSiteSettingsPage from './pages/AdminSiteSettingsPage'
+import AdminLogosPage from './pages/AdminLogosPage'
+import AdminImagesPage from './pages/AdminImagesPage'
+import AdminCategoriesPage from './pages/AdminCategoriesPage'
 import CategoriesPage from './pages/CategoriesPage'
 import BlogDetailPage from './pages/BlogDetailPage'
 import './App.css'
@@ -36,7 +39,10 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/events" element={<AdminEventManagementPage />} />
             <Route path="/admin/settings" element={<AdminSiteSettingsPage />} />
-            <Route path="/admin/categories" element={<CategoriesPage />} />
+            <Route path="/admin/logos" element={<AdminLogosPage />} />
+            <Route path="/admin/images" element={<AdminImagesPage />} />
+            <Route path="/admin/categories" element={<AdminCategoriesPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
           </Routes>
         </div>
       </Router>

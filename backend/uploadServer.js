@@ -435,6 +435,95 @@ app.post('/api/logos', async (req, res) => {
   }
 })
 
+app.put('/api/logos/:logoId', async (req, res) => {
+  try {
+    const result = await DatabaseService.updateLogo(req.params.logoId, req.body)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(400).json(result)
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update logo' })
+  }
+})
+
+app.delete('/api/logos/:logoId', async (req, res) => {
+  try {
+    const result = await DatabaseService.deleteLogo(req.params.logoId)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(404).json(result)
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to delete logo' })
+  }
+})
+
+// Images CRUD (Enhanced)
+app.put('/api/images/:imageId', async (req, res) => {
+  try {
+    const result = await DatabaseService.updateImage(req.params.imageId, req.body)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(400).json(result)
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update image' })
+  }
+})
+
+app.delete('/api/images/:imageId', async (req, res) => {
+  try {
+    const result = await DatabaseService.deleteImage(req.params.imageId)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(404).json(result)
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to delete image' })
+  }
+})
+
+// Categories CRUD
+app.post('/api/categories', async (req, res) => {
+  try {
+    const result = await DatabaseService.createCategory(req.body)
+    res.status(201).json(result)
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to create category' })
+  }
+})
+
+app.put('/api/categories/:categoryId', async (req, res) => {
+  try {
+    const result = await DatabaseService.updateCategory(req.params.categoryId, req.body)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(400).json(result)
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update category' })
+  }
+})
+
+app.delete('/api/categories/:categoryId', async (req, res) => {
+  try {
+    const result = await DatabaseService.deleteCategory(req.params.categoryId)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(404).json(result)
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to delete category' })
+  }
+})
+
 // Blog Posts API Routes
 app.get('/api/blog-posts', async (req, res) => {
   try {

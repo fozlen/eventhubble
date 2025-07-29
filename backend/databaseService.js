@@ -30,72 +30,178 @@ class DatabaseService {
 
   static async createLogo(logoData) {
     try {
-      // Placeholder implementation - would use supabaseService
-      const logo = {
-        id: Date.now(),
-        ...logoData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-      return { success: true, logo }
+      const { data, error } = await supabaseService.supabase
+        .from('logos')
+        .insert({
+          logo_id: logoData.logo_id,
+          filename: logoData.filename,
+          title: logoData.title,
+          alt_text: logoData.alt_text,
+          file_path: logoData.file_path,
+          file_size: logoData.file_size || null,
+          mime_type: logoData.mime_type || null,
+          width: logoData.width || null,
+          height: logoData.height || null,
+          is_active: logoData.is_active !== undefined ? logoData.is_active : true,
+          display_order: logoData.display_order || 0
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      return { success: true, logo: data }
     } catch (error) {
+      console.error('Error creating logo:', error)
       return { success: false, error: error.message, logo: null }
+    }
+  }
+
+  static async updateLogo(logoId, logoData) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('logos')
+        .update({
+          ...logoData,
+          updated_at: new Date().toISOString()
+        })
+        .eq('logo_id', logoId)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return { success: true, logo: data }
+    } catch (error) {
+      console.error('Error updating logo:', error)
+      return { success: false, error: error.message, logo: null }
+    }
+  }
+
+  static async deleteLogo(logoId) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('logos')
+        .delete()
+        .eq('logo_id', logoId)
+        .select()
+      
+      if (error) throw error
+      
+      if (!data || data.length === 0) {
+        return { success: false, error: 'Logo not found' }
+      }
+      
+      return { success: true, message: 'Logo deleted successfully', data }
+    } catch (error) {
+      console.error('Error deleting logo:', error)
+      return { success: false, error: error.message }
     }
   }
 
   // ===== IMAGES =====
   static async getImages(category = null) {
     try {
-      const images = [
-        {
-          id: 1,
-          image_id: 'hero_main',
-          category: 'hero',
-          title: 'Ana Sayfa Hero Görseli',
-          alt_text: 'EventHubble ana sayfa hero resmi',
-          filename: 'hero-events-main.jpg',
-          file_path: '/images/hero/hero-events-main.jpg',
-          is_active: true
-        },
-        {
-          id: 2,
-          image_id: 'category_music',
-          category: 'icon',
-          title: 'Müzik Kategorisi İkonu',
-          alt_text: 'Müzik etkinlikleri kategorisi ikonu',
-          filename: 'music-category-icon.svg',
-          file_path: '/images/categories/music-category-icon.svg',
-          is_active: true
-        }
-      ]
+      let query = supabaseService.supabase
+        .from('images')
+        .select('*')
+        .eq('is_active', true)
       
-      const filteredImages = category ? images.filter(img => img.category === category) : images
-      return { success: true, images: filteredImages }
+      if (category) {
+        query = query.eq('category', category)
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return { success: true, images: data || [] }
     } catch (error) {
+      console.error('Error fetching images:', error)
       return { success: false, error: error.message, images: [] }
-    }
-  }
-
-  static async getImageById(imageId) {
-    try {
-      const { images } = await this.getImages()
-      const image = images.find(i => i.image_id === imageId)
-      return { success: !!image, image }
-    } catch (error) {
-      return { success: false, error: error.message, image: null }
     }
   }
 
   static async createImage(imageData) {
     try {
-      const image = {
-        id: Date.now(),
-        ...imageData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-      return { success: true, image }
+      const { data, error } = await supabaseService.supabase
+        .from('images')
+        .insert({
+          image_id: imageData.image_id,
+          category: imageData.category || null,
+          title: imageData.title,
+          alt_text: imageData.alt_text || null,
+          filename: imageData.filename,
+          file_path: imageData.file_path,
+          file_size: imageData.file_size || null,
+          mime_type: imageData.mime_type || null,
+          width: imageData.width || null,
+          height: imageData.height || null,
+          tags: imageData.tags || [],
+          metadata: imageData.metadata || {},
+          is_active: imageData.is_active !== undefined ? imageData.is_active : true
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      return { success: true, image: data }
     } catch (error) {
+      console.error('Error creating image:', error)
+      return { success: false, error: error.message, image: null }
+    }
+  }
+
+  static async updateImage(imageId, imageData) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('images')
+        .update({
+          ...imageData,
+          updated_at: new Date().toISOString()
+        })
+        .eq('image_id', imageId)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return { success: true, image: data }
+    } catch (error) {
+      console.error('Error updating image:', error)
+      return { success: false, error: error.message, image: null }
+    }
+  }
+
+  static async deleteImage(imageId) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('images')
+        .delete()
+        .eq('image_id', imageId)
+        .select()
+      
+      if (error) throw error
+      
+      if (!data || data.length === 0) {
+        return { success: false, error: 'Image not found' }
+      }
+      
+      return { success: true, message: 'Image deleted successfully', data }
+    } catch (error) {
+      console.error('Error deleting image:', error)
+      return { success: false, error: error.message }
+    }
+  }
+
+  static async getImageById(imageId) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('images')
+        .select('*')
+        .eq('image_id', imageId)
+        .single()
+      
+      if (error) throw error
+      return { success: true, image: data }
+    } catch (error) {
+      console.error('Error fetching image by ID:', error)
       return { success: false, error: error.message, image: null }
     }
   }
@@ -192,52 +298,102 @@ class DatabaseService {
   // ===== CATEGORIES =====
   static async getCategories() {
     try {
-      const categories = [
-        {
-          id: 1,
-          category_id: 'music',
-          name_tr: 'Müzik',
-          name_en: 'Music',
-          description_tr: 'Konserler ve müzik etkinlikleri',
-          color_code: '#8B5CF6',
-          is_active: true,
-          display_order: 1
-        },
-        {
-          id: 2,
-          category_id: 'sports',
-          name_tr: 'Spor',
-          name_en: 'Sports',
-          description_tr: 'Spor etkinlikleri ve maçlar',
-          color_code: '#F97316',
-          is_active: true,
-          display_order: 2
-        },
-        {
-          id: 3,
-          category_id: 'theater',
-          name_tr: 'Tiyatro',
-          name_en: 'Theater',
-          description_tr: 'Tiyatro oyunları ve sahne sanatları',
-          color_code: '#EF4444',
-          is_active: true,
-          display_order: 3
-        }
-      ]
+      const { data, error } = await supabaseService.supabase
+        .from('categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
       
-      return { success: true, categories }
+      if (error) throw error
+      return { success: true, categories: data || [] }
     } catch (error) {
+      console.error('Error fetching categories:', error)
       return { success: false, error: error.message, categories: [] }
     }
   }
 
   static async getCategoryById(categoryId) {
     try {
-      const { categories } = await this.getCategories()
-      const category = categories.find(c => c.category_id === categoryId)
-      return { success: !!category, category }
+      const { data, error } = await supabaseService.supabase
+        .from('categories')
+        .select('*')
+        .eq('category_id', categoryId)
+        .single()
+      
+      if (error) throw error
+      return { success: true, category: data }
     } catch (error) {
+      console.error('Error fetching category by ID:', error)
       return { success: false, error: error.message, category: null }
+    }
+  }
+
+  static async createCategory(categoryData) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('categories')
+        .insert({
+          category_id: categoryData.category_id,
+          name_tr: categoryData.name_tr,
+          name_en: categoryData.name_en,
+          description_tr: categoryData.description_tr || null,
+          description_en: categoryData.description_en || null,
+          color_code: categoryData.color_code || null,
+          icon_image_id: categoryData.icon_image_id || null,
+          cover_image_id: categoryData.cover_image_id || null,
+          parent_id: categoryData.parent_id || null,
+          is_active: categoryData.is_active !== undefined ? categoryData.is_active : true,
+          display_order: categoryData.display_order || 0
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      return { success: true, category: data }
+    } catch (error) {
+      console.error('Error creating category:', error)
+      return { success: false, error: error.message, category: null }
+    }
+  }
+
+  static async updateCategory(categoryId, categoryData) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('categories')
+        .update({
+          ...categoryData,
+          updated_at: new Date().toISOString()
+        })
+        .eq('category_id', categoryId)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return { success: true, category: data }
+    } catch (error) {
+      console.error('Error updating category:', error)
+      return { success: false, error: error.message, category: null }
+    }
+  }
+
+  static async deleteCategory(categoryId) {
+    try {
+      const { data, error } = await supabaseService.supabase
+        .from('categories')
+        .delete()
+        .eq('category_id', categoryId)
+        .select()
+      
+      if (error) throw error
+      
+      if (!data || data.length === 0) {
+        return { success: false, error: 'Category not found' }
+      }
+      
+      return { success: true, message: 'Category deleted successfully', data }
+    } catch (error) {
+      console.error('Error deleting category:', error)
+      return { success: false, error: error.message }
     }
   }
 

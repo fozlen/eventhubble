@@ -256,15 +256,33 @@ const AdminDashboardPage = () => {
             </div>
 
             {/* Admin Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="/" className="text-primary-cream/80 hover:text-primary-cream transition-colors">
-                {language === 'TR' ? 'Siteyi Görüntüle' : 'View Site'}
+            <nav className="hidden lg:flex items-center space-x-6">
+              <a href="/" className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm">
+                {language === 'TR' ? 'Site' : 'Site'}
               </a>
               <button 
                 onClick={() => navigate('/admin/events')}
-                className="text-primary-cream/80 hover:text-primary-cream transition-colors"
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
               >
-                {language === 'TR' ? 'Etkinlik Yönetimi' : 'Event Management'}
+                {language === 'TR' ? 'Etkinlikler' : 'Events'}
+              </button>
+              <button 
+                onClick={() => navigate('/admin/categories')}
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+              >
+                {language === 'TR' ? 'Kategoriler' : 'Categories'}
+              </button>
+              <button 
+                onClick={() => navigate('/admin/images')}
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+              >
+                {language === 'TR' ? 'Resimler' : 'Images'}
+              </button>
+              <button 
+                onClick={() => navigate('/admin/logos')}
+                className="text-primary-cream/80 hover:text-primary-cream transition-colors text-sm"
+              >
+                {language === 'TR' ? 'Logolar' : 'Logos'}
               </button>
               <button 
                 onClick={() => navigate('/admin/settings')}
@@ -272,9 +290,6 @@ const AdminDashboardPage = () => {
                 title={language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
               >
                 <Settings className="h-5 w-5" />
-              </button>
-              <button className="text-primary-cream/80 hover:text-primary-cream transition-colors">
-                <BarChart3 className="h-5 w-5" />
               </button>
             </nav>
 
