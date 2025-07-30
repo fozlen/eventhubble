@@ -177,17 +177,65 @@ class DatabaseService {
   // ===== SITE SETTINGS =====
   static async getSiteSettings(category = null) {
     try {
-      const url = category 
-        ? `${this.API_BASE_URL}/api/settings?category=${category}`
-        : `${this.API_BASE_URL}/api/settings`
+      let url = `${this.API_BASE_URL}/api/site-settings`
+      if (category) {
+        url += `?category=${encodeURIComponent(category)}`
+      }
       
       const response = await fetch(url)
-      if (!response.ok) throw new Error('Failed to fetch settings')
+      
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to fetch site settings`)
       
       const result = await response.json()
-      return result.success ? result.settings : {}
+      return result.success ? result.settings : []
     } catch (error) {
-      return {}
+      return this.handleError(error, 'getSiteSettings', [])
+    }
+  }
+
+  static async updateSiteSettings(settingsArray) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/site-settings`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ settings: settingsArray })
+      })
+      
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to update site settings`)
+      
+      const result = await response.json()
+      
+      // Invalidate settings cache
+      this.invalidateCache(['site_settings'])
+      
+      return result.success ? result.settings : null
+    } catch (error) {
+      console.error('❌ Update site settings error:', error)
+      throw new Error(`Update site settings failed: ${error.message}`)
+    }
+  }
+
+  // Contact Form Submission (TODO: Implement backend endpoint)
+  static async submitContactForm(formData) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/contact-submissions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+      
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to submit contact form`)
+      
+      const result = await response.json()
+      
+      return result.success ? result.submission : null
+    } catch (error) {
+      console.error('❌ Contact form submission error:', error)
+      throw new Error(`Contact form submission failed: ${error.message}`)
     }
   }
 

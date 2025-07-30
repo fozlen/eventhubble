@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Mail, Phone, MapPin, Send, User, MessageSquare, Globe, ArrowLeft } from 'lucide-react'
+import { Mail, Phone, MapPin, Send, User, MessageSquare, Globe, ArrowLeft, Clock } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 import Footer from '../components/Footer'
 import LogoService from '../services/logoService'
+import DatabaseService from '../services/databaseService'
 
 const ContactPage = () => {
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
   const [logo, setLogo] = useState('/assets/Logo.png')
+  const [contactSettings, setContactSettings] = useState({})
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,17 +22,40 @@ const ContactPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState(null)
 
-  // Load logo
+  // Load logo and contact settings
   useEffect(() => {
-    const loadLogo = async () => {
+    const loadData = async () => {
       try {
+        // Load logo
         const logoUrl = await LogoService.getLogo('main')
         setLogo(logoUrl)
+
+        // Load contact settings from database
+        const settings = await DatabaseService.getSiteSettings('contact')
+        const parsedSettings = {}
+        
+        settings.forEach(setting => {
+          parsedSettings[setting.setting_key] = setting.setting_value
+        })
+        
+        setContactSettings(parsedSettings)
       } catch (error) {
-        console.error('Logo loading error:', error)
+        console.error('Data loading error:', error)
+        // Fallback values if database fails
+        setContactSettings({
+          contact_email_main: 'info@eventhubble.com',
+          contact_email_support: 'support@eventhubble.com',
+          contact_phone_main: '+90 (212) 123 45 67',
+          contact_phone_mobile: '+90 (532) 123 45 67',
+          contact_address_tr: 'Maslak Mahallesi, Büyükdere Caddesi No:123\nŞişli, İstanbul, Türkiye',
+          contact_address_en: 'Maslak District, Büyükdere Street No:123\nŞişli, Istanbul, Turkey',
+          business_hours_weekdays: '09:00 - 18:00',
+          business_hours_saturday: '10:00 - 16:00',
+          business_hours_sunday: 'closed'
+        })
       }
     }
-    loadLogo()
+    loadData()
   }, [])
 
   // Update page title
@@ -51,20 +76,29 @@ const ContactPage = () => {
     setIsSubmitting(true)
     
     try {
-      // Simulate form submission
+      // Submit contact form to database
+      const submitData = {
+        ...formData,
+        language,
+        submitted_at: new Date().toISOString(),
+        ip_address: '', // Will be filled by backend
+        user_agent: navigator.userAgent
+      }
+
+      // TODO: Implement contact submission API endpoint
+      // await DatabaseService.submitContactForm(submitData)
+      
+      // Simulate submission for now
       await new Promise(resolve => setTimeout(resolve, 1500))
       
       setSubmitStatus('success')
       setFormData({ name: '', email: '', subject: '', message: '' })
     } catch (error) {
+      console.error('Contact form submission error:', error)
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const getLogo = () => {
-    return logo
   }
 
   return (
@@ -74,7 +108,7 @@ const ContactPage = () => {
         <MobileHeader
           onSearchClick={() => {}}
           onMenuClick={() => {}}
-          logo={getLogo()}
+          logo={logo}
           language={language}
           toggleLanguage={toggleLanguage}
         />
@@ -85,17 +119,13 @@ const ContactPage = () => {
       <header className="hidden sm:block bg-primary border-b border-primary/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-4 sm:gap-0">
-            {/* Logo and Brand - Left Section */}
+            {/* Logo and Brand */}
             <div className="flex justify-center sm:justify-start w-full sm:w-auto">
               <button
                 onClick={() => navigate('/')}
                 className="flex items-center space-x-2 md:space-x-4 hover:opacity-80 transition-opacity duration-200"
               >
-                <img 
-                  src={getLogo()} 
-                  alt="EventHubble" 
-                  className="h-8 md:h-10 w-auto" 
-                />
+                <img src={logo} alt="EventHubble" className="h-8 md:h-10 w-auto" />
                 <span className="text-lg md:text-xl font-bold">
                   <span className="text-primary-cream">Event</span>
                   <span className="text-primary-light"> Hubble</span>
@@ -103,7 +133,7 @@ const ContactPage = () => {
               </button>
             </div>
             
-            {/* Navigation Menu - Center Section */}
+            {/* Navigation Menu */}
             <nav className="flex justify-center items-center space-x-4 sm:space-x-8 flex-wrap">
               <button 
                 onClick={() => navigate('/')}
@@ -118,12 +148,6 @@ const ContactPage = () => {
                 {language === 'TR' ? 'Hakkımızda' : 'About'}
               </button>
               <button 
-                onClick={() => navigate('/world-news')}
-                className="text-primary-cream hover:text-white transition-colors duration-200 font-medium"
-              >
-                {language === 'TR' ? 'Haberler' : 'News'}
-              </button>
-              <button 
                 onClick={() => navigate('/contact')}
                 className="text-white border-b-2 border-primary-cream transition-colors duration-200 font-medium"
               >
@@ -131,7 +155,7 @@ const ContactPage = () => {
               </button>
             </nav>
 
-            {/* Language Toggle - Right Section */}
+            {/* Language Toggle */}
             <div className="flex justify-center sm:justify-end items-center space-x-4 w-full sm:w-auto">
               <button
                 onClick={toggleLanguage}
@@ -289,8 +313,8 @@ const ContactPage = () => {
                     <h3 className="font-medium text-text mb-1">
                       {language === 'TR' ? 'E-posta' : 'Email'}
                     </h3>
-                    <p className="text-text/70">info@eventhubble.com</p>
-                    <p className="text-text/70">support@eventhubble.com</p>
+                    <p className="text-text/70">{contactSettings.contact_email_main || 'info@eventhubble.com'}</p>
+                    <p className="text-text/70">{contactSettings.contact_email_support || 'support@eventhubble.com'}</p>
                   </div>
                 </div>
 
@@ -300,8 +324,8 @@ const ContactPage = () => {
                     <h3 className="font-medium text-text mb-1">
                       {language === 'TR' ? 'Telefon' : 'Phone'}
                     </h3>
-                    <p className="text-text/70">+90 (212) 123 45 67</p>
-                    <p className="text-text/70">+90 (532) 123 45 67</p>
+                    <p className="text-text/70">{contactSettings.contact_phone_main || '+90 (212) 123 45 67'}</p>
+                    <p className="text-text/70">{contactSettings.contact_phone_mobile || '+90 (532) 123 45 67'}</p>
                   </div>
                 </div>
 
@@ -311,10 +335,11 @@ const ContactPage = () => {
                     <h3 className="font-medium text-text mb-1">
                       {language === 'TR' ? 'Adres' : 'Address'}
                     </h3>
-                    <p className="text-text/70">
+                    <p className="text-text/70 whitespace-pre-line">
                       {language === 'TR' 
-                        ? 'Maslak Mahallesi, Büyükdere Caddesi No:123\nŞişli, İstanbul, Türkiye'
-                        : 'Maslak District, Büyükdere Street No:123\nŞişli, Istanbul, Turkey'}
+                        ? (contactSettings.contact_address_tr || 'Maslak Mahallesi, Büyükdere Caddesi No:123\nŞişli, İstanbul, Türkiye')
+                        : (contactSettings.contact_address_en || 'Maslak District, Büyükdere Street No:123\nŞişli, Istanbul, Turkey')
+                      }
                     </p>
                   </div>
                 </div>
@@ -328,15 +353,20 @@ const ContactPage = () => {
               <div className="space-y-2 text-text/70">
                 <div className="flex justify-between">
                   <span>{language === 'TR' ? 'Pazartesi - Cuma' : 'Monday - Friday'}</span>
-                  <span>09:00 - 18:00</span>
+                  <span>{contactSettings.business_hours_weekdays || '09:00 - 18:00'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{language === 'TR' ? 'Cumartesi' : 'Saturday'}</span>
-                  <span>10:00 - 16:00</span>
+                  <span>{contactSettings.business_hours_saturday || '10:00 - 16:00'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{language === 'TR' ? 'Pazar' : 'Sunday'}</span>
-                  <span>{language === 'TR' ? 'Kapalı' : 'Closed'}</span>
+                  <span>
+                    {contactSettings.business_hours_sunday === 'closed' 
+                      ? (language === 'TR' ? 'Kapalı' : 'Closed')
+                      : (contactSettings.business_hours_sunday || (language === 'TR' ? 'Kapalı' : 'Closed'))
+                    }
+                  </span>
                 </div>
               </div>
             </div>

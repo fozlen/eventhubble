@@ -200,6 +200,52 @@ CREATE INDEX idx_site_settings_key ON public.site_settings(setting_key);
 CREATE INDEX idx_site_settings_category ON public.site_settings(category);
 
 -- =============================================
+-- SAMPLE DATA INSERTS
+-- =============================================
+
+-- Site Settings Sample Data
+INSERT INTO public.site_settings (setting_key, setting_value, setting_type, category, description) VALUES
+-- Contact Information
+('contact_email_main', 'info@eventhubble.com', 'string', 'contact', 'Ana e-posta adresi'),
+('contact_email_support', 'support@eventhubble.com', 'string', 'contact', 'Destek e-posta adresi'),
+('contact_phone_main', '+90 (212) 123 45 67', 'string', 'contact', 'Ana telefon numarası'),
+('contact_phone_mobile', '+90 (532) 123 45 67', 'string', 'contact', 'Mobil telefon numarası'),
+('contact_address_tr', 'Maslak Mahallesi, Büyükdere Caddesi No:123\nŞişli, İstanbul, Türkiye', 'text', 'contact', 'Türkçe adres'),
+('contact_address_en', 'Maslak District, Büyükdere Street No:123\nŞişli, Istanbul, Turkey', 'text', 'contact', 'İngilizce adres'),
+
+-- Business Hours
+('business_hours_weekdays', '09:00 - 18:00', 'string', 'contact', 'Hafta içi çalışma saatleri'),
+('business_hours_saturday', '10:00 - 16:00', 'string', 'contact', 'Cumartesi çalışma saatleri'),
+('business_hours_sunday', 'closed', 'string', 'contact', 'Pazar günü durumu'),
+
+-- Social Media & Links
+('social_twitter', 'https://twitter.com/eventhubble', 'string', 'social', 'Twitter hesabı'),
+('social_instagram', 'https://instagram.com/eventhubble', 'string', 'social', 'Instagram hesabı'),
+('social_facebook', 'https://facebook.com/eventhubble', 'string', 'social', 'Facebook hesabı'),
+('social_linkedin', 'https://linkedin.com/company/eventhubble', 'string', 'social', 'LinkedIn hesabı'),
+
+-- Site Information
+('site_title_tr', 'EventHubble - Her Deneyime Açılan Kapınız', 'string', 'site', 'Site başlığı Türkçe'),
+('site_title_en', 'EventHubble - Your Gateway to Every Experience', 'string', 'site', 'Site başlığı İngilizce'),
+('site_description_tr', 'Harika deneyimler keşfetmenin kolay olması gerektiğine inanıyoruz. Konserler, festivaller, spor etkinlikleri, buluşmalar, kültürel toplantılar ve küresel gösterileri tek bir yerde.', 'text', 'site', 'Site açıklaması Türkçe'),
+('site_description_en', 'We believe discovering great experiences should be effortless. We bring together concerts, festivals, sports events, meetups, cultural gatherings, and global spectacles all in one place.', 'text', 'site', 'Site açıklaması İngilizce'),
+
+-- Analytics & SEO
+('google_analytics_id', '', 'string', 'analytics', 'Google Analytics ID'),
+('google_search_console_verification', '', 'string', 'analytics', 'Google Search Console verification code'),
+('facebook_pixel_id', '', 'string', 'analytics', 'Facebook Pixel ID'),
+
+-- Contact Form Settings
+('contact_form_enabled', 'true', 'boolean', 'contact', 'İletişim formu aktif mi'),
+('contact_form_recipient', 'info@eventhubble.com', 'string', 'contact', 'İletişim formu alıcı e-posta'),
+('contact_form_subject_prefix', '[EventHubble Contact]', 'string', 'contact', 'E-posta konu ön eki'),
+
+-- System Settings
+('site_maintenance_mode', 'false', 'boolean', 'system', 'Site bakım modu'),
+('site_language_default', 'TR', 'string', 'system', 'Varsayılan dil'),
+('site_timezone', 'Europe/Istanbul', 'string', 'system', 'Site saat dilimi');
+
+-- =============================================
 -- UPDATE TRIGGERS
 -- =============================================
 

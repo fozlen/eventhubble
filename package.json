@@ -20,11 +20,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "lint": "eslint .",
-    "start": "cd backend && npm start",
-    "test": "npm run lint && cd backend && npm test",
-    "deploy": "npm run build && echo 'Build completed. Push to GitHub to trigger deployment.'"
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "prebuild": "npm run generate-sitemap"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",
