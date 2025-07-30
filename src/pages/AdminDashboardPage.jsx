@@ -11,12 +11,14 @@ import CacheService from '../services/cacheService'
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
-import ImageSelector from '../components/ImageSelector'
+import ImagePicker from '../components/ImagePicker'
 
 const AdminDashboardPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPost, setEditingPost] = useState(null)
+  const [showImagePicker, setShowImagePicker] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null)
   const { language, toggleLanguage } = useLanguage()
   const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
@@ -132,6 +134,19 @@ const AdminDashboardPage = () => {
         localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
       }
     }
+  }
+
+  const handleImageSelect = (image) => {
+    const imageUrl = image.file_path.startsWith('http') 
+      ? image.file_path 
+      : `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')}${image.file_path}`
+    
+    setSelectedImage(image)
+    setShowImagePicker(false)
+    
+    // BlogPostModal içindeki formData'yı güncellemek için event dispatch ediyoruz
+    const event = new CustomEvent('imageSelected', { detail: { imageUrl } })
+    window.dispatchEvent(event)
   }
 
   // Language context handles language toggle
@@ -470,6 +485,17 @@ const AdminDashboardPage = () => {
         </div>
       </main>
 
+      {/* Image Picker Modal */}
+      {showImagePicker && (
+        <ImagePicker
+          isOpen={showImagePicker}
+          onClose={() => setShowImagePicker(false)}
+          onSelect={handleImageSelect}
+          selectedImage={selectedImage}
+          category="blog"
+        />
+      )}
+
       {/* Blog Post Modal */}
       {showAddModal && (
         <BlogPostModal 
@@ -477,13 +503,15 @@ const AdminDashboardPage = () => {
           onClose={() => setShowAddModal(false)} 
           onSave={handleSavePost}
           language={language}
+          showImagePicker={showImagePicker}
+          setShowImagePicker={setShowImagePicker}
         />
       )}
     </div>
   )
 }
 
-const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
+const BlogPostModal = ({ post, onClose, onSave, language = 'EN', showImagePicker, setShowImagePicker }) => {
   const [formData, setFormData] = useState({
     title_tr: post?.title_tr || post?.title || '',
     title_en: post?.title_en || post?.title || '',
@@ -501,6 +529,16 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
     seo_title: post?.seo_title || '',
     seo_description: post?.seo_description || ''
   })
+
+  // Listen for image selection events
+  useEffect(() => {
+    const handleImageSelected = (event) => {
+      setFormData(prev => ({ ...prev, image: event.detail.imageUrl }))
+    }
+    
+    window.addEventListener('imageSelected', handleImageSelected)
+    return () => window.removeEventListener('imageSelected', handleImageSelected)
+  }, [])
 
   const categories = [
     { value: 'Music', label_tr: 'Müzik', label_en: 'Music' },
@@ -698,12 +736,39 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 </div>
 
                 <div>
-                  <ImageSelector
-                    value={formData.image}
-                    onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
-                    placeholder={language === 'TR' ? 'Resim URL\'si girin veya listeden seçin...' : 'Enter image URL or select from dropdown...'}
-                    label={language === 'TR' ? 'Resim URL' : 'Image URL'}
-                  />
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Blog Resmi' : 'Blog Image'}
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    {formData.image && (
+                      <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                        <img 
+                          src={formData.image} 
+                          alt="Blog preview" 
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAxMkMxNi42ODYzIDEyIDEzIDEzLjM0MzEgMTMgMTdWMjNDMTMgMjYuNjU2OSAxNi42ODYzIDI4IDIwIDI4QzIzLjMxMzcgMjggMjcgMjYuNjU2OSAyNyAyM1YxN0MyNyAxMy4zNDMxIDIzLjMxMzcgMTIgMjAgMTJaIiBmaWxsPSIjOUIyQzJGIi8+Cjwvc3ZnPgo='
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <input
+                        type="url"
+                        value={formData.image}
+                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                        placeholder={language === 'TR' ? 'Resim URL\'si girin...' : 'Enter image URL...'}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowImagePicker(true)}
+                        className="mt-2 text-sm text-primary hover:text-primary/80 font-medium"
+                      >
+                        {language === 'TR' ? 'Galeri\'den Seç' : 'Select from Gallery'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
