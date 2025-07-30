@@ -6,6 +6,7 @@ import {
   Megaphone, BarChart3, Tag, Eye, Calendar, User, FileText 
 } from 'lucide-react'
 import LogoService from '../services/logoService'
+import CacheService from '../services/cacheService'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
@@ -115,6 +116,9 @@ const AdminDashboardPage = () => {
           const updatedPosts = blogPosts.filter(post => post.id !== postId)
           setBlogPosts(updatedPosts)
           console.log('Blog post deleted successfully')
+          
+          // Clear blog cache so changes are immediately visible on website
+          CacheService.clearBlogCache()
         } else {
           const errorText = await response.text()
           console.error('Delete failed:', response.status, errorText)
@@ -191,6 +195,9 @@ const AdminDashboardPage = () => {
           const result = await response.json()
           console.log('Blog post updated successfully:', result)
           await loadBlogPosts() // Reload to get updated data
+          
+          // Clear blog cache so changes are immediately visible on website
+          CacheService.clearBlogCache()
         } else {
           const errorText = await response.text()
           console.error('Update failed:', response.status, errorText)
@@ -210,6 +217,9 @@ const AdminDashboardPage = () => {
           const result = await response.json()
           console.log('Blog post created successfully:', result)
           await loadBlogPosts() // Reload to get updated data
+          
+          // Clear blog cache so changes are immediately visible on website
+          CacheService.clearBlogCache()
         } else {
           const errorText = await response.text()
           console.error('Create failed:', response.status, errorText)

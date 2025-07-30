@@ -37,6 +37,20 @@ class CacheService {
     }
   }
 
+  // Clear specific cache entries (for admin use)
+  static clearBlogCache() {
+    try {
+      localStorage.removeItem('cache_blogPosts_TR')
+      localStorage.removeItem('cache_blogPosts_TR_expiry')
+      localStorage.removeItem('cache_blogPosts_EN')
+      localStorage.removeItem('cache_blogPosts_EN_expiry')
+      localStorage.removeItem('blogPosts') // fallback data
+      console.log('✅ Blog cache cleared successfully')
+    } catch (error) {
+      console.error('Blog cache clear error:', error)
+    }
+  }
+
   // Generic cache method
   static async getCached(key, fetchFunction, ttl = 5 * 60 * 1000) {
     const cacheKey = `cache_${key}`
