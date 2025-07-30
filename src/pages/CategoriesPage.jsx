@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import LogoService from '../services/logoService'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { COLORS, getCategoryColor } from '../constants/colors'
+import LogoService from '../services/logoService'
+import EventService from '../services/eventService'
+import DatabaseService from '../services/databaseService'
 import { 
   Megaphone, 
   Settings, 
@@ -17,10 +19,10 @@ import {
   Save,
   X
 } from 'lucide-react'
+
 // Image paths for API compatibility
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 const logo = `${API_BASE_URL}/assets/Logo.png`
-import { EventService } from '../services/eventService'
 
 const CategoriesPage = () => {
   const { language, toggleLanguage } = useLanguage()

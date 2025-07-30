@@ -8,7 +8,7 @@ const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
 const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
 const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
-import { EventService } from '../services/eventService'
+import EventService from '../services/eventService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 import Footer from '../components/Footer'

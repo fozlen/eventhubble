@@ -423,4 +423,7 @@ class EventService {
       throw error
     }
   }
-} 
+}
+
+// Export EventService class
+export default EventService 

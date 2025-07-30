@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import LogoService from '../services/logoService'
 import ImageSelector from '../components/ImageSelector'
-import { EventService } from '../services/eventService'
+import EventService from '../services/eventService'
 import DatabaseService from '../services/databaseService'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
