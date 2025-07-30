@@ -187,9 +187,16 @@ class DatabaseService {
       if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to fetch site settings`)
       
       const result = await response.json()
-      return result.success ? result.settings : []
+      
+      // Return full response for AdminSiteSettingsPage compatibility
+      if (result.success) {
+        return result
+      } else {
+        return { success: false, error: result.error || 'Failed to fetch settings', raw_data: [], settings: {} }
+      }
     } catch (error) {
-      return this.handleError(error, 'getSiteSettings', [])
+      console.error('getSiteSettings error:', error)
+      return { success: false, error: error.message, raw_data: [], settings: {} }
     }
   }
 

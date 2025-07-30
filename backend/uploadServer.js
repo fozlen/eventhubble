@@ -117,7 +117,16 @@ app.use('/assets', express.static(assetsDir, {
 }))
 
 // Uploaded images'i serve et
-app.use('/images', express.static(uploadsDir, {
+const imagesDir = path.join(uploadsDir, 'images')
+app.use('/images', express.static(imagesDir, {
+  setHeaders: (res, path) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Cache-Control', 'public, max-age=86400')
+  }
+}))
+
+// Also serve uploads directory for other files
+app.use('/uploads', express.static(uploadsDir, {
   setHeaders: (res, path) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Cache-Control', 'public, max-age=86400')

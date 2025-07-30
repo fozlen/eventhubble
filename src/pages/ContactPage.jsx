@@ -31,12 +31,14 @@ const ContactPage = () => {
         setLogo(logoUrl)
 
         // Load contact settings from database
-        const settings = await DatabaseService.getSiteSettings('contact')
+        const settingsResponse = await DatabaseService.getSiteSettings('contact')
         const parsedSettings = {}
         
-        settings.forEach(setting => {
-          parsedSettings[setting.setting_key] = setting.setting_value
-        })
+        if (settingsResponse.success && settingsResponse.raw_data) {
+          settingsResponse.raw_data.forEach(setting => {
+            parsedSettings[setting.setting_key] = setting.setting_value
+          })
+        }
         
         setContactSettings(parsedSettings)
       } catch (error) {
