@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Phone, Globe as GlobeIcon, Share2, Heart, ExternalLink, Tag } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
-// Image paths for API compatibility
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
+// Image paths for API compatibility  
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
 const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
@@ -52,31 +52,17 @@ const BlogDetailPage = () => {
         }
         setBlogPost(localizedPost)
       } else {
-        // API'den bulunamadı, localStorage'dan dene (fallback)
-        const storedPosts = localStorage.getItem('blogPosts')
-        if (storedPosts) {
-          const posts = JSON.parse(storedPosts)
-          const post = posts.find(p => p.id === parseInt(id))
-          if (post) {
-            const localizedPost = {
-              ...post,
-              title: language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title),
-              excerpt: language === 'TR' ? (post.excerpt_tr || post.excerpt) : (post.excerpt_en || post.excerpt),
-              content: language === 'TR' ? (post.content_tr || post.content) : (post.content_en || post.content)
-            }
-            setBlogPost(localizedPost)
-          } else {
-            setBlogPost(null)
-          }
-        } else {
-          setBlogPost(null)
-        }
+        console.warn(`Blog post ${id} not found via API, trying localStorage...`)
+        loadFromLocalStorage()
       }
     } catch (error) {
-      if (!import.meta.env.PROD) {
-        console.error('Error loading blog post:', error)
-      }
-      // Hata durumunda localStorage'dan çek (fallback)
+      console.warn('Error loading blog post from API:', error.message)
+      loadFromLocalStorage()
+    }
+  }
+
+  const loadFromLocalStorage = () => {
+    try {
       const storedPosts = localStorage.getItem('blogPosts')
       if (storedPosts) {
         const posts = JSON.parse(storedPosts)
@@ -95,8 +81,9 @@ const BlogDetailPage = () => {
       } else {
         setBlogPost(null)
       }
-    } finally {
-      // Loading removed for better UX
+    } catch (error) {
+      console.error('Error loading from localStorage:', error)
+      setBlogPost(null)
     }
   }
 

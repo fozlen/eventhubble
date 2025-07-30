@@ -20,14 +20,11 @@ const AdminSiteSettingsPage = () => {
   const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
 
-  // Categories for filtering
+  // Categories for filtering (based on actual database categories)
   const categories = [
     { key: 'all', label: language === 'TR' ? 'Tümü' : 'All', icon: Settings },
     { key: 'contact', label: language === 'TR' ? 'İletişim' : 'Contact', icon: Mail },
-    { key: 'social', label: language === 'TR' ? 'Sosyal Medya' : 'Social Media', icon: Twitter },
-    { key: 'site', label: language === 'TR' ? 'Site Bilgileri' : 'Site Info', icon: Globe },
-    { key: 'analytics', label: language === 'TR' ? 'Analiz' : 'Analytics', icon: Eye },
-    { key: 'system', label: language === 'TR' ? 'Sistem' : 'System', icon: Database }
+    { key: 'general', label: language === 'TR' ? 'Site Bilgileri' : 'Site Info', icon: Globe }
   ]
 
   // Load initial data
@@ -48,8 +45,8 @@ const AdminSiteSettingsPage = () => {
     setIsLoading(true)
     try {
       // Load logo
-      const logoUrl = await LogoService.getLogo('main')
-      setLogo(logoUrl)
+        const logoUrl = await LogoService.getLogo('main')
+        setLogo(logoUrl)
 
       // Load site settings
       const settingsResponse = await DatabaseService.getSiteSettings()
@@ -140,10 +137,7 @@ const AdminSiteSettingsPage = () => {
   const getCategoryIcon = (category) => {
     switch (category) {
       case 'contact': return Mail
-      case 'social': return Twitter
-      case 'site': return Globe
-      case 'analytics': return Eye
-      case 'system': return Database
+      case 'general': return Globe
       default: return Settings
     }
   }
@@ -240,10 +234,10 @@ const AdminSiteSettingsPage = () => {
             {/* Logo and Brand */}
             <div className="flex items-center space-x-4">
               <img src={logo} alt="EventHubble" className="h-8 w-auto" />
-              <span className="text-xl font-bold">
+                <span className="text-xl font-bold">
                 <span className="text-primary-cream">Event</span>
-                <span className="text-primary-light"> Hubble</span>
-              </span>
+                  <span className="text-primary-light"> Hubble</span>
+                </span>
               <span className="text-primary-light/60 hidden sm:inline">
                 | {language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
               </span>
@@ -251,7 +245,7 @@ const AdminSiteSettingsPage = () => {
 
             {/* Actions */}
             <div className="flex items-center space-x-4">
-              <button
+              <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-primary-light/20 hover:bg-primary-light/30 transition-colors duration-200"
               >
@@ -280,63 +274,79 @@ const AdminSiteSettingsPage = () => {
       {/* Navigation */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-wrap gap-2 mb-6">
-          <button
+                <button
             onClick={() => navigate('/admin/dashboard')}
             className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-          >
+                >
             {language === 'TR' ? '← Ana Panel' : '← Dashboard'}
-          </button>
+                </button>
         </div>
 
         {/* Category Filter */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {categories.map(category => {
-            const Icon = category.icon
-            return (
-              <button
-                key={category.key}
-                onClick={() => setSelectedCategory(category.key)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                  selectedCategory === category.key
-                    ? 'bg-primary text-white'
-                    : 'bg-background-secondary text-text hover:bg-primary/10'
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{category.label}</span>
-              </button>
-            )
-          })}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">
+            {language === 'TR' ? 'Kategori Filtresi' : 'Category Filter'}
+          </h3>
+          <div className="flex flex-wrap gap-3">
+            {categories.map(category => {
+              const Icon = category.icon
+              return (
+                <button
+                  key={category.key}
+                  onClick={() => setSelectedCategory(category.key)}
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                    selectedCategory === category.key
+                      ? 'bg-primary border-primary text-white shadow-md transform scale-105'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-primary/50 hover:bg-primary/5'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span className="font-medium">{category.label}</span>
+                  {selectedCategory === category.key && (
+                    <div className="w-2 h-2 bg-white rounded-full ml-1"></div>
+                  )}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
-        {/* Settings List */}
-        <div className="bg-background-secondary rounded-lg shadow-sm">
-          <div className="p-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-text">
+                {/* Settings List */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="p-6 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+            <h2 className="text-2xl font-bold text-gray-900">
               {language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
             </h2>
-            <p className="text-text/60">
+            <p className="text-gray-600 mt-1">
               {language === 'TR' 
-                ? 'Site ayarlarını buradan yönetebilirsiniz' 
-                : 'Manage your site settings here'}
+                ? `${filteredSettings.length} ayar gösteriliyor` 
+                : `Showing ${filteredSettings.length} settings`}
             </p>
           </div>
           
           {isLoading ? (
-            <div className="p-8 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-text/60">
+            <div className="p-12 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-3 border-primary mx-auto mb-6"></div>
+              <p className="text-gray-500 text-lg">
                 {language === 'TR' ? 'Ayarlar yükleniyor...' : 'Loading settings...'}
               </p>
             </div>
           ) : filteredSettings.length === 0 ? (
-            <div className="p-8 text-center text-text/60">
-              {language === 'TR' ? 'Ayar bulunamadı' : 'No settings found'}
+            <div className="p-12 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                <Settings className="w-8 h-8 text-gray-400" />
+              </div>
+              <p className="text-gray-500 text-lg font-medium">
+                {language === 'TR' ? 'Bu kategoride ayar bulunamadı' : 'No settings found in this category'}
+              </p>
+              <p className="text-gray-400 text-sm mt-2">
+                {language === 'TR' ? 'Farklı bir kategori deneyin' : 'Try a different category'}
+              </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
-              {filteredSettings.map((setting) => (
-                <div key={setting.setting_key} className="p-4">
+            <div className="divide-y divide-gray-100">
+              {filteredSettings.map((setting, index) => (
+                <div key={setting.setting_key} className={`p-6 hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
                   {renderSettingValue(setting)}
                 </div>
               ))}
