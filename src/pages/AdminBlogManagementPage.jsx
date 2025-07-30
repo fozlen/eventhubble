@@ -186,14 +186,16 @@ const AdminBlogManagementPage = () => {
         excerpt_tr: postData.excerpt_tr,
         excerpt_en: postData.excerpt_en,
         // Schema'ya uygun mapping
-        cover_image_id: null, // Image handling ileride eklenecek
-        author_name: 'Admin', // Schema: author_name
+        cover_image_id: postData.cover_image_id || null,
+        author_name: 'Event Hubble', // Otomatik yazar
         category: postData.category,
         tags: postData.tags,
         is_published: postData.is_published || false,
         is_featured: postData.is_featured || false,
         seo_title: postData.seo_title || '',
-        seo_description: postData.seo_description || ''
+        seo_description: postData.seo_description || '',
+        created_at: editingPost ? postData.created_at : new Date().toISOString(), // Otomatik tarih
+        updated_at: new Date().toISOString()
       }
 
       if (editingPost) {
@@ -255,8 +257,8 @@ const AdminBlogManagementPage = () => {
         const newPost = {
           ...postData,
           id: Date.now(),
-          date: new Date().toISOString().split('T')[0] || '2024-07-29',
-          author: 'Admin'
+          date: new Date().toISOString(),
+          author: 'Event Hubble'
         }
         const updatedPosts = [...blogPosts, newPost]
         setBlogPosts(updatedPosts)
@@ -704,9 +706,10 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN', showImagePicker
                   <label className="block text-sm font-medium text-text mb-2">
                     {language === 'TR' ? 'Blog Resmi' : 'Blog Image'}
                   </label>
-                  <div className="flex items-center space-x-3">
+                  <div className="space-y-3">
+                    {/* Image Preview */}
                     {formData.image && (
-                      <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                      <div className="w-full h-32 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
                         <img 
                           src={formData.image} 
                           alt="Blog preview" 
@@ -717,22 +720,41 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN', showImagePicker
                         />
                       </div>
                     )}
-                    <div className="flex-1">
+                    
+                    {/* Selection Buttons */}
+                    <div className="flex space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowImagePicker(true)}
+                        className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                      >
+                        {language === 'TR' ? '📷 Galeri\'den Seç' : '📷 Select from Gallery'}
+                      </button>
+                      {formData.image && (
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image: '' })}
+                          className="px-3 py-2 text-gray-500 hover:text-red-500 transition-colors"
+                          title={language === 'TR' ? 'Resmi kaldır' : 'Remove image'}
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Manual URL Input */}
+                    <details className="group">
+                      <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
+                        {language === 'TR' ? 'Manuel URL gir' : 'Enter manual URL'}
+                      </summary>
                       <input
                         type="url"
                         value={formData.image}
                         onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder={language === 'TR' ? 'Resim URL\'si girin...' : 'Enter image URL...'}
+                        className="mt-2 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                        placeholder={language === 'TR' ? 'https://example.com/image.jpg' : 'https://example.com/image.jpg'}
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowImagePicker(true)}
-                        className="mt-2 text-sm text-primary hover:text-primary/80 font-medium"
-                      >
-                        {language === 'TR' ? 'Galeri\'den Seç' : 'Select from Gallery'}
-                      </button>
-                    </div>
+                    </details>
                   </div>
                 </div>
               </div>

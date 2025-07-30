@@ -9,6 +9,7 @@ import LogoService from '../services/logoService'
 
 import EventService from '../services/eventService'
 import DatabaseService from '../services/databaseService'
+import ImagePicker from '../components/ImagePicker'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 
@@ -16,6 +17,8 @@ const AdminEventManagementPage = () => {
   const [events, setEvents] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState(null)
+  const [showImagePicker, setShowImagePicker] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null)
 
   const { language, toggleLanguage } = useLanguage()
   const [logo, setLogo] = useState('/Logo.png')
@@ -102,6 +105,19 @@ const AdminEventManagementPage = () => {
     setShowAddModal(true)
   }
 
+  const handleImageSelect = (image) => {
+    const imageUrl = image.file_path.startsWith('http') 
+      ? image.file_path 
+      : `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')}${image.file_path}`
+    
+    setSelectedImage(image)
+    setShowImagePicker(false)
+    
+    // EventModal içindeki formData'yı güncellemek için event dispatch ediyoruz
+    const event = new CustomEvent('imageSelected', { detail: { imageUrl } })
+    window.dispatchEvent(event)
+  }
+
   const handleDeleteEvent = async (eventId) => {
     const confirmMessage = language === 'TR' 
       ? 'Bu etkinliği silmek istediğinizden emin misiniz?'
@@ -165,7 +181,10 @@ const AdminEventManagementPage = () => {
           const newEventData = {
             ...eventData,
             event_id: `event_${Date.now()}`,
+            organizer_name: eventData.organizer_name || 'Event Hubble', // Otomatik organizatör
             scraped_at: new Date().toISOString(),
+            created_at: new Date().toISOString(), // Otomatik oluşturulma tarihi
+            updated_at: new Date().toISOString(),
             status: 'active',
             is_active: true
           }
@@ -176,7 +195,10 @@ const AdminEventManagementPage = () => {
           const newEvent = {
             ...eventData,
             id: `manual_${Date.now()}`,
+            organizer_name: eventData.organizer_name || 'Event Hubble',
             scraped_at: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
             status: 'active'
           }
           const storedEvents = localStorage.getItem('manualEvents')
@@ -455,6 +477,17 @@ const AdminEventManagementPage = () => {
         </div>
       </main>
 
+      {/* Image Picker Modal */}
+      {showImagePicker && (
+        <ImagePicker
+          isOpen={showImagePicker}
+          onClose={() => setShowImagePicker(false)}
+          onSelect={handleImageSelect}
+          selectedImage={selectedImage}
+          category="event"
+        />
+      )}
+
       {/* Event Modal */}
       {showAddModal && (
         <EventModal 
@@ -462,13 +495,15 @@ const AdminEventManagementPage = () => {
           onClose={() => setShowAddModal(false)} 
           onSave={handleSaveEvent}
           language={language}
+          showImagePicker={showImagePicker}
+          setShowImagePicker={setShowImagePicker}
         />
       )}
     </div>
   )
 }
 
-const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
+const EventModal = ({ event, onClose, onSave, language = 'EN', showImagePicker, setShowImagePicker }) => {
   const [formData, setFormData] = useState({
     // Database uyumlu field'lar
     event_id: event?.event_id || `event_${Date.now()}`,
@@ -505,6 +540,16 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
     tags: event?.tags?.join(', ') || '',
     metadata: event?.metadata ? JSON.stringify(event.metadata, null, 2) : '{}'
   })
+
+  // Listen for image selection events
+  useEffect(() => {
+    const handleImageSelected = (event) => {
+      setFormData(prev => ({ ...prev, image_url: event.detail.imageUrl }))
+    }
+    
+    window.addEventListener('imageSelected', handleImageSelected)
+    return () => window.removeEventListener('imageSelected', handleImageSelected)
+  }, [])
 
   const categories = [
     { value: 'music', label_tr: 'Müzik', label_en: 'Music' },
@@ -877,9 +922,10 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
                   <label className="block text-sm font-medium text-text mb-2">
                     {language === 'TR' ? 'Etkinlik Resmi' : 'Event Image'}
                   </label>
-                  <div className="flex items-center space-x-3">
+                  <div className="space-y-3">
+                    {/* Image Preview */}
                     {formData.image_url && (
-                      <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                      <div className="w-full h-32 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
                         <img 
                           src={formData.image_url} 
                           alt="Event preview" 
@@ -890,18 +936,41 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
                         />
                       </div>
                     )}
-                    <div className="flex-1">
+                    
+                    {/* Selection Buttons */}
+                    <div className="flex space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowImagePicker(true)}
+                        className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                      >
+                        {language === 'TR' ? '📷 Galeri\'den Seç' : '📷 Select from Gallery'}
+                      </button>
+                      {formData.image_url && (
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image_url: '' })}
+                          className="px-3 py-2 text-gray-500 hover:text-red-500 transition-colors"
+                          title={language === 'TR' ? 'Resmi kaldır' : 'Remove image'}
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Manual URL Input */}
+                    <details className="group">
+                      <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
+                        {language === 'TR' ? 'Manuel URL gir' : 'Enter manual URL'}
+                      </summary>
                       <input
                         type="url"
                         value={formData.image_url}
                         onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder={language === 'TR' ? 'Resim URL\'si girin...' : 'Enter image URL...'}
+                        className="mt-2 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                        placeholder={language === 'TR' ? 'https://example.com/image.jpg' : 'https://example.com/image.jpg'}
                       />
-                      <p className="mt-2 text-xs text-gray-500">
-                        {language === 'TR' ? 'Resim yönetimi için Admin → Images sayfasını kullanın' : 'Use Admin → Images page for image management'}
-                      </p>
-                    </div>
+                    </details>
                   </div>
                 </div>
 
@@ -911,8 +980,8 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
                   </label>
                   <input
                     type="url"
-                    value={formData.url}
-                    onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                    value={formData.ticket_url}
+                    onChange={(e) => setFormData({ ...formData, ticket_url: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
                     placeholder="https://example.com/tickets"
                   />

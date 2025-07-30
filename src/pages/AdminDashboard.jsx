@@ -7,6 +7,7 @@ import {
   PlusCircle, ArrowRight, LogOut
 } from 'lucide-react'
 import LogoService from '../services/logoService'
+import DatabaseService from '../services/databaseService'
 
 const AdminDashboard = () => {
   const { language, toggleLanguage } = useLanguage()
@@ -19,6 +20,7 @@ const AdminDashboard = () => {
     activeEvents: 0,
     publishedBlogs: 0
   })
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -37,17 +39,14 @@ const AdminDashboard = () => {
 
   const loadStats = async () => {
     try {
-      // Simulated stats for now - you can replace with real API calls
-      setStats({
-        totalEvents: 24,
-        totalBlogs: 18,
-        totalImages: 45,
-        totalCategories: 8,
-        activeEvents: 16,
-        publishedBlogs: 12
-      })
+      setIsLoading(true)
+      const stats = await DatabaseService.getAdminDashboardStats()
+      setStats(stats)
     } catch (error) {
       console.error('Error loading stats:', error)
+      // Keep default/fallback stats on error
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -243,7 +242,11 @@ const AdminDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    {isLoading ? (
+                      <div className="w-12 h-8 bg-gray-200 rounded animate-pulse"></div>
+                    ) : (
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    )}
                     <p className="text-xs text-gray-500 mt-1">{stat.subtitle}</p>
                   </div>
                   <div className={`p-3 rounded-lg ${stat.bgColor}`}>

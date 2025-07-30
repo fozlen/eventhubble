@@ -309,6 +309,47 @@ class DatabaseService {
     })
   }
 
+  // ===== ADMIN DASHBOARD STATS =====
+  static async getAdminDashboardStats() {
+    try {
+      // Get all data in parallel for better performance
+      const [events, blogPosts, images, categories] = await Promise.all([
+        this.getEvents(),
+        this.getBlogPosts(),
+        this.getImages(),
+        this.getCategories()
+      ])
+
+      // Calculate stats
+      const totalEvents = events.length
+      const activeEvents = events.filter(event => event.is_active !== false).length
+      const totalBlogs = blogPosts.length
+      const publishedBlogs = blogPosts.filter(post => post.is_published).length
+      const totalImages = images.length
+      const totalCategories = categories.length
+
+      return {
+        totalEvents,
+        totalBlogs,
+        totalImages,
+        totalCategories,
+        activeEvents,
+        publishedBlogs
+      }
+    } catch (error) {
+      console.error('Error loading dashboard stats:', error)
+      // Return fallback stats if API fails
+      return {
+        totalEvents: 0,
+        totalBlogs: 0,
+        totalImages: 0,
+        totalCategories: 0,
+        activeEvents: 0,
+        publishedBlogs: 0
+      }
+    }
+  }
+
   // ===== CRUD OPERATIONS =====
   
   // Events CRUD
