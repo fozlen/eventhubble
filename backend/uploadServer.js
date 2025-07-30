@@ -12,11 +12,20 @@ import DatabaseService from './databaseService.js'
 dotenv.config()
 
 // Cloudinary Configuration
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'eventhubble',
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-})
+const isCloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME && 
+                               process.env.CLOUDINARY_API_KEY && 
+                               process.env.CLOUDINARY_API_SECRET
+
+if (isCloudinaryConfigured) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  })
+  console.log('✅ Cloudinary configured successfully')
+} else {
+  console.warn('⚠️  Cloudinary not configured - uploads will be stored locally')
+}
 
 // ES modules'da __dirname alternatifi
 const __filename = fileURLToPath(import.meta.url)
@@ -28,6 +37,8 @@ const assetsDir = path.join(__dirname, 'assets')
 
 // Ensure directories exist
 fs.ensureDirSync(uploadsDir)
+fs.ensureDirSync(path.join(uploadsDir, 'images'))
+fs.ensureDirSync(path.join(uploadsDir, 'logos'))
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -121,6 +132,14 @@ app.use('/assets', express.static(assetsDir, {
   setHeaders: (res, path) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Cache-Control', 'public, max-age=31536000')
+  }
+}))
+
+// Serve uploaded files (when not using Cloudinary)
+app.use('/uploads', express.static(uploadsDir, {
+  setHeaders: (res, path) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Cache-Control', 'public, max-age=86400') // 1 day cache for uploads
   }
 }))
 
@@ -481,7 +500,7 @@ app.post('/api/images', async (req, res) => {
   }
 })
 
-// Combined Image Upload + Database Save (Cloudinary)
+// Combined Image Upload + Database Save (Cloudinary/Local)
 app.post('/api/images/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
@@ -495,29 +514,45 @@ app.post('/api/images/upload', upload.single('image'), async (req, res) => {
       .replace(/[^a-z0-9]/g, '_')
     const fileName = `${baseName}_${Date.now()}${ext}`
     
-    // Upload to Cloudinary
-    const uploadPromise = new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'image',
-          folder: 'eventhubble/images',
-          public_id: fileName.replace(ext, ''),
-          transformation: [
-            { quality: 'auto' },
-            { format: 'auto' },
-            { dpr: 'auto' }, // Auto device pixel ratio for sharp displays
-            { fetch_format: 'auto' } // Additional format optimization
-          ]
-        },
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result)
-        }
-      ).end(req.file.buffer)
-    })
+    let filePath, width = null, height = null, fileSize = req.file.size
+    
+    if (isCloudinaryConfigured) {
+      // Upload to Cloudinary
+      const uploadPromise = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'image',
+            folder: 'eventhubble/images',
+            public_id: fileName.replace(ext, ''),
+            transformation: [
+              { quality: 'auto' },
+              { format: 'auto' },
+              { dpr: 'auto' }, // Auto device pixel ratio for sharp displays
+              { fetch_format: 'auto' } // Additional format optimization
+            ]
+          },
+          (error, result) => {
+            if (error) reject(error)
+            else resolve(result)
+          }
+        ).end(req.file.buffer)
+      })
 
-    const cloudinaryResult = await uploadPromise
-    console.log(`✅ Image uploaded to Cloudinary: ${cloudinaryResult.secure_url}`)
+      const cloudinaryResult = await uploadPromise
+      console.log(`✅ Image uploaded to Cloudinary: ${cloudinaryResult.secure_url}`)
+      
+      filePath = cloudinaryResult.secure_url
+      width = cloudinaryResult.width || null
+      height = cloudinaryResult.height || null
+    } else {
+      // Fallback to local storage
+      const uploadPath = path.join(uploadsDir, 'images', fileName)
+      await fs.ensureDir(path.dirname(uploadPath))
+      await fs.writeFile(uploadPath, req.file.buffer)
+      
+      filePath = `/uploads/images/${fileName}`
+      console.log(`✅ Image uploaded locally: ${filePath}`)
+    }
     
     // Prepare image data for database
     const imageData = {
@@ -526,11 +561,11 @@ app.post('/api/images/upload', upload.single('image'), async (req, res) => {
       title: req.body.title || req.file.originalname,
       alt_text: req.body.alt_text || '',
       filename: fileName,
-      file_path: cloudinaryResult.secure_url, // Store Cloudinary URL
-      file_size: req.file.size,
+      file_path: filePath, // Store Cloudinary URL or local path
+      file_size: fileSize,
       mime_type: req.file.mimetype,
-      width: cloudinaryResult.width || null,
-      height: cloudinaryResult.height || null,
+      width: width,
+      height: height,
       tags: req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [],
       metadata: req.body.metadata ? JSON.parse(req.body.metadata) : {},
       is_active: true
@@ -540,11 +575,20 @@ app.post('/api/images/upload', upload.single('image'), async (req, res) => {
     const dbResult = await DatabaseService.createImage(imageData)
     
     if (!dbResult.success) {
-      // If database save fails, delete from Cloudinary
-      try {
-        await cloudinary.uploader.destroy(`eventhubble/images/${fileName.replace(ext, '')}`)
-      } catch (cleanupError) {
-        console.error('Cloudinary cleanup error:', cleanupError)
+      // If database save fails, cleanup uploaded file
+      if (isCloudinaryConfigured) {
+        try {
+          await cloudinary.uploader.destroy(`eventhubble/images/${fileName.replace(ext, '')}`)
+        } catch (cleanupError) {
+          console.error('Cloudinary cleanup error:', cleanupError)
+        }
+      } else {
+        // Delete local file
+        try {
+          await fs.remove(path.join(uploadsDir, 'images', fileName))
+        } catch (cleanupError) {
+          console.error('Local file cleanup error:', cleanupError)
+        }
       }
       return res.status(500).json({ 
         success: false, 
@@ -557,7 +601,7 @@ app.post('/api/images/upload', upload.single('image'), async (req, res) => {
       message: 'Image uploaded and saved successfully',
       image: {
         ...dbResult.image,
-        imageUrl: cloudinaryResult.secure_url
+        imageUrl: filePath
       }
     })
     
@@ -606,7 +650,7 @@ app.delete('/api/logos/:logoId', async (req, res) => {
   }
 })
 
-// Logo Upload + Database Save (Cloudinary)
+// Logo Upload + Database Save (Cloudinary/Local)
 app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
   try {
     if (!req.file) {
@@ -620,40 +664,56 @@ app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
       .replace(/[^a-z0-9]/g, '_')
     const fileName = `${baseName}_${Date.now()}${ext}`
     
-    // Upload to Cloudinary
-    const uploadPromise = new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'image',
-          folder: 'eventhubble/logos',
-          public_id: fileName.replace(ext, ''),
-          transformation: [
-            { quality: 'auto' },
-            { format: 'auto' },
-            { height: 120, crop: 'scale' }, // Max height for better quality
-            { dpr: 'auto' } // Auto device pixel ratio for sharp displays
-          ]
-        },
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result)
-        }
-      ).end(req.file.buffer)
-    })
+    let filePath, width = null, height = null, fileSize = req.file.size
+    
+    if (isCloudinaryConfigured) {
+      // Upload to Cloudinary
+      const uploadPromise = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'image',
+            folder: 'eventhubble/logos',
+            public_id: fileName.replace(ext, ''),
+            transformation: [
+              { quality: 'auto' },
+              { format: 'auto' },
+              { height: 120, crop: 'scale' }, // Max height for better quality
+              { dpr: 'auto' } // Auto device pixel ratio for sharp displays
+            ]
+          },
+          (error, result) => {
+            if (error) reject(error)
+            else resolve(result)
+          }
+        ).end(req.file.buffer)
+      })
 
-    const cloudinaryResult = await uploadPromise
-    console.log(`✅ Logo uploaded to Cloudinary: ${cloudinaryResult.secure_url}`)
+      const cloudinaryResult = await uploadPromise
+      console.log(`✅ Logo uploaded to Cloudinary: ${cloudinaryResult.secure_url}`)
+      
+      filePath = cloudinaryResult.secure_url
+      width = cloudinaryResult.width || null
+      height = cloudinaryResult.height || null
+    } else {
+      // Fallback to local storage
+      const uploadPath = path.join(uploadsDir, 'logos', fileName)
+      await fs.ensureDir(path.dirname(uploadPath))
+      await fs.writeFile(uploadPath, req.file.buffer)
+      
+      filePath = `/uploads/logos/${fileName}`
+      console.log(`✅ Logo uploaded locally: ${filePath}`)
+    }
     
     // Prepare logo data for database
     const logoData = {
       logo_id: req.body.logo_id || `logo_${Date.now()}`,
       filename: fileName,
       title: req.body.display_name || req.file.originalname,
-      file_path: cloudinaryResult.secure_url, // Store Cloudinary URL
+      file_path: filePath, // Store Cloudinary URL or local path
       alt_text: req.body.alt_text || '',
-      width: cloudinaryResult.width || null,
-      height: cloudinaryResult.height || null,
-      file_size: req.file.size,
+      width: width,
+      height: height,
+      file_size: fileSize,
       mime_type: req.file.mimetype,
       is_active: true
     }
@@ -662,11 +722,20 @@ app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
     const dbResult = await DatabaseService.createLogo(logoData)
     
     if (!dbResult.success) {
-      // If database save fails, delete from Cloudinary
-      try {
-        await cloudinary.uploader.destroy(`eventhubble/logos/${fileName.replace(ext, '')}`)
-      } catch (cleanupError) {
-        console.error('Cloudinary cleanup error:', cleanupError)
+      // If database save fails, cleanup uploaded file
+      if (isCloudinaryConfigured) {
+        try {
+          await cloudinary.uploader.destroy(`eventhubble/logos/${fileName.replace(ext, '')}`)
+        } catch (cleanupError) {
+          console.error('Cloudinary cleanup error:', cleanupError)
+        }
+      } else {
+        // Delete local file
+        try {
+          await fs.remove(path.join(uploadsDir, 'logos', fileName))
+        } catch (cleanupError) {
+          console.error('Local file cleanup error:', cleanupError)
+        }
       }
       return res.status(500).json({ 
         success: false, 
@@ -679,7 +748,7 @@ app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
       message: 'Logo uploaded and saved successfully',
       logo: {
         ...dbResult.logo,
-        logoUrl: cloudinaryResult.secure_url
+        logoUrl: filePath
       }
     })
     
