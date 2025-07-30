@@ -2,15 +2,53 @@
 class DatabaseService {
   static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001'
 
+  // Cache invalidation helper
+  static invalidateCache(cacheKeys = []) {
+    if (cacheKeys.length === 0) {
+      // Clear all database cache
+      const keys = Object.keys(localStorage)
+      keys.forEach(key => {
+        if (key.startsWith('db_cache_')) {
+          localStorage.removeItem(key)
+        }
+      })
+    } else {
+      // Clear specific cache keys
+      cacheKeys.forEach(key => {
+        localStorage.removeItem(`db_cache_${key}`)
+      })
+    }
+  }
+
+  // Standardized error handler
+  static handleError(error, operation, fallback = null) {
+    console.error(`❌ Database ${operation} error:`, error)
+    return {
+      success: false,
+      error: error.message || 'Operation failed',
+      data: fallback
+    }
+  }
+
+  // Standardized success response
+  static handleSuccess(data, message = 'Operation successful') {
+    return {
+      success: true,
+      message,
+      data
+    }
+  }
+
   // ===== LOGOS =====
   static async getLogos() {
     try {
       const response = await fetch(`${this.API_BASE_URL}/api/logos`)
-      if (!response.ok) throw new Error('Failed to fetch logos')
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to fetch logos`)
       
       const result = await response.json()
       return result.success ? result.logos : []
     } catch (error) {
+      console.error('❌ Get logos error:', error)
       // Fallback to static logos if database fails
       return [
         {
@@ -229,11 +267,16 @@ class DatabaseService {
         body: JSON.stringify(eventData)
       })
       
-      if (!response.ok) throw new Error('Failed to create event')
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to create event`)
       
       const result = await response.json()
+      
+      // Invalidate events cache
+      this.invalidateCache(['events', 'stats'])
+      
       return result.success ? result.event : null
     } catch (error) {
+      console.error('❌ Create event error:', error)
       throw new Error(`Create event failed: ${error.message}`)
     }
   }
@@ -248,11 +291,16 @@ class DatabaseService {
         body: JSON.stringify(eventData)
       })
       
-      if (!response.ok) throw new Error('Failed to update event')
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to update event`)
       
       const result = await response.json()
+      
+      // Invalidate events cache
+      this.invalidateCache(['events', 'stats', `event_${eventId}`])
+      
       return result.success ? result.event : null
     } catch (error) {
+      console.error('❌ Update event error:', error)
       throw new Error(`Update event failed: ${error.message}`)
     }
   }
@@ -263,11 +311,16 @@ class DatabaseService {
         method: 'DELETE'
       })
       
-      if (!response.ok) throw new Error('Failed to delete event')
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to delete event`)
       
       const result = await response.json()
+      
+      // Invalidate events cache
+      this.invalidateCache(['events', 'stats', `event_${eventId}`])
+      
       return result.success
     } catch (error) {
+      console.error('❌ Delete event error:', error)
       throw new Error(`Delete event failed: ${error.message}`)
     }
   }

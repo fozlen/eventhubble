@@ -85,74 +85,128 @@ export const deleteBlogPost = async (id) => {
   }
 };
 
-export class EventService {
+// EventService for handling events data and API calls
+class EventService {
+  // API Base URL configuration - standardized
+  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001'
+  
+  // Blog Posts (legacy routes - will be moved to database service)
+  static async getAllBlogPosts() {
+    const response = await fetch(`${this.API_BASE_URL}/api/blog-posts`);
+    
+    if (!response.ok) {
+      throw new Error('Blog posts yüklenemedi');
+    }
+    
+    return await response.json();
+  }
+
+  static async getBlogPostById(id) {
+    const response = await fetch(`${this.API_BASE_URL}/api/blog-posts/${id}`);
+    
+    if (!response.ok) {
+      throw new Error('Blog post bulunamadı');
+    }
+    
+    return await response.json();
+  }
+
+  static async createBlogPost(postData) {
+    const response = await fetch(`${this.API_BASE_URL}/api/blog-posts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Blog post oluşturulamadı');
+    }
+
+    return await response.json();
+  }
+
+  static async updateBlogPost(id, postData) {
+    const response = await fetch(`${this.API_BASE_URL}/api/blog-posts/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Blog post güncellenemedi');
+    }
+
+    return await response.json();
+  }
+
+  static async deleteBlogPost(id) {
+    const response = await fetch(`${this.API_BASE_URL}/api/blog-posts/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Blog post silinemedi');
+    }
+
+    return await response.json();
+  }
+
   // Gerçek etkinlik verilerini çek (cached)
   static async getEvents(filters = {}, language = 'EN') {
     return CacheService.getEvents(filters, language)
   }
 
-  // Backend durumunu kontrol et
+  // Platform Status
   static async getStatus() {
-    // Production'da backend kontrolü yapma
-    if (import.meta.env.PROD) {
-      return { status: 'production', message: 'Backend kontrolü production\'da devre dışı' }
-    }
-
     try {
-      const response = await fetch(`${API_BASE_URL}/status`)
-      if (!response.ok) {
-        throw new Error('Status API çağrısı başarısız')
-      }
+      const response = await fetch(`${this.API_BASE_URL}/api/status`)
+      if (!response.ok) throw new Error('Status fetch failed')
       return await response.json()
     } catch (error) {
-      if (!import.meta.env.PROD) {
-        // Status Error
-      }
-      return { error: 'Backend bağlantısı yok' }
+      console.error('Status check error:', error)
+      return { status: 'error', message: 'Connection failed' }
     }
   }
 
-  // İstatistikleri al
+  // Platform Stats
   static async getStats() {
-    // Production'da stats kontrolü yapma
-    if (import.meta.env.PROD) {
-      return { totalEvents: 0, message: 'Stats production\'da devre dışı' }
-    }
-
     try {
-      const response = await fetch(`${API_BASE_URL}/stats`)
-      if (!response.ok) {
-        throw new Error('Stats API çağrısı başarısız')
-      }
+      const response = await fetch(`${this.API_BASE_URL}/api/stats`)
+      if (!response.ok) throw new Error('Stats fetch failed')
       return await response.json()
     } catch (error) {
-      if (!import.meta.env.PROD) {
-        // Stats Error
-      }
-      return null
+      console.error('Stats fetch error:', error)
+      return {}
     }
   }
 
-  // Manuel scraping tetikle
+  // Manual scraping trigger
   static async triggerScraping() {
     try {
-      const response = await fetch(`${API_BASE_URL}/scrape`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
+      const response = await fetch(`${this.API_BASE_URL}/api/scrape`, {
+        method: 'POST'
       })
-      
-      if (!response.ok) {
-        throw new Error('Scraping tetikleme başarısız')
-      }
-      
+      if (!response.ok) throw new Error('Scraping trigger failed')
       return await response.json()
     } catch (error) {
-      if (!import.meta.env.PROD) {
-        // Scraping Error
-      }
+      console.error('Scraping trigger error:', error)
       throw error
+    }
+  }
+
+  // Get event by ID
+  static async getEventById(eventId) {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/api/events/${eventId}`)
+      if (!response.ok) throw new Error('Event fetch failed')
+      return await response.json()
+    } catch (error) {
+      console.error('Event fetch error:', error)
+      return null
     }
   }
 

@@ -133,8 +133,8 @@ const AdminImagesPage = () => {
   const handleSaveImage = async (imageData) => {
     try {
       const url = editingImage 
-        ? `${API_BASE_URL}/images/${editingImage.image_id}`
-        : `${API_BASE_URL}/images`
+        ? `${API_BASE_URL}/api/images/${editingImage.image_id}`
+        : `${API_BASE_URL}/api/images`
       
       const method = editingImage ? 'PUT' : 'POST'
       
@@ -493,10 +493,8 @@ const ImageModal = ({ image, onClose, onSave, language = 'EN', categories }) => 
   const [formData, setFormData] = useState({
     image_id: image?.image_id || '',
     category: image?.category || '',
-    title_tr: image?.title_tr || image?.title || '',
-    title_en: image?.title_en || image?.title || '',
-    alt_text_tr: image?.alt_text_tr || image?.alt_text || '',
-    alt_text_en: image?.alt_text_en || image?.alt_text || '',
+    title: image?.title || image?.title_tr || image?.title_en || '',
+    alt_text: image?.alt_text || image?.alt_text_tr || image?.alt_text_en || '',
     filename: image?.filename || '',
     file_path: image?.file_path || '',
     file_size: image?.file_size || '',
@@ -520,7 +518,7 @@ const ImageModal = ({ image, onClose, onSave, language = 'EN', categories }) => 
       return
     }
     
-    // Convert fields
+    // Convert fields to match database schema
     const imageData = {
       ...formData,
       file_size: formData.file_size ? parseInt(formData.file_size) : null,
@@ -606,8 +604,8 @@ const ImageModal = ({ image, onClose, onSave, language = 'EN', categories }) => 
                 <input
                   type="text"
                   required
-                  value={formData.title_tr}
-                  onChange={(e) => setFormData({ ...formData, title_tr: e.target.value })}
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   placeholder="Ana Sayfa Hero Görseli"
                 />
@@ -619,8 +617,8 @@ const ImageModal = ({ image, onClose, onSave, language = 'EN', categories }) => 
                 </label>
                 <input
                   type="text"
-                  value={formData.alt_text_tr}
-                  onChange={(e) => setFormData({ ...formData, alt_text_tr: e.target.value })}
+                  value={formData.alt_text}
+                  onChange={(e) => setFormData({ ...formData, alt_text: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   placeholder="Resim açıklaması..."
                 />
@@ -638,8 +636,8 @@ const ImageModal = ({ image, onClose, onSave, language = 'EN', categories }) => 
                 <input
                   type="text"
                   required
-                  value={formData.title_en}
-                  onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   placeholder="Homepage Hero Image"
                 />
@@ -651,8 +649,8 @@ const ImageModal = ({ image, onClose, onSave, language = 'EN', categories }) => 
                 </label>
                 <input
                   type="text"
-                  value={formData.alt_text_en}
-                  onChange={(e) => setFormData({ ...formData, alt_text_en: e.target.value })}
+                  value={formData.alt_text}
+                  onChange={(e) => setFormData({ ...formData, alt_text: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   placeholder="Image description..."
                 />

@@ -1,6 +1,7 @@
 // Global cache service for all content types
 class CacheService {
-  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api'
+  // API Base URL configuration - standardized
+  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001'
   
   // Cache configuration
   static CACHE_CONFIG = {
@@ -136,8 +137,16 @@ class CacheService {
 
   // Logo cache
   static async getLogo(type = 'main') {
-    const logoUrl = `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
-    return this.getCachedImage(logoUrl, `logo_${type}`, this.CACHE_CONFIG.logos.ttl)
+    // Static logo URL construction
+    const logoUrl = `${this.API_BASE_URL}/api/assets/${this.getLogoFilename(type)}`
+    
+    if (this.isValidImageUrl(logoUrl)) {
+      this.cacheData('logo', type, logoUrl)
+      return logoUrl
+    }
+    
+    // If all fails, return placeholder
+    return this.getPlaceholderLogo()
   }
 
   // Event cache

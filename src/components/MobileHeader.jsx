@@ -57,7 +57,7 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
-        ? 'bg-primary/95 backdrop-blur-md shadow-lg border-b border-primary/20' 
+        ? 'bg-primary/98 backdrop-blur-lg shadow-xl border-b border-white/10' 
         : 'bg-primary'
     }`}>
       <div className="px-3 py-2">
@@ -70,9 +70,21 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
                 alt="EventHubble" 
                 className="h-6 w-auto" 
               />
-              <span className="text-base font-bold text-white">
-                <span className="text-primary-cream">Event</span>
-                <span className="text-primary-light">Hubble</span>
+              <span className={`text-base font-bold transition-all duration-300 ${
+                isScrolled 
+                  ? 'text-white drop-shadow-sm' 
+                  : 'text-white'
+              }`}>
+                <span className={`transition-all duration-300 ${
+                  isScrolled 
+                    ? 'text-primary-cream drop-shadow-sm' 
+                    : 'text-primary-cream'
+                }`}>Event</span>
+                <span className={`transition-all duration-300 ${
+                  isScrolled 
+                    ? 'text-primary-light drop-shadow-sm' 
+                    : 'text-primary-light'
+                }`}>Hubble</span>
               </span>
             </div>
           </div>
@@ -81,7 +93,11 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
           <div className="flex items-center">
             <button
               onClick={toggleLanguage}
-              className="p-1.5 rounded-lg transition-colors text-white hover:bg-white/10"
+              className={`p-1.5 rounded-lg transition-all duration-300 ${
+                isScrolled 
+                  ? 'text-white hover:bg-white/20 drop-shadow-sm' 
+                  : 'text-white hover:bg-white/10'
+              }`}
             >
               <Globe size={18} />
             </button>
@@ -131,13 +147,17 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
       <div className={`px-3 pb-1 transition-all duration-300 ${
         isScrolled ? 'opacity-100' : 'opacity-0'
       }`}>
-        <div className="flex items-center justify-around bg-white/10 backdrop-blur-sm rounded-full p-1">
+        <div className={`flex items-center justify-around rounded-full p-1 transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-white/15 backdrop-blur-sm border border-white/10' 
+            : 'bg-white/10 backdrop-blur-sm'
+        }`}>
           <button 
             onClick={() => handleNavigation('/')}
             className={`flex-1 py-1.5 px-2 rounded-full text-xs font-medium transition-all duration-200 ${
               isActivePage('/') 
-                ? 'bg-white/20 text-white shadow-lg' 
-                : 'text-white/80 hover:text-white hover:bg-white/10'
+                ? 'bg-white/25 text-white shadow-lg drop-shadow-sm font-semibold' 
+                : 'text-white/90 hover:text-white hover:bg-white/15 drop-shadow-sm'
             }`}
           >
             {language === 'TR' ? 'Ana Sayfa' : 'Home'}
@@ -146,8 +166,8 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
             onClick={() => handleNavigation('/about')}
             className={`flex-1 py-1.5 px-2 rounded-full text-xs font-medium transition-all duration-200 ${
               isActivePage('/about') 
-                ? 'bg-white/20 text-white shadow-lg' 
-                : 'text-white/80 hover:text-white hover:bg-white/10'
+                ? 'bg-white/25 text-white shadow-lg drop-shadow-sm font-semibold' 
+                : 'text-white/90 hover:text-white hover:bg-white/15 drop-shadow-sm'
             }`}
           >
             {language === 'TR' ? 'Hakkımızda' : 'About'}
@@ -156,8 +176,8 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
             onClick={() => handleNavigation('/world-news')}
             className={`flex-1 py-1.5 px-2 rounded-full text-xs font-medium transition-all duration-200 ${
               isActivePage('/world-news') 
-                ? 'bg-white/20 text-white shadow-lg' 
-                : 'text-white/80 hover:text-white hover:bg-white/10'
+                ? 'bg-white/25 text-white shadow-lg drop-shadow-sm font-semibold' 
+                : 'text-white/90 hover:text-white hover:bg-white/15 drop-shadow-sm'
             }`}
           >
             {language === 'TR' ? 'Dünya Haberleri' : 'World News'}

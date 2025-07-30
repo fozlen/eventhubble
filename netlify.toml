@@ -15,63 +15,38 @@
 # Branch deploy settings
 [context.production]
   command = "npm run build"
+  [context.production.environment]
+    VITE_API_BASE_URL = "https://eventhubble.onrender.com"
 
 [context.deploy-preview]
   command = "npm run build"
+  [context.deploy-preview.environment]
+    VITE_API_BASE_URL = "https://eventhubble.onrender.com"
 
 [context.branch-deploy]
   command = "npm run build"
+  [context.branch-deploy.environment]
+    VITE_API_BASE_URL = "https://eventhubble.onrender.com"
 
+# Security Headers
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: http:; font-src 'self' data:; connect-src 'self' https: http:; frame-src 'none'; object-src 'none';"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.png"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.jpg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.ico"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/manifest.json"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    Content-Type = "application/manifest+json"
-
-# Handle SPA routing - exclude assets
+# API Proxy (if needed)
 [[redirects]]
-  from = "/assets/*"
-  to = "/assets/:splat"
+  from = "/api/*"
+  to = "https://eventhubble.onrender.com/api/:splat"
   status = 200
+  force = false
+  conditions = {Role = ["admin"]}
 
+# SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"

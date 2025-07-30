@@ -14,28 +14,17 @@ services:
       - key: PORT
         value: 10000
       - key: CORS_ORIGINS
-        value: https://eventhubble.netlify.app
-      - key: CDN_BASE_URL
-        value: https://cdn.eventhubble.com
-      - key: MONGODB_URI
+        value: https://eventhubble.netlify.app,https://eventhubble.com
+      - key: SUPABASE_URL
         sync: false
-    healthCheckPath: /health
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: MAX_FILE_SIZE
+        value: 10485760
+      - key: UPLOAD_DIR
+        value: uploads
+      - key: CDN_BASE_URL
+        value: https://eventhubble.onrender.com
+    healthCheckPath: /api/health
     autoDeploy: true
-    branch: main
-
-  # Frontend Static Site
-  - type: web
-    name: eventhubble-frontend
-    env: static
-    plan: free
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    envVars:
-      - key: NODE_VERSION
-        value: 18
-    autoDeploy: true
-    branch: main
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html 
+    branch: main 

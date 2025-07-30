@@ -113,8 +113,8 @@ const AdminCategoriesPage = () => {
   const handleSaveCategory = async (categoryData) => {
     try {
       const url = editingCategory 
-        ? `${API_BASE_URL}/categories/${editingCategory.category_id}`
-        : `${API_BASE_URL}/categories`
+        ? `${API_BASE_URL}/api/categories/${editingCategory.category_id}`
+        : `${API_BASE_URL}/api/categories`
       
       const method = editingCategory ? 'PUT' : 'POST'
       

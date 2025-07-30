@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { 
   Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Settings, 
-  BarChart3, MapPin, Clock, DollarSign, Users, Star, Phone, ExternalLink 
+  BarChart3, MapPin, Clock, DollarSign, Users, Star, Phone, ExternalLink, Tag, FileText 
 } from 'lucide-react'
 import LogoService from '../services/logoService'
 import ImageSelector from '../components/ImageSelector'
@@ -469,54 +469,82 @@ const AdminEventManagementPage = () => {
 
 const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
   const [formData, setFormData] = useState({
+    // Database uyumlu field'lar
+    event_id: event?.event_id || `event_${Date.now()}`,
     title_tr: event?.title_tr || event?.title || '',
     title_en: event?.title_en || event?.title || '',
     description_tr: event?.description_tr || event?.description || '',
     description_en: event?.description_en || event?.description || '',
-    venue_tr: event?.venue_tr || event?.venue || '',
-    venue_en: event?.venue_en || event?.venue || '',
-    city_tr: event?.city_tr || event?.city || '',
-    city_en: event?.city_en || event?.city || '',
-    organizer_tr: event?.organizer_tr || event?.organizer || '',
-    organizer_en: event?.organizer_en || event?.organizer || '',
-    date: event?.date || '',
-    time: event?.time || '',
+    short_description_tr: event?.short_description_tr || '',
+    short_description_en: event?.short_description_en || '',
+    venue_name: event?.venue_name || event?.venue_tr || event?.venue || '',
+    venue_address: event?.venue_address || '',
+    city: event?.city || event?.city_tr || '',
+    country: event?.country || 'Turkey',
+    organizer_name: event?.organizer_name || event?.organizer_tr || event?.organizer || '',
+    organizer_contact: event?.organizer_contact || {},
+    start_date: event?.start_date || event?.date || '',
+    end_date: event?.end_date || '',
     price_min: event?.price_min || '',
     price_max: event?.price_max || '',
     currency: event?.currency || 'TRY',
-    category: event?.category || 'müzik',
-    platform: event?.platform || 'mobilet',
+    category: event?.category || 'music',
+    subcategory: event?.subcategory || '',
+    source_platform: event?.source_platform || event?.platform || 'manual',
+    source_id: event?.source_id || '',
+    source_url: event?.source_url || '',
+    ticket_url: event?.ticket_url || event?.url || '',
     image_url: event?.image_url || '',
-    url: event?.url || '',
-    rating: event?.rating || '',
-    available_tickets: event?.available_tickets || '',
-    contact: event?.contact || '',
-    website: event?.website || ''
+    cover_image_id: event?.cover_image_id || null,
+    gallery_image_ids: event?.gallery_image_ids || [],
+    latitude: event?.latitude || null,
+    longitude: event?.longitude || null,
+    is_featured: event?.is_featured || false,
+    is_active: event?.is_active !== undefined ? event.is_active : true,
+    tags: event?.tags?.join(', ') || '',
+    metadata: event?.metadata ? JSON.stringify(event.metadata, null, 2) : '{}'
   })
 
   const categories = [
-    { value: 'müzik', label_tr: 'Müzik', label_en: 'Music' },
-    { value: 'tiyatro', label_tr: 'Tiyatro', label_en: 'Theater' },
-    { value: 'spor', label_tr: 'Spor', label_en: 'Sports' },
-    { value: 'sanat', label_tr: 'Sanat', label_en: 'Art' },
-    { value: 'gastronomi', label_tr: 'Gastronomi', label_en: 'Gastronomy' },
-    { value: 'festival', label_tr: 'Festival', label_en: 'Festival' },
-    { value: 'diğer', label_tr: 'Diğer', label_en: 'Other' }
+    { value: 'music', label_tr: 'Müzik', label_en: 'Music' },
+    { value: 'theater', label_tr: 'Tiyatro', label_en: 'Theater' },
+    { value: 'sports', label_tr: 'Spor', label_en: 'Sports' },
+    { value: 'art', label_tr: 'Sanat', label_en: 'Art' },
+    { value: 'gastronomy', label_tr: 'Gastronomi', label_en: 'Gastronomy' },
+    { value: 'education', label_tr: 'Eğitim', label_en: 'Education' },
+    { value: 'technology', label_tr: 'Teknoloji', label_en: 'Technology' },
+    { value: 'business', label_tr: 'İş', label_en: 'Business' }
   ]
 
-  const platforms = ['mobilet', 'biletinial', 'biletix', 'passo', 'manual']
+  const platforms = ['manual', 'mobilet', 'biletinial', 'biletix', 'passo', 'eventbrite']
 
   const handleSubmit = (e) => {
     e.preventDefault()
     
-    // Convert numeric fields
+    // Parse metadata
+    let metadata = {}
+    try {
+      metadata = JSON.parse(formData.metadata)
+    } catch (e) {
+      alert(language === 'TR' ? 'Geçersiz JSON formatı!' : 'Invalid JSON format!')
+      return
+    }
+    
+    // Convert and validate fields for database
     const processedData = {
       ...formData,
-      price_min: parseInt(formData.price_min) || 0,
-      price_max: parseInt(formData.price_max) || 0,
-      attendees: parseInt(formData.attendees) || 0,
-      rating: parseFloat(formData.rating) || 0,
-      available_tickets: parseInt(formData.available_tickets) || 0
+      price_min: formData.price_min ? parseFloat(formData.price_min) : null,
+      price_max: formData.price_max ? parseFloat(formData.price_max) : null,
+      latitude: formData.latitude ? parseFloat(formData.latitude) : null,
+      longitude: formData.longitude ? parseFloat(formData.longitude) : null,
+      tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+      gallery_image_ids: Array.isArray(formData.gallery_image_ids) ? formData.gallery_image_ids : [],
+      organizer_contact: typeof formData.organizer_contact === 'string' ? 
+        JSON.parse(formData.organizer_contact || '{}') : formData.organizer_contact,
+      metadata,
+      // Ensure dates are properly formatted
+      start_date: formData.start_date ? new Date(formData.start_date).toISOString() : null,
+      end_date: formData.end_date ? new Date(formData.end_date).toISOString() : null
     }
     
     onSave(processedData)
@@ -605,44 +633,59 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-text mb-2">
-                    Mekan (Türkçe)
+                    Mekan Adı (Venue Name) *
                   </label>
                   <input
                     type="text"
                     required
-                    value={formData.venue_tr}
-                    onChange={(e) => setFormData({ ...formData, venue_tr: e.target.value })}
+                    value={formData.venue_name}
+                    onChange={(e) => setFormData({ ...formData, venue_name: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                    placeholder="Mekan adını girin..."
+                    placeholder="Örnek: Zorlu PSM, Cemal Reşit Rey..."
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text mb-2">
-                    Şehir (Türkçe)
+                    Şehir (City) *
                   </label>
                   <input
                     type="text"
                     required
-                    value={formData.city_tr}
-                    onChange={(e) => setFormData({ ...formData, city_tr: e.target.value })}
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                    placeholder="Şehir adını girin..."
+                    placeholder="İstanbul, Ankara, İzmir..."
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  Organizatör (Türkçe)
-                </label>
-                <input
-                  type="text"
-                  value={formData.organizer_tr}
-                  onChange={(e) => setFormData({ ...formData, organizer_tr: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder="Organizatör adını girin..."
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Mekan Adresi (Venue Address)
+                  </label>
+                  <textarea
+                    value={formData.venue_address}
+                    onChange={(e) => setFormData({ ...formData, venue_address: e.target.value })}
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="Detaylı adres bilgisi..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Organizatör Adı (Organizer Name)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.organizer_name}
+                    onChange={(e) => setFormData({ ...formData, organizer_name: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                    placeholder="Organizatör adını girin..."
+                  />
+                </div>
               </div>
             </div>
 
@@ -746,37 +789,36 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-text mb-2">
-                    {language === 'TR' ? 'Tarih' : 'Date'}
+                    {language === 'TR' ? 'Başlangıç Tarihi & Saati' : 'Start Date & Time'} *
                   </label>
                   <input
-                    type="date"
+                    type="datetime-local"
                     required
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    value={formData.start_date ? new Date(formData.start_date).toISOString().slice(0, 16) : ''}
+                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text mb-2">
-                    {language === 'TR' ? 'Saat' : 'Time'}
+                    {language === 'TR' ? 'Bitiş Tarihi & Saati' : 'End Date & Time'}
                   </label>
                   <input
-                    type="time"
-                    required
-                    value={formData.time}
-                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                    type="datetime-local"
+                    value={formData.end_date ? new Date(formData.end_date).toISOString().slice(0, 16) : ''}
+                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text mb-2">
-                    {language === 'TR' ? 'Platform' : 'Platform'}
+                    {language === 'TR' ? 'Platform' : 'Source Platform'}
                   </label>
                   <select
-                    value={formData.platform}
-                    onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
+                    value={formData.source_platform}
+                    onChange={(e) => setFormData({ ...formData, source_platform: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text"
                   >
                     {platforms.map(platform => (

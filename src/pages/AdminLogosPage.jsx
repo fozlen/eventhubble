@@ -414,10 +414,8 @@ const LogoModal = ({ logo, onClose, onSave, language = 'EN' }) => {
   const [formData, setFormData] = useState({
     logo_id: logo?.logo_id || '',
     filename: logo?.filename || '',
-    title_tr: logo?.title_tr || logo?.title || '',
-    title_en: logo?.title_en || logo?.title || '',
-    alt_text_tr: logo?.alt_text_tr || logo?.alt_text || '',
-    alt_text_en: logo?.alt_text_en || logo?.alt_text || '',
+    title: logo?.title || logo?.title_tr || logo?.title_en || '',
+    alt_text: logo?.alt_text || logo?.alt_text_tr || logo?.alt_text_en || '',
     file_path: logo?.file_path || '',
     file_size: logo?.file_size || '',
     mime_type: logo?.mime_type || '',
@@ -430,7 +428,7 @@ const LogoModal = ({ logo, onClose, onSave, language = 'EN' }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     
-    // Convert numeric fields
+    // Convert numeric fields - match database schema
     const logoData = {
       ...formData,
       file_size: formData.file_size ? parseInt(formData.file_size) : null,
@@ -501,66 +499,36 @@ const LogoModal = ({ logo, onClose, onSave, language = 'EN' }) => {
               </div>
             </div>
 
-            {/* Turkish Content */}
+            {/* Logo Details - Single Language Fields */}
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-text border-b pb-2">🇹🇷 Türkçe İçerik</h3>
+              <h3 className="text-lg font-semibold text-text border-b pb-2">
+                {language === 'TR' ? 'Logo Bilgileri' : 'Logo Information'}
+              </h3>
               
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  Başlık (Türkçe) *
+                  {language === 'TR' ? 'Başlık' : 'Title'} *
                 </label>
                 <input
                   type="text"
                   required
-                  value={formData.title_tr}
-                  onChange={(e) => setFormData({ ...formData, title_tr: e.target.value })}
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder="EventHubble Ana Logo"
+                  placeholder={language === 'TR' ? 'EventHubble Ana Logo' : 'EventHubble Main Logo'}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-text mb-2">
-                  Alt Metin (Türkçe)
+                  {language === 'TR' ? 'Alt Metin' : 'Alt Text'}
                 </label>
                 <input
                   type="text"
-                  value={formData.alt_text_tr}
-                  onChange={(e) => setFormData({ ...formData, alt_text_tr: e.target.value })}
+                  value={formData.alt_text}
+                  onChange={(e) => setFormData({ ...formData, alt_text: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder="Logo açıklaması..."
-                />
-              </div>
-            </div>
-
-            {/* English Content */}
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-text border-b pb-2">🇺🇸 English Content</h3>
-              
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  Title (English) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.title_en}
-                  onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder="EventHubble Main Logo"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  Alt Text (English)
-                </label>
-                <input
-                  type="text"
-                  value={formData.alt_text_en}
-                  onChange={(e) => setFormData({ ...formData, alt_text_en: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                  placeholder="Logo description..."
+                  placeholder={language === 'TR' ? 'Logo açıklaması...' : 'Logo description...'}
                 />
               </div>
             </div>

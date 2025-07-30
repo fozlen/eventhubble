@@ -1,8 +1,11 @@
 // Logo service for API-based logo management with local fallbacks
 class LogoService {
-  static API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
-    ? 'http://localhost:3001' 
-    : 'https://eventhubble.onrender.com'
+  // API Base URL configuration - standardized
+  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001'
+
+  // Logo cache for better performance
+  static logoCache = new Map()
+  static cacheExpiry = 5 * 60 * 1000 // 5 minutes
   
   // Cache logos in localStorage to avoid repeated API calls
   static async getLogo(type = 'main') {
