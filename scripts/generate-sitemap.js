@@ -11,6 +11,7 @@ const __dirname = path.dirname(__filename)
 // Site configuration
 const SITE_URL = 'https://eventhubble.com'
 const OUTPUT_PATH = path.join(__dirname, '../public/sitemap.xml')
+const PUBLIC_DIR = path.join(__dirname, '../public')
 
 // Static pages with their priorities and change frequencies
 const staticPages = [
@@ -68,6 +69,12 @@ const categoryPages = [
 
 function generateSitemap() {
   console.log('🚀 Generating sitemap.xml...')
+  
+  // Ensure public directory exists
+  if (!fs.existsSync(PUBLIC_DIR)) {
+    console.log('📁 Creating public directory...')
+    fs.mkdirSync(PUBLIC_DIR, { recursive: true })
+  }
   
   let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
