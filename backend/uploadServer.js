@@ -5,10 +5,18 @@ import path from 'path'
 import fs from 'fs-extra'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
+import { v2 as cloudinary } from 'cloudinary'
 import supabaseService from './supabaseService.js'
 import DatabaseService from './databaseService.js'
 
 dotenv.config()
+
+// Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'eventhubble',
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
 // ES modules'da __dirname alternatifi
 const __filename = fileURLToPath(import.meta.url)
@@ -121,39 +129,8 @@ app.use('/assets', express.static(assetsDir, {
 
 // Directories already defined at the top
 
-// Multer konfigürasyonu
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // All uploads go to assets directory
-    if (req.path.includes('/images/')) {
-      const imagesDir = path.join(assetsDir, 'images')
-      fs.ensureDirSync(imagesDir)
-      cb(null, imagesDir)
-    } else if (req.path.includes('/logos/')) {
-      const logosDir = path.join(assetsDir, 'logos')
-      fs.ensureDirSync(logosDir)
-      cb(null, logosDir)
-    } else {
-      cb(null, assetsDir)
-    }
-  },
-  filename: function (req, file, cb) {
-    // For images and logos, use a cleaner naming convention
-    if (req.path.includes('/images/') || req.path.includes('/logos/')) {
-      const ext = path.extname(file.originalname)
-      const baseName = path.basename(file.originalname, ext)
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, '_')
-      const timestamp = Date.now()
-      cb(null, `${baseName}_${timestamp}${ext}`)
-    } else {
-      // Original naming for other uploads
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-      const ext = path.extname(file.originalname)
-      cb(null, `uploaded_${uniqueSuffix}${ext}`)
-    }
-  }
-})
+// Multer konfigürasyonu - Memory storage for Cloudinary
+const storage = multer.memoryStorage()
 
 const upload = multer({
   storage: storage,
@@ -504,19 +481,41 @@ app.post('/api/images', async (req, res) => {
   }
 })
 
-// Combined Image Upload + Database Save
+// Combined Image Upload + Database Save (Cloudinary)
 app.post('/api/images/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No file uploaded' })
     }
 
-    // Generate file path for database
-    const fileName = req.file.filename
-    const filePath = `/assets/images/${fileName}`
+    // Generate unique filename
+    const ext = path.extname(req.file.originalname)
+    const baseName = path.basename(req.file.originalname, ext)
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '_')
+    const fileName = `${baseName}_${Date.now()}${ext}`
     
-    // File is already in the correct location due to multer configuration
-    console.log(`✅ Image uploaded: ${req.file.path}`)
+    // Upload to Cloudinary
+    const uploadPromise = new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'image',
+          folder: 'eventhubble/images',
+          public_id: fileName.replace(ext, ''),
+          transformation: [
+            { quality: 'auto' },
+            { format: 'auto' }
+          ]
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      ).end(req.file.buffer)
+    })
+
+    const cloudinaryResult = await uploadPromise
+    console.log(`✅ Image uploaded to Cloudinary: ${cloudinaryResult.secure_url}`)
     
     // Prepare image data for database
     const imageData = {
@@ -525,11 +524,11 @@ app.post('/api/images/upload', upload.single('image'), async (req, res) => {
       title: req.body.title || req.file.originalname,
       alt_text: req.body.alt_text || '',
       filename: fileName,
-      file_path: filePath,
+      file_path: cloudinaryResult.secure_url, // Store Cloudinary URL
       file_size: req.file.size,
       mime_type: req.file.mimetype,
-      width: req.body.width ? parseInt(req.body.width) : null,
-      height: req.body.height ? parseInt(req.body.height) : null,
+      width: cloudinaryResult.width || null,
+      height: cloudinaryResult.height || null,
       tags: req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [],
       metadata: req.body.metadata ? JSON.parse(req.body.metadata) : {},
       is_active: true
@@ -539,26 +538,24 @@ app.post('/api/images/upload', upload.single('image'), async (req, res) => {
     const dbResult = await DatabaseService.createImage(imageData)
     
     if (!dbResult.success) {
-      // If database save fails, remove the uploaded file
-      const fs = await import('fs-extra')
-      await fs.remove(req.file.path)
+      // If database save fails, delete from Cloudinary
+      try {
+        await cloudinary.uploader.destroy(`eventhubble/images/${fileName.replace(ext, '')}`)
+      } catch (cleanupError) {
+        console.error('Cloudinary cleanup error:', cleanupError)
+      }
       return res.status(500).json({ 
         success: false, 
         error: 'Database save failed: ' + dbResult.error 
       })
     }
     
-    // Generate image URL
-    const imageUrl = process.env.NODE_ENV === 'production' 
-      ? `https://eventhubble.onrender.com${filePath}`
-      : `http://localhost:${PORT}${filePath}`
-    
     res.status(201).json({
       success: true,
       message: 'Image uploaded and saved successfully',
       image: {
         ...dbResult.image,
-        imageUrl: imageUrl
+        imageUrl: cloudinaryResult.secure_url
       }
     })
     
@@ -607,29 +604,51 @@ app.delete('/api/logos/:logoId', async (req, res) => {
   }
 })
 
-// Logo Upload + Database Save
+// Logo Upload + Database Save (Cloudinary)
 app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No logo file uploaded' })
     }
 
-    // Generate file path for database
-    const fileName = req.file.filename
-    const filePath = `/assets/logos/${fileName}`
+    // Generate unique filename
+    const ext = path.extname(req.file.originalname)
+    const baseName = path.basename(req.file.originalname, ext)
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '_')
+    const fileName = `${baseName}_${Date.now()}${ext}`
     
-    // File is already in the correct location due to multer configuration
-    console.log(`✅ Logo uploaded: ${req.file.path}`)
+    // Upload to Cloudinary
+    const uploadPromise = new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'image',
+          folder: 'eventhubble/logos',
+          public_id: fileName.replace(ext, ''),
+          transformation: [
+            { quality: 'auto' },
+            { format: 'auto' }
+          ]
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      ).end(req.file.buffer)
+    })
+
+    const cloudinaryResult = await uploadPromise
+    console.log(`✅ Logo uploaded to Cloudinary: ${cloudinaryResult.secure_url}`)
     
     // Prepare logo data for database
     const logoData = {
       logo_id: req.body.logo_id || `logo_${Date.now()}`,
-      filename: fileName,  // Database expects 'filename'
-      title: req.body.display_name || req.file.originalname,  // Database expects 'title'
-      file_path: filePath,  // Database expects 'file_path'
+      filename: fileName,
+      title: req.body.display_name || req.file.originalname,
+      file_path: cloudinaryResult.secure_url, // Store Cloudinary URL
       alt_text: req.body.alt_text || '',
-      width: req.body.width ? parseInt(req.body.width) : null,
-      height: req.body.height ? parseInt(req.body.height) : null,
+      width: cloudinaryResult.width || null,
+      height: cloudinaryResult.height || null,
       file_size: req.file.size,
       mime_type: req.file.mimetype,
       is_active: true
@@ -639,26 +658,24 @@ app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
     const dbResult = await DatabaseService.createLogo(logoData)
     
     if (!dbResult.success) {
-      // If database save fails, remove the uploaded file
-      const fs = await import('fs-extra')
-      await fs.remove(req.file.path)
+      // If database save fails, delete from Cloudinary
+      try {
+        await cloudinary.uploader.destroy(`eventhubble/logos/${fileName.replace(ext, '')}`)
+      } catch (cleanupError) {
+        console.error('Cloudinary cleanup error:', cleanupError)
+      }
       return res.status(500).json({ 
         success: false, 
         error: 'Database save failed: ' + dbResult.error 
       })
     }
     
-    // Generate logo URL
-    const logoUrl = process.env.NODE_ENV === 'production' 
-      ? `https://eventhubble.onrender.com${filePath}`
-      : `http://localhost:${PORT}${filePath}`
-    
     res.status(201).json({
       success: true,
       message: 'Logo uploaded and saved successfully',
       logo: {
         ...dbResult.logo,
-        logoUrl: logoUrl
+        logoUrl: cloudinaryResult.secure_url
       }
     })
     
@@ -972,23 +989,41 @@ app.delete('/api/blog-posts/:id', async (req, res) => {
   }
 })
 
-// Image upload endpoint
+// Simple Image upload endpoint (Cloudinary)
 app.post('/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' })
     }
 
-    // Dosya bilgilerini al
-    const fileName = req.file.filename
-    const filePath = req.file.path
-    const fileSize = req.file.size
-    const mimeType = req.file.mimetype
+    // Generate unique filename
+    const ext = path.extname(req.file.originalname)
+    const baseName = path.basename(req.file.originalname, ext)
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '_')
+    const fileName = `${baseName}_${Date.now()}${ext}`
 
-    // Image URL'ini oluştur (CDN olmadan direkt API'den serve et)
-    const imageUrl = process.env.NODE_ENV === 'production' 
-      ? `https://eventhubble.onrender.com/assets/images/${fileName}`
-      : `http://localhost:${PORT}/assets/images/${fileName}`
+    // Upload to Cloudinary
+    const uploadPromise = new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'image',
+          folder: 'eventhubble/uploads',
+          public_id: fileName.replace(ext, ''),
+          transformation: [
+            { quality: 'auto' },
+            { format: 'auto' }
+          ]
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      ).end(req.file.buffer)
+    })
+
+    const cloudinaryResult = await uploadPromise
+    console.log(`✅ Image uploaded to Cloudinary: ${cloudinaryResult.secure_url}`)
 
     // Başarılı response
     res.json({
@@ -997,10 +1032,10 @@ app.post('/upload', upload.single('image'), async (req, res) => {
       data: {
         fileName: fileName,
         originalName: req.file.originalname,
-        fileSize: fileSize,
-        mimeType: mimeType,
-        imageUrl: imageUrl,
-        localPath: filePath
+        fileSize: req.file.size,
+        mimeType: req.file.mimetype,
+        imageUrl: cloudinaryResult.secure_url,
+        cloudinaryUrl: cloudinaryResult.secure_url
       }
     })
 
