@@ -272,7 +272,7 @@ const HomePage = () => {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-text">
             {language === 'TR' ? 'Dünya Çapında En İyi' : 'Discover the Best'} <span className="text-primary">{language === 'TR' ? 'Etkinlikleri Keşfet' : 'Events Worldwide'}</span>
           </h1>
-          <p className="text-lg md:text-xl mb-8 text-text/70 px-2 sm:px-4">
+          <p className="text-lg md:text-2xl font-bold text-primary mb-6 md:mb-8 px-2 sm:px-4">
             {language === 'TR' ? 'Her Deneyime Açılan Kapınız' : 'Your Gateway to Every Experience'}
           </p>
           

@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-07-30T20:34:58.800Z",
+  "backupData": [
+    {
+      "type": "logo",
+      "id": "801201fd-1fb0-488d-9e47-331e52612c31",
+      "original_file_path": "/assets/logos/eventhubblelogo_1753907598777.png"
+    },
+    {
+      "type": "image",
+      "id": "daddce84-ebca-46c0-b372-088cbc69182f",
+      "original_file_path": "/assets/images/image2_1753905797116.jpeg"
+    },
+    {
+      "type": "image",
+      "id": "232bbe57-f473-4874-b77b-977290b00ca7",
+      "original_file_path": "/assets/images/image1_1753905789734.jpeg"
+    }
+  ],
+  "migratedFiles": [],
+  "failedMigrations": [
+    {
+      "type": "logo",
+      "id": "801201fd-1fb0-488d-9e47-331e52612c31",
+      "filename": "eventhubblelogo_1753907598777.png",
+      "reason": "File not found locally"
+    },
+    {
+      "type": "image",
+      "id": "daddce84-ebca-46c0-b372-088cbc69182f",
+      "filename": "image2_1753905797116.jpeg",
+      "reason": "File not found locally"
+    },
+    {
+      "type": "image",
+      "id": "232bbe57-f473-4874-b77b-977290b00ca7",
+      "filename": "image1_1753905789734.jpeg",
+      "reason": "File not found locally"
+    }
+  ]
+}

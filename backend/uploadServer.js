@@ -504,7 +504,9 @@ app.post('/api/images/upload', upload.single('image'), async (req, res) => {
           public_id: fileName.replace(ext, ''),
           transformation: [
             { quality: 'auto' },
-            { format: 'auto' }
+            { format: 'auto' },
+            { dpr: 'auto' }, // Auto device pixel ratio for sharp displays
+            { fetch_format: 'auto' } // Additional format optimization
           ]
         },
         (error, result) => {
@@ -627,7 +629,9 @@ app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
           public_id: fileName.replace(ext, ''),
           transformation: [
             { quality: 'auto' },
-            { format: 'auto' }
+            { format: 'auto' },
+            { height: 120, crop: 'scale' }, // Max height for better quality
+            { dpr: 'auto' } // Auto device pixel ratio for sharp displays
           ]
         },
         (error, result) => {
@@ -1012,7 +1016,9 @@ app.post('/upload', upload.single('image'), async (req, res) => {
           public_id: fileName.replace(ext, ''),
           transformation: [
             { quality: 'auto' },
-            { format: 'auto' }
+            { format: 'auto' },
+            { dpr: 'auto' }, // Auto device pixel ratio for sharp displays
+            { fetch_format: 'auto' } // Additional format optimization
           ]
         },
         (error, result) => {
