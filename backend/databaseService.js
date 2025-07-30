@@ -233,11 +233,27 @@ class DatabaseService {
 
   static async getImageById(imageId) {
     try {
-      const { data, error } = await supabase
+      // Try both id and image_id fields for compatibility
+      let query = supabase
         .from('images')
         .select('*')
-        .eq('image_id', imageId)
+        .eq('id', imageId)
         .single()
+      
+      let { data, error } = await query
+      
+      // If not found by id, try image_id field
+      if (error && error.code === 'PGRST116') {
+        query = supabase
+          .from('images')
+          .select('*')
+          .eq('image_id', imageId)
+          .single()
+        
+        const result = await query
+        data = result.data
+        error = result.error
+      }
       
       if (error) throw error
       return { success: true, image: data }

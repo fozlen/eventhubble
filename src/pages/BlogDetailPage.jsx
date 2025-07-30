@@ -150,11 +150,23 @@ const BlogDetailPage = () => {
   }
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
+    if (!dateString) return language === 'TR' ? 'Tarih belirtilmemiş' : 'Date not specified'
+    
+    try {
+      const date = new Date(dateString)
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return language === 'TR' ? 'Geçersiz tarih' : 'Invalid date'
+      }
+      
+      return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    } catch (error) {
+      return language === 'TR' ? 'Geçersiz tarih' : 'Invalid date'
+    }
   }
 
   const formatReadingTime = (content) => {
@@ -318,7 +330,7 @@ const BlogDetailPage = () => {
               <div className="flex items-center space-x-4 text-sm text-text/70">
                 <div className="flex items-center space-x-1">
                   <Calendar className="h-4 w-4" />
-                  <span>{formatDate(blogPost.date)}</span>
+                  <span>{formatDate(blogPost.created_at || blogPost.date)}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Clock className="h-4 w-4" />
