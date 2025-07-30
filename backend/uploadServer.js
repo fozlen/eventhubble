@@ -129,13 +129,30 @@ app.use('/images', express.static(uploadsDir, {
 // Multer konfigürasyonu
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadsDir)
+    // Check if this is an images upload
+    if (req.path.includes('/images/')) {
+      const imagesDir = path.join(uploadsDir, 'images')
+      fs.ensureDirSync(imagesDir)
+      cb(null, imagesDir)
+    } else {
+      cb(null, uploadsDir)
+    }
   },
   filename: function (req, file, cb) {
-    // Benzersiz dosya adı oluştur
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    const ext = path.extname(file.originalname)
-    cb(null, `uploaded_${uniqueSuffix}${ext}`)
+    // For images, use a cleaner naming convention
+    if (req.path.includes('/images/')) {
+      const ext = path.extname(file.originalname)
+      const baseName = path.basename(file.originalname, ext)
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '_')
+      const timestamp = Date.now()
+      cb(null, `${baseName}_${timestamp}${ext}`)
+    } else {
+      // Original naming for other uploads
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      const ext = path.extname(file.originalname)
+      cb(null, `uploaded_${uniqueSuffix}${ext}`)
+    }
   }
 })
 
@@ -485,6 +502,73 @@ app.post('/api/images', async (req, res) => {
     res.status(201).json(result)
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to create image' })
+  }
+})
+
+// Combined Image Upload + Database Save
+app.post('/api/images/upload', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' })
+    }
+
+    // Generate file path for database
+    const fileName = req.file.filename
+    const filePath = `/uploads/images/${fileName}`
+    
+    // File is already in the correct location due to multer configuration
+    console.log(`✅ Image uploaded: ${req.file.path}`)
+    
+    // Prepare image data for database
+    const imageData = {
+      image_id: req.body.image_id || `img_${Date.now()}`,
+      category: req.body.category || 'General',
+      title: req.body.title || req.file.originalname,
+      alt_text: req.body.alt_text || '',
+      filename: fileName,
+      file_path: filePath,
+      file_size: req.file.size,
+      mime_type: req.file.mimetype,
+      width: req.body.width ? parseInt(req.body.width) : null,
+      height: req.body.height ? parseInt(req.body.height) : null,
+      tags: req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [],
+      metadata: req.body.metadata ? JSON.parse(req.body.metadata) : {},
+      is_active: true
+    }
+    
+    // Save to database
+    const dbResult = await DatabaseService.createImage(imageData)
+    
+    if (!dbResult.success) {
+      // If database save fails, remove the uploaded file
+      const fs = await import('fs-extra')
+      await fs.remove(req.file.path)
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Database save failed: ' + dbResult.error 
+      })
+    }
+    
+    // Generate image URL
+    const imageUrl = process.env.NODE_ENV === 'production' 
+      ? `https://eventhubble.onrender.com${filePath}`
+      : `http://localhost:${PORT}${filePath}`
+    
+    res.status(201).json({
+      success: true,
+      message: 'Image uploaded and saved successfully',
+      image: {
+        ...dbResult.image,
+        imageUrl: imageUrl
+      }
+    })
+    
+  } catch (error) {
+    console.error('Image upload error:', error)
+    res.status(500).json({ 
+      success: false, 
+      error: 'Upload failed: ' + error.message 
+    })
   }
 })
 
