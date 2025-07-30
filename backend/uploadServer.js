@@ -116,48 +116,25 @@ app.use('/assets', express.static(assetsDir, {
   }
 }))
 
-// Uploaded images'i serve et
-const imagesDir = path.join(uploadsDir, 'images')
-app.use('/images', express.static(imagesDir, {
-  setHeaders: (res, path) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Cache-Control', 'public, max-age=86400')
-  }
-}))
-
-// Uploaded logos'i serve et
-const logosDir = path.join(uploadsDir, 'logos')
-app.use('/logos', express.static(logosDir, {
-  setHeaders: (res, path) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Cache-Control', 'public, max-age=86400')
-  }
-}))
-
-// Also serve uploads directory for other files
-app.use('/uploads', express.static(uploadsDir, {
-  setHeaders: (res, path) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Cache-Control', 'public, max-age=86400')
-  }
-}))
+// All assets (including uploaded files) are served from /assets/
+// No need for separate /uploads/, /images/, /logos/ paths since everything is under /assets/ now
 
 // Directories already defined at the top
 
 // Multer konfigürasyonu
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // Check if this is an images upload
+    // All uploads go to assets directory
     if (req.path.includes('/images/')) {
-      const imagesDir = path.join(uploadsDir, 'images')
+      const imagesDir = path.join(assetsDir, 'images')
       fs.ensureDirSync(imagesDir)
       cb(null, imagesDir)
     } else if (req.path.includes('/logos/')) {
-      const logosDir = path.join(uploadsDir, 'logos')
+      const logosDir = path.join(assetsDir, 'logos')
       fs.ensureDirSync(logosDir)
       cb(null, logosDir)
     } else {
-      cb(null, uploadsDir)
+      cb(null, assetsDir)
     }
   },
   filename: function (req, file, cb) {
@@ -536,7 +513,7 @@ app.post('/api/images/upload', upload.single('image'), async (req, res) => {
 
     // Generate file path for database
     const fileName = req.file.filename
-    const filePath = `/uploads/images/${fileName}`
+    const filePath = `/assets/images/${fileName}`
     
     // File is already in the correct location due to multer configuration
     console.log(`✅ Image uploaded: ${req.file.path}`)
@@ -639,7 +616,7 @@ app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
 
     // Generate file path for database
     const fileName = req.file.filename
-    const filePath = `/uploads/logos/${fileName}`
+    const filePath = `/assets/logos/${fileName}`
     
     // File is already in the correct location due to multer configuration
     console.log(`✅ Logo uploaded: ${req.file.path}`)
@@ -1010,8 +987,8 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 
     // Image URL'ini oluştur (CDN olmadan direkt API'den serve et)
     const imageUrl = process.env.NODE_ENV === 'production' 
-      ? `https://eventhubble.onrender.com/images/${fileName}`
-      : `http://localhost:${PORT}/images/${fileName}`
+      ? `https://eventhubble.onrender.com/assets/images/${fileName}`
+      : `http://localhost:${PORT}/assets/images/${fileName}`
 
     // Başarılı response
     res.json({
