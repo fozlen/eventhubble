@@ -42,25 +42,33 @@ const SearchableImageSelect = ({
         url += `?category=${category}`
       }
       
+      console.log('🔍 Loading images from:', url)
       const response = await fetch(url)
+      console.log('📡 Response status:', response.status)
       const data = await response.json()
+      console.log('📦 Received data:', data)
+      console.log('🖼️ Images array:', data?.images || data)
       
       // Handle different response formats
       if (data.success === false) {
+        console.log('❌ API returned error:', data.error)
         setImages([])
         return
       }
       
       // Support both direct array and wrapped object formats
       if (Array.isArray(data)) {
+        console.log('📋 Setting direct array:', data.length, 'items')
         setImages(data)
       } else if (data.images && Array.isArray(data.images)) {
+        console.log('📋 Setting images property:', data.images.length, 'items')
         setImages(data.images)
       } else {
+        console.log('❓ Unknown format, setting empty array')
         setImages([])
       }
     } catch (error) {
-      console.error('Error loading images:', error)
+      console.error('❌ Error loading images:', error)
       setImages([])
     } finally {
       setIsLoading(false)

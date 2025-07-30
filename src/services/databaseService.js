@@ -312,6 +312,8 @@ class DatabaseService {
   // ===== ADMIN DASHBOARD STATS =====
   static async getAdminDashboardStats() {
     try {
+      console.log('🔄 Loading admin dashboard stats...')
+      
       // Get all data in parallel for better performance
       const [events, blogPosts, images, categories] = await Promise.all([
         this.getEvents(),
@@ -319,6 +321,12 @@ class DatabaseService {
         this.getImages(),
         this.getCategories()
       ])
+
+      console.log('📊 Raw dashboard data:')
+      console.log('🎪 Events:', events)
+      console.log('📝 Blog Posts:', blogPosts)
+      console.log('🖼️ Images:', images)
+      console.log('🏷️ Categories:', categories)
 
       // Calculate stats
       const totalEvents = events.length
@@ -328,7 +336,7 @@ class DatabaseService {
       const totalImages = images.length
       const totalCategories = categories.length
 
-      return {
+      const stats = {
         totalEvents,
         totalBlogs,
         totalImages,
@@ -336,8 +344,11 @@ class DatabaseService {
         activeEvents,
         publishedBlogs
       }
+
+      console.log('📊 Final dashboard stats:', stats)
+      return stats
     } catch (error) {
-      console.error('Error loading dashboard stats:', error)
+      console.error('❌ Error loading dashboard stats:', error)
       // Return fallback stats if API fails
       return {
         totalEvents: 0,
