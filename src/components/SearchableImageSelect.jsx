@@ -42,11 +42,18 @@ const SearchableImageSelect = ({
         url += `?category=${category}`
       }
       
+      console.log('🔍 Fetching images from:', url)
       const response = await fetch(url)
+      console.log('📡 Response status:', response.status)
+      
       const data = await response.json()
+      console.log('📦 Received data:', data)
+      console.log('🖼️ Images array:', data.images)
+      console.log('📊 Images length:', data.images?.length || 0)
+      
       setImages(data.images || [])
     } catch (error) {
-      console.error('Error loading images:', error)
+      console.error('❌ Error loading images:', error)
       setImages([])
     } finally {
       setIsLoading(false)
