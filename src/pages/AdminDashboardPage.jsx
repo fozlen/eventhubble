@@ -722,6 +722,33 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                   placeholder={language === 'TR' ? 'etkinlik, müzik, konser' : 'event, music, concert'}
                 />
               </div>
+              
+              {/* SEO Fields */}
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
+                  {language === 'TR' ? 'SEO Başlık' : 'SEO Title'}
+                </label>
+                <input
+                  type="text"
+                  value={formData.seo_title}
+                  onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
+                  placeholder={language === 'TR' ? 'SEO için özel başlık...' : 'SEO title...'}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
+                  {language === 'TR' ? 'SEO Açıklama' : 'SEO Description'}
+                </label>
+                <textarea
+                  rows="3"
+                  value={formData.seo_description}
+                  onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40 resize-none"
+                  placeholder={language === 'TR' ? 'SEO için açıklama...' : 'SEO description...'}
+                />
+              </div>
             </div>
 
             {/* Action Buttons */}
