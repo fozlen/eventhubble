@@ -1,11 +1,29 @@
-// Database service for managing all content from Supabase
-import supabaseService from './supabaseService.js'
+// DatabaseService for Supabase integration
+import { createClient } from '@supabase/supabase-js'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Supabase credentials not found in environment variables')
+  process.exit(1)
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 class DatabaseService {
+  
+  // =============================================
+  // EXISTING METHODS (Keep all existing methods)
+  // =============================================
+  
   // ===== LOGOS =====
   static async getLogos() {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('logos')
         .select('*')
         .eq('is_active', true)
@@ -30,7 +48,7 @@ class DatabaseService {
 
   static async createLogo(logoData) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('logos')
         .insert({
           logo_id: logoData.logo_id,
@@ -58,7 +76,7 @@ class DatabaseService {
 
   static async updateLogo(logoId, logoData) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('logos')
         .update({
           logo_id: logoData.logo_id,
@@ -88,7 +106,7 @@ class DatabaseService {
 
   static async deleteLogo(logoId) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('logos')
         .delete()
         .eq('logo_id', logoId)
@@ -110,7 +128,7 @@ class DatabaseService {
   // ===== IMAGES =====
   static async getImages(category = null) {
     try {
-      let query = supabaseService.supabase
+      let query = supabase
         .from('images')
         .select('*')
         .eq('is_active', true)
@@ -131,7 +149,7 @@ class DatabaseService {
 
   static async createImage(imageData) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('images')
         .insert({
           image_id: imageData.image_id,
@@ -161,7 +179,7 @@ class DatabaseService {
 
   static async updateImage(imageId, imageData) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('images')
         .update({
           image_id: imageData.image_id,
@@ -193,7 +211,7 @@ class DatabaseService {
 
   static async deleteImage(imageId) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('images')
         .delete()
         .eq('image_id', imageId)
@@ -214,7 +232,7 @@ class DatabaseService {
 
   static async getImageById(imageId) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('images')
         .select('*')
         .eq('image_id', imageId)
@@ -231,7 +249,7 @@ class DatabaseService {
   // ===== EVENTS =====
   static async getEvents(filters = {}) {
     try {
-      let query = supabaseService.supabase
+      let query = supabase
         .from('events')
         .select('*')
         .eq('is_active', true)
@@ -320,7 +338,7 @@ class DatabaseService {
   // ===== CATEGORIES =====
   static async getCategories() {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('categories')
         .select('*')
         .eq('is_active', true)
@@ -336,7 +354,7 @@ class DatabaseService {
 
   static async getCategoryById(categoryId) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('categories')
         .select('*')
         .eq('category_id', categoryId)
@@ -352,7 +370,7 @@ class DatabaseService {
 
   static async createCategory(categoryData) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('categories')
         .insert({
           category_id: categoryData.category_id,
@@ -380,7 +398,7 @@ class DatabaseService {
 
   static async updateCategory(categoryId, categoryData) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('categories')
         .update({
           ...categoryData,
@@ -400,7 +418,7 @@ class DatabaseService {
 
   static async deleteCategory(categoryId) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('categories')
         .delete()
         .eq('category_id', categoryId)
@@ -422,7 +440,7 @@ class DatabaseService {
   // ===== SITE SETTINGS =====
   static async getSiteSettings(category = null) {
     try {
-      let query = supabaseService.supabase
+      let query = supabase
         .from('site_settings')
         .select('*')
         .eq('is_active', true)
@@ -471,7 +489,7 @@ class DatabaseService {
         const { setting_key, setting_value, setting_type, category, description } = setting
         
         // Check if setting exists
-        const { data: existing, error: checkError } = await supabaseService.supabase
+        const { data: existing, error: checkError } = await supabase
           .from('site_settings')
           .select('id')
           .eq('setting_key', setting_key)
@@ -480,7 +498,7 @@ class DatabaseService {
         let result
         if (existing) {
           // Update existing setting
-          const { data, error } = await supabaseService.supabase
+          const { data, error } = await supabase
             .from('site_settings')
             .update({
               setting_value: String(setting_value),
@@ -496,7 +514,7 @@ class DatabaseService {
           result = { action: 'updated', setting_key, data }
         } else {
           // Create new setting
-          const { data, error } = await supabaseService.supabase
+          const { data, error } = await supabase
             .from('site_settings')
             .insert({
               setting_key,
@@ -524,7 +542,7 @@ class DatabaseService {
 
   static async deleteSiteSetting(settingKey) {
     try {
-      const { data, error } = await supabaseService.supabase
+      const { data, error } = await supabase
         .from('site_settings')
         .delete()
         .eq('setting_key', settingKey)
@@ -586,6 +604,495 @@ class DatabaseService {
       return { success: true }
     } catch (error) {
       return { success: false, error: error.message }
+    }
+  }
+
+  // =============================================
+  // CONTACT SUBMISSIONS METHODS
+  // =============================================
+  
+  static async createContactSubmission(submissionData) {
+    try {
+      const { data, error } = await supabase
+        .from('contact_submissions')
+        .insert([submissionData])
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        submission: data
+      }
+    } catch (error) {
+      console.error('Create contact submission error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  static async getContactSubmissions(filters = {}) {
+    try {
+      let query = supabase
+        .from('contact_submissions')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (filters.status) {
+        query = query.eq('status', filters.status)
+      }
+
+      if (filters.limit) {
+        query = query.limit(filters.limit)
+      }
+
+      if (filters.offset) {
+        query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1)
+      }
+
+      const { data, error, count } = await query
+
+      if (error) throw error
+
+      return {
+        success: true,
+        submissions: data || [],
+        total: count
+      }
+    } catch (error) {
+      console.error('Get contact submissions error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  static async updateContactSubmission(id, updateData) {
+    try {
+      const { data, error } = await supabase
+        .from('contact_submissions')
+        .update(updateData)
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        submission: data
+      }
+    } catch (error) {
+      console.error('Update contact submission error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // =============================================
+  // ANALYTICS METHODS
+  // =============================================
+
+  static async trackAnalytics(analyticsData) {
+    try {
+      const { data, error } = await supabase
+        .from('analytics')
+        .upsert([analyticsData], {
+          onConflict: 'metric_name,metric_date,metric_category',
+          ignoreDuplicates: false
+        })
+        .select()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        analytics: data
+      }
+    } catch (error) {
+      console.error('Track analytics error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  static async getAnalytics(filters = {}) {
+    try {
+      let query = supabase
+        .from('analytics')
+        .select('*')
+        .order('metric_date', { ascending: false })
+
+      if (filters.metric_name) {
+        query = query.eq('metric_name', filters.metric_name)
+      }
+
+      if (filters.category) {
+        query = query.eq('metric_category', filters.category)
+      }
+
+      if (filters.start_date) {
+        query = query.gte('metric_date', filters.start_date)
+      }
+
+      if (filters.end_date) {
+        query = query.lte('metric_date', filters.end_date)
+      }
+
+      if (filters.limit) {
+        query = query.limit(filters.limit)
+      }
+
+      const { data, error } = await query
+
+      if (error) throw error
+
+      return {
+        success: true,
+        analytics: data || []
+      }
+    } catch (error) {
+      console.error('Get analytics error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // =============================================
+  // NEWSLETTER METHODS
+  // =============================================
+
+  static async subscribeNewsletter(subscriptionData) {
+    try {
+      const { data, error } = await supabase
+        .from('newsletters')
+        .upsert([subscriptionData], {
+          onConflict: 'email',
+          ignoreDuplicates: false
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        subscription: data
+      }
+    } catch (error) {
+      console.error('Subscribe newsletter error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  static async unsubscribeNewsletter(unsubscribeData) {
+    try {
+      const { data, error } = await supabase
+        .from('newsletters')
+        .update({
+          status: 'unsubscribed',
+          unsubscribed_at: new Date().toISOString(),
+          unsubscribe_reason: unsubscribeData.reason
+        })
+        .eq('email', unsubscribeData.email)
+        .select()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        subscription: data
+      }
+    } catch (error) {
+      console.error('Unsubscribe newsletter error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // =============================================
+  // FAQ METHODS
+  // =============================================
+
+  static async getFAQs(filters = {}) {
+    try {
+      let query = supabase
+        .from('faqs')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
+
+      if (filters.category) {
+        query = query.eq('category', filters.category)
+      }
+
+      if (filters.featured) {
+        query = query.eq('is_featured', true)
+      }
+
+      const { data, error } = await query
+
+      if (error) throw error
+
+      // Format response based on language
+      const formattedData = data?.map(faq => ({
+        id: faq.id,
+        question: filters.language === 'EN' ? faq.question_en || faq.question_tr : faq.question_tr,
+        answer: filters.language === 'EN' ? faq.answer_en || faq.answer_tr : faq.answer_tr,
+        category: faq.category,
+        display_order: faq.display_order,
+        is_featured: faq.is_featured,
+        view_count: faq.view_count,
+        helpful_count: faq.helpful_count
+      }))
+
+      return {
+        success: true,
+        faqs: formattedData || []
+      }
+    } catch (error) {
+      console.error('Get FAQs error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // =============================================
+  // TESTIMONIALS METHODS
+  // =============================================
+
+  static async getTestimonials(filters = {}) {
+    try {
+      let query = supabase
+        .from('testimonials')
+        .select('*')
+        .eq('is_active', true)
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false })
+
+      if (filters.featured) {
+        query = query.eq('is_featured', true)
+      }
+
+      if (filters.limit) {
+        query = query.limit(filters.limit)
+      }
+
+      const { data, error } = await query
+
+      if (error) throw error
+
+      return {
+        success: true,
+        testimonials: data || []
+      }
+    } catch (error) {
+      console.error('Get testimonials error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  static async createTestimonial(testimonialData) {
+    try {
+      const { data, error } = await supabase
+        .from('testimonials')
+        .insert([testimonialData])
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        testimonial: data
+      }
+    } catch (error) {
+      console.error('Create testimonial error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // =============================================
+  // PARTNERS METHODS
+  // =============================================
+
+  static async getPartners(filters = {}) {
+    try {
+      let query = supabase
+        .from('partners')
+        .select('*')
+        .eq('status', 'active')
+        .order('display_order', { ascending: true })
+
+      if (filters.partner_type) {
+        query = query.eq('partner_type', filters.partner_type)
+      }
+
+      if (filters.featured) {
+        query = query.eq('featured', true)
+      }
+
+      const { data, error } = await query
+
+      if (error) throw error
+
+      return {
+        success: true,
+        partners: data || []
+      }
+    } catch (error) {
+      console.error('Get partners error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // =============================================
+  // USERS METHODS (Admin Authentication)
+  // =============================================
+
+  static async getUserByEmail(email) {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .eq('is_active', true)
+        .single()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        user: data
+      }
+    } catch (error) {
+      console.error('Get user by email error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  static async updateUserLoginInfo(userId, loginData) {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .update({
+          last_login: new Date().toISOString(),
+          login_count: loginData.login_count + 1
+        })
+        .eq('id', userId)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        user: data
+      }
+    } catch (error) {
+      console.error('Update user login info error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // =============================================
+  // AUDIT LOGS METHODS
+  // =============================================
+
+  static async createAuditLog(logData) {
+    try {
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .insert([logData])
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        success: true,
+        log: data
+      }
+    } catch (error) {
+      console.error('Create audit log error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  }
+
+  // =============================================
+  // UTILITY METHODS
+  // =============================================
+
+  static async getDashboardStats() {
+    try {
+      const today = new Date().toISOString().split('T')[0]
+      
+      // Get various statistics
+      const [
+        totalEvents,
+        totalContacts,
+        totalNewsletters,
+        totalTestimonials,
+        todayAnalytics
+      ] = await Promise.all([
+        supabase.from('events').select('id', { count: 'exact' }),
+        supabase.from('contact_submissions').select('id', { count: 'exact' }),
+        supabase.from('newsletters').select('id', { count: 'exact' }).eq('status', 'active'),
+        supabase.from('testimonials').select('id', { count: 'exact' }).eq('status', 'approved'),
+        supabase.from('analytics').select('*').eq('metric_date', today)
+      ])
+
+      return {
+        success: true,
+        stats: {
+          total_events: totalEvents.count || 0,
+          total_contacts: totalContacts.count || 0,
+          total_newsletters: totalNewsletters.count || 0,
+          total_testimonials: totalTestimonials.count || 0,
+          today_analytics: todayAnalytics.data || []
+        }
+      }
+    } catch (error) {
+      console.error('Get dashboard stats error:', error)
+      return {
+        success: false,
+        error: error.message
+      }
     }
   }
 }

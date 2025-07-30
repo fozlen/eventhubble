@@ -217,7 +217,7 @@ class DatabaseService {
     }
   }
 
-  // Contact Form Submission (TODO: Implement backend endpoint)
+  // Contact Form Submission
   static async submitContactForm(formData) {
     try {
       const response = await fetch(`${this.API_BASE_URL}/api/contact-submissions`, {

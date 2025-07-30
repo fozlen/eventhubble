@@ -79,17 +79,11 @@ const ContactPage = () => {
       // Submit contact form to database
       const submitData = {
         ...formData,
-        language,
-        submitted_at: new Date().toISOString(),
-        ip_address: '', // Will be filled by backend
-        user_agent: navigator.userAgent
+        language
       }
 
-      // TODO: Implement contact submission API endpoint
-      // await DatabaseService.submitContactForm(submitData)
-      
-      // Simulate submission for now
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // Use DatabaseService to submit contact form
+      await DatabaseService.submitContactForm(submitData)
       
       setSubmitStatus('success')
       setFormData({ name: '', email: '', subject: '', message: '' })
