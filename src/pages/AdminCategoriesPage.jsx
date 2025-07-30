@@ -56,7 +56,7 @@ const AdminCategoriesPage = () => {
 
   const loadCategories = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories`)
+      const response = await fetch(`${API_BASE_URL}/api/categories`)
       if (response.ok) {
         const result = await response.json()
         if (result.success) {
@@ -95,7 +95,7 @@ const AdminCategoriesPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/categories/${categoryId}`, {
           method: 'DELETE'
         })
 
