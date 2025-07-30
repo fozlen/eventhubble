@@ -1,6 +1,6 @@
 # EventHubble 🎪
 
-> **İstanbul'un en kapsamlı etkinlik platform** - Event discovery and management platform for Istanbul
+> **Her Deneyime Açılan Kapınız** - Your Gateway to Every Experience
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org/)
@@ -8,11 +8,16 @@
 
 ## 🌟 Overview
 
-EventHubble is a comprehensive event discovery and management platform designed specifically for Istanbul's vibrant cultural scene. The platform aggregates events from multiple sources and provides both public browsing and admin management capabilities.
+EventHubble'da, harika deneyimler keşfetmenin kolay olması gerektiğine inanıyoruz. Bu yüzden konserler, festivaller, spor etkinlikleri, buluşmalar, kültürel toplantılar ve hatta küresel gösterileri tek bir yerde bir araya getiriyoruz. Gizli değerlerden küresel gösterilere - her etkinlik, tek bir platformda.
+
+At EventHubble, we believe discovering great experiences should be effortless. We bring together concerts, festivals, sports events, meetups, cultural gatherings, and global spectacles all in one place. From hidden gems to global shows - every event, one platform.
 
 ### 🎯 Key Features
 
-- **🎭 Multi-source Event Aggregation**: Automatically scrapes events from Biletix, Mobilet, and Biletinial
+- **🌍 Tüm Etkinlikler, Tek Platform**: Gizli değerlerden küresel gösterilere. Her etkinlik, tek bir yerde.
+- **🔍 Akıllı Arama, Daha İyi Planlar**: Konum, tarih, kategori veya fiyata göre kolayca filtreleyin
+- **🎯 Doğrudan Bilet Bağlantıları**: Güvenilir platformlara anında yönlendirme
+- **👀 Size Özel**: Tercihlerinize ve konumunuza göre kişiselleştirilmiş öneriler
 - **📱 Mobile-First Design**: Responsive interface optimized for mobile devices  
 - **🌐 Multilingual Support**: Full Turkish/English localization
 - **⚡ Real-time Updates**: Live event data with automatic refresh
