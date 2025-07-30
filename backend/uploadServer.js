@@ -647,15 +647,14 @@ app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
     // Prepare logo data for database
     const logoData = {
       logo_id: req.body.logo_id || `logo_${Date.now()}`,
-      display_name: req.body.display_name || req.file.originalname,
-      logo_url: filePath,
-      usage_context: req.body.usage_context || 'general',
+      filename: fileName,  // Database expects 'filename'
+      title: req.body.display_name || req.file.originalname,  // Database expects 'title'
+      file_path: filePath,  // Database expects 'file_path'
       alt_text: req.body.alt_text || '',
       width: req.body.width ? parseInt(req.body.width) : null,
       height: req.body.height ? parseInt(req.body.height) : null,
       file_size: req.file.size,
       mime_type: req.file.mimetype,
-      metadata: req.body.metadata ? JSON.parse(req.body.metadata) : {},
       is_active: true
     }
     
