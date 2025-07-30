@@ -699,7 +699,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                     onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
                     label={language === 'TR' ? 'Blog Resmi' : 'Blog Image'}
                     placeholder={language === 'TR' ? 'Bir resim seçin...' : 'Select an image...'}
-                    category="blog"
+                    category={null}
                     language={language}
                   />
                 </div>

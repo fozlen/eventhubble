@@ -1,6 +1,7 @@
 // DatabaseService for Supabase integration
 import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
+import supabaseService from './supabaseService.js'
 
 dotenv.config()
 

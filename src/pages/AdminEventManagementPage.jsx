@@ -870,7 +870,7 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
                     onChange={(imageUrl) => setFormData({ ...formData, image_url: imageUrl })}
                     label={language === 'TR' ? 'Etkinlik Resmi' : 'Event Image'}
                     placeholder={language === 'TR' ? 'Bir resim seçin...' : 'Select an image...'}
-                    category="event"
+                    category={null}
                     language={language}
                   />
                 </div>
