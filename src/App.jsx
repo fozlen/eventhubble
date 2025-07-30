@@ -9,7 +9,8 @@ import ContactPage from './pages/ContactPage'
 import WorldNewsPage from './pages/WorldNewsPage'
 import SearchResultsPage from './pages/SearchResultsPage'
 import AdminLoginPage from './pages/AdminLoginPage'
-import AdminDashboardPage from './pages/AdminDashboardPage'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminBlogManagementPage from './pages/AdminBlogManagementPage'
 import AdminEventManagementPage from './pages/AdminEventManagementPage'
 import AdminSiteSettingsPage from './pages/AdminSiteSettingsPage'
 import AdminLogosPage from './pages/AdminLogosPage'
@@ -38,7 +39,8 @@ function App() {
             <Route path="/search" element={<SearchResultsPage />} />
             <Route path="/blog/:id" element={<BlogDetailPage />} />
             <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/blog" element={<AdminBlogManagementPage />} />
             <Route path="/admin/events" element={<AdminEventManagementPage />} />
             <Route path="/admin/settings" element={<AdminSiteSettingsPage />} />
             <Route path="/admin/logos" element={<AdminLogosPage />} />

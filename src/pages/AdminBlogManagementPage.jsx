@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { 
   Plus, Edit, Trash2, Save, X, LogOut, Globe, Settings, 
-  Megaphone, BarChart3, Tag, Eye, Calendar, User, FileText 
+  Megaphone, BarChart3, Tag, Eye, Calendar, User, FileText, ArrowLeft 
 } from 'lucide-react'
 import LogoService from '../services/logoService'
 import CacheService from '../services/cacheService'
@@ -13,7 +13,7 @@ const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
 import ImagePicker from '../components/ImagePicker'
 
-const AdminDashboardPage = () => {
+const AdminBlogManagementPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPost, setEditingPost] = useState(null)
@@ -272,80 +272,45 @@ const AdminDashboardPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Admin Header */}
-      <header className="bg-primary shadow-lg">
+            {/* Admin Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Brand */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => navigate('/admin/dashboard')}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                title={language === 'TR' ? 'Ana Panel' : 'Dashboard'}
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
               <img src={logo} alt="EventHubble" className="h-8 w-auto" />
               <div>
-                <span className="text-xl font-bold">
-                  <span className="text-white">Event</span>
-                  <span className="text-primary-light"> Hubble</span>
-                </span>
-                <span className="ml-2 text-sm text-white/80">Admin Panel</span>
+                <h1 className="text-xl font-semibold text-gray-900">
+                  {language === 'TR' ? 'Blog Yönetimi' : 'Blog Management'}
+                </h1>
+                <p className="text-sm text-gray-500">
+                  {language === 'TR' ? 'Blog yazılarını yönet' : 'Manage blog posts'}
+                </p>
               </div>
             </div>
 
-            {/* Admin Navigation */}
-            <nav className="hidden lg:flex items-center space-x-6">
-              <a href="/" className="text-white/80 hover:text-white transition-colors text-sm">
-                {language === 'TR' ? 'Site' : 'Site'}
-              </a>
-              <button className="text-white transition-colors text-sm font-medium">
-                {language === 'TR' ? 'Blog' : 'Blog'}
-              </button>
-              <button 
-                onClick={() => navigate('/admin/events')}
-                className="text-white/80 hover:text-white transition-colors text-sm"
-              >
-                {language === 'TR' ? 'Etkinlikler' : 'Events'}
-              </button>
-              <button 
-                onClick={() => navigate('/admin/categories')}
-                className="text-white/80 hover:text-white transition-colors text-sm"
-              >
-                {language === 'TR' ? 'Kategoriler' : 'Categories'}
-              </button>
-              <button 
-                onClick={() => navigate('/admin/images')}
-                className="text-white/80 hover:text-white transition-colors text-sm"
-              >
-                {language === 'TR' ? 'Resimler' : 'Images'}
-              </button>
-              <button 
-                onClick={() => navigate('/admin/logos')}
-                className="text-white/80 hover:text-white transition-colors text-sm"
-              >
-                {language === 'TR' ? 'Logolar' : 'Logos'}
-              </button>
-              <button 
-                onClick={() => navigate('/admin/settings')}
-                className="text-white/80 hover:text-white transition-colors"
-                title={language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
-              >
-                <Settings className="h-5 w-5" />
-              </button>
-            </nav>
-
             {/* Language and Logout */}
             <div className="flex items-center space-x-4">
-              <button 
+              <button
                 onClick={toggleLanguage}
-                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
-                title={language === 'TR' ? 'Language' : 'Dil'}
+                className="flex items-center space-x-1 px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
               >
-                <Globe size={16} />
-                <span className="text-sm">{language}</span>
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">{language}</span>
               </button>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
-                title={language === 'TR' ? 'Çıkış Yap' : 'Logout'}
+                className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               >
-                <LogOut size={16} />
-                <span className="text-sm hidden sm:inline">{language === 'TR' ? 'Çıkış' : 'Logout'}</span>
+                <LogOut className="h-4 w-4" />
+                <span className="text-sm">{language === 'TR' ? 'Çıkış' : 'Logout'}</span>
               </button>
             </div>
           </div>
@@ -849,4 +814,4 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN', showImagePicker
   )
 }
 
-export default AdminDashboardPage 
+export default AdminBlogManagementPage 
