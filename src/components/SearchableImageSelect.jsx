@@ -37,12 +37,15 @@ const SearchableImageSelect = ({
   const loadImages = async () => {
     setIsLoading(true)
     try {
+      // Test without category first to see all images
       let url = `${API_BASE_URL}/api/images`
-      if (category) {
-        url += `?category=${category}`
-      }
+      // Temporarily disable category filtering for debugging
+      // if (category) {
+      //   url += `?category=${category}`
+      // }
       
       console.log('🔍 Fetching images from:', url)
+      console.log('🏷️ Category filter:', category)
       const response = await fetch(url)
       console.log('📡 Response status:', response.status)
       
@@ -51,7 +54,24 @@ const SearchableImageSelect = ({
       console.log('🖼️ Images array:', data.images)
       console.log('📊 Images length:', data.images?.length || 0)
       
-      setImages(data.images || [])
+      // Check if response has different structure
+      if (data.success === false) {
+        console.error('🚫 API returned error:', data.error)
+        setImages([])
+        return
+      }
+      
+      // If data is directly an array (not wrapped in object)
+      if (Array.isArray(data)) {
+        console.log('📋 Data is direct array')
+        setImages(data)
+      } else if (data.images) {
+        console.log('📋 Data has images property')
+        setImages(data.images)
+      } else {
+        console.log('❓ Unknown data format')
+        setImages([])
+      }
     } catch (error) {
       console.error('❌ Error loading images:', error)
       setImages([])
