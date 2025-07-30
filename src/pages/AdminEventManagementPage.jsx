@@ -6,7 +6,7 @@ import {
   BarChart3, MapPin, Clock, DollarSign, Users, Star, Phone, ExternalLink, Tag, FileText 
 } from 'lucide-react'
 import LogoService from '../services/logoService'
-import ImageSelector from '../components/ImageSelector'
+
 import EventService from '../services/eventService'
 import DatabaseService from '../services/databaseService'
 
@@ -16,6 +16,7 @@ const AdminEventManagementPage = () => {
   const [events, setEvents] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState(null)
+
   const { language, toggleLanguage } = useLanguage()
   const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
@@ -873,12 +874,35 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <ImageSelector
-                    value={formData.image_url}
-                    onChange={(imageUrl) => setFormData({ ...formData, image_url: imageUrl })}
-                    placeholder={language === 'TR' ? 'Resim URL\'si girin veya listeden seçin...' : 'Enter image URL or select from dropdown...'}
-                    label={language === 'TR' ? 'Resim URL' : 'Image URL'}
-                  />
+                  <label className="block text-sm font-medium text-text mb-2">
+                    {language === 'TR' ? 'Etkinlik Resmi' : 'Event Image'}
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    {formData.image_url && (
+                      <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                        <img 
+                          src={formData.image_url} 
+                          alt="Event preview" 
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAxMkMxNi42ODYzIDEyIDEzIDEzLjM0MzEgMTMgMTdWMjNDMTMgMjYuNjU2OSAxNi42ODYzIDI4IDIwIDI4QzIzLjMxMzcgMjggMjcgMjYuNjU2OSAyNyAyM1YxN0MyNyAxMy4zNDMxIDIzLjMxMzcgMTIgMjAgMTJaIiBmaWxsPSIjOUIyQzJGIi8+Cjwvc3ZnPgo='
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <input
+                        type="url"
+                        value={formData.image_url}
+                        onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                        placeholder={language === 'TR' ? 'Resim URL\'si girin...' : 'Enter image URL...'}
+                      />
+                      <p className="mt-2 text-xs text-gray-500">
+                        {language === 'TR' ? 'Resim yönetimi için Admin → Images sayfasını kullanın' : 'Use Admin → Images page for image management'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -973,6 +997,7 @@ const EventModal = ({ event, onClose, onSave, language = 'EN' }) => {
         </div>
       </div>
     </div>
+
   )
 }
 
