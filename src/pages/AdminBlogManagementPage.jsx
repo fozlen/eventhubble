@@ -7,18 +7,16 @@ import {
 } from 'lucide-react'
 import LogoService from '../services/logoService'
 import CacheService from '../services/cacheService'
+import SearchableImageSelect from '../components/SearchableImageSelect'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
-import ImagePicker from '../components/ImagePicker'
 
 const AdminBlogManagementPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPost, setEditingPost] = useState(null)
-  const [showImagePicker, setShowImagePicker] = useState(false)
-  const [selectedImage, setSelectedImage] = useState(null)
   const { language, toggleLanguage } = useLanguage()
   const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
@@ -136,18 +134,7 @@ const AdminBlogManagementPage = () => {
     }
   }
 
-  const handleImageSelect = (image) => {
-    const imageUrl = image.file_path.startsWith('http') 
-      ? image.file_path 
-      : `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')}${image.file_path}`
-    
-    setSelectedImage(image)
-    setShowImagePicker(false)
-    
-    // BlogPostModal içindeki formData'yı güncellemek için event dispatch ediyoruz
-    const event = new CustomEvent('imageSelected', { detail: { imageUrl } })
-    window.dispatchEvent(event)
-  }
+
 
   // Language context handles language toggle
 
@@ -452,26 +439,7 @@ const AdminBlogManagementPage = () => {
         </div>
       </main>
 
-      {/* Image Picker Modal */}
-      {showImagePicker && (
-        <ImagePicker
-          isOpen={showImagePicker}
-          onClose={() => {
-            console.log('Closing image picker')
-            setShowImagePicker(false)
-          }}
-          onSelect={handleImageSelect}
-          selectedImage={selectedImage}
-          category="blog"
-        />
-      )}
-      
-      {/* Debug info */}
-      {process.env.NODE_ENV === 'development' && (
-        <div style={{position: 'fixed', top: '10px', right: '10px', background: 'red', color: 'white', padding: '5px', zIndex: 9999}}>
-          showImagePicker: {showImagePicker ? 'true' : 'false'}
-        </div>
-      )}
+
 
       {/* Blog Post Modal */}
       {showAddModal && (
@@ -480,15 +448,13 @@ const AdminBlogManagementPage = () => {
           onClose={() => setShowAddModal(false)} 
           onSave={handleSavePost}
           language={language}
-          showImagePicker={showImagePicker}
-          setShowImagePicker={setShowImagePicker}
         />
       )}
     </div>
   )
 }
 
-const BlogPostModal = ({ post, onClose, onSave, language = 'EN', showImagePicker, setShowImagePicker }) => {
+const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
   const [formData, setFormData] = useState({
     title_tr: post?.title_tr || post?.title || '',
     title_en: post?.title_en || post?.title || '',
@@ -507,15 +473,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN', showImagePicker
     seo_description: post?.seo_description || ''
   })
 
-  // Listen for image selection events
-  useEffect(() => {
-    const handleImageSelected = (event) => {
-      setFormData(prev => ({ ...prev, image: event.detail.imageUrl }))
-    }
-    
-    window.addEventListener('imageSelected', handleImageSelected)
-    return () => window.removeEventListener('imageSelected', handleImageSelected)
-  }, [])
+
 
   const categories = [
     { value: 'Music', label_tr: 'Müzik', label_en: 'Music' },
@@ -713,63 +671,14 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN', showImagePicker
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">
-                    {language === 'TR' ? 'Blog Resmi' : 'Blog Image'}
-                  </label>
-                  <div className="space-y-3">
-                    {/* Image Preview */}
-                    {formData.image && (
-                      <div className="w-full h-32 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                        <img 
-                          src={formData.image} 
-                          alt="Blog preview" 
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAxMkMxNi42ODYzIDEyIDEzIDEzLjM0MzEgMTMgMTdWMjNDMTMgMjYuNjU2OSAxNi42ODYzIDI4IDIwIDI4QzIzLjMxMzcgMjggMjcgMjYuNjU2OSAyNyAyM1YxN0MyNyAxMy4zNDMxIDIzLjMxMzcgMTIgMjAgMTJaIiBmaWxsPSIjOUIyQzJGIi8+Cjwvc3ZnPgo='
-                          }}
-                        />
-                      </div>
-                    )}
-                    
-                    {/* Selection Buttons */}
-                    <div className="flex space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          console.log('Image picker button clicked!')
-                          console.log('setShowImagePicker:', setShowImagePicker)
-                          setShowImagePicker(true)
-                        }}
-                        className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
-                      >
-                        {language === 'TR' ? '📷 Galeri\'den Seç' : '📷 Select from Gallery'}
-                      </button>
-                      {formData.image && (
-                        <button
-                          type="button"
-                          onClick={() => setFormData({ ...formData, image: '' })}
-                          className="px-3 py-2 text-gray-500 hover:text-red-500 transition-colors"
-                          title={language === 'TR' ? 'Resmi kaldır' : 'Remove image'}
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Manual URL Input */}
-                    <details className="group">
-                      <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
-                        {language === 'TR' ? 'Manuel URL gir' : 'Enter manual URL'}
-                      </summary>
-                      <input
-                        type="url"
-                        value={formData.image}
-                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        className="mt-2 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-                        placeholder={language === 'TR' ? 'https://example.com/image.jpg' : 'https://example.com/image.jpg'}
-                      />
-                    </details>
-                  </div>
+                  <SearchableImageSelect
+                    value={formData.image}
+                    onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
+                    label={language === 'TR' ? 'Blog Resmi' : 'Blog Image'}
+                    placeholder={language === 'TR' ? 'Bir resim seçin...' : 'Select an image...'}
+                    category="blog"
+                    language={language}
+                  />
                 </div>
               </div>
 
