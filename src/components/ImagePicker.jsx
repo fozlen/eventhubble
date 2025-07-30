@@ -24,6 +24,7 @@ const ImagePicker = ({ isOpen, onClose, onSelect, selectedImage, category = null
   }, [isOpen, selectedCategory])
 
   const loadImages = async () => {
+    console.log('🖼️ Loading images...')
     setIsLoading(true)
     try {
       let url = `${API_BASE_URL}/api/images`
@@ -31,11 +32,13 @@ const ImagePicker = ({ isOpen, onClose, onSelect, selectedImage, category = null
         url += `?category=${selectedCategory}`
       }
       
+      console.log('📍 Fetching from URL:', url)
       const response = await fetch(url)
       const data = await response.json()
+      console.log('📦 Received data:', data)
       setImages(data.images || [])
     } catch (error) {
-      console.error('Error loading images:', error)
+      console.error('❌ Error loading images:', error)
       setImages([])
     } finally {
       setIsLoading(false)
@@ -54,8 +57,12 @@ const ImagePicker = ({ isOpen, onClose, onSelect, selectedImage, category = null
     image.alt_text?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  console.log('🎯 ImagePicker render - isOpen:', isOpen)
+  
   if (!isOpen) return null
 
+  console.log('✅ ImagePicker is rendering!')
+  
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">

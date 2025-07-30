@@ -456,11 +456,21 @@ const AdminBlogManagementPage = () => {
       {showImagePicker && (
         <ImagePicker
           isOpen={showImagePicker}
-          onClose={() => setShowImagePicker(false)}
+          onClose={() => {
+            console.log('Closing image picker')
+            setShowImagePicker(false)
+          }}
           onSelect={handleImageSelect}
           selectedImage={selectedImage}
           category="blog"
         />
+      )}
+      
+      {/* Debug info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div style={{position: 'fixed', top: '10px', right: '10px', background: 'red', color: 'white', padding: '5px', zIndex: 9999}}>
+          showImagePicker: {showImagePicker ? 'true' : 'false'}
+        </div>
       )}
 
       {/* Blog Post Modal */}
@@ -725,7 +735,11 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN', showImagePicker
                     <div className="flex space-x-2">
                       <button
                         type="button"
-                        onClick={() => setShowImagePicker(true)}
+                        onClick={() => {
+                          console.log('Image picker button clicked!')
+                          console.log('setShowImagePicker:', setShowImagePicker)
+                          setShowImagePicker(true)
+                        }}
                         className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
                       >
                         {language === 'TR' ? '📷 Galeri\'den Seç' : '📷 Select from Gallery'}
