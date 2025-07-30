@@ -139,13 +139,23 @@ const AdminBlogManagementPage = () => {
   // Language context handles language toggle
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'Tarih belirtilmemiş'
-    const date = new Date(dateString)
-    return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
+    if (!dateString) return language === 'TR' ? 'Tarih belirtilmemiş' : 'Date not specified'
+    
+    try {
+      const date = new Date(dateString)
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return language === 'TR' ? 'Geçersiz tarih' : 'Invalid date'
+      }
+      
+      return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    } catch (error) {
+      return language === 'TR' ? 'Geçersiz tarih' : 'Invalid date'
+    }
   }
 
   // Helper function to get default images by category
@@ -202,6 +212,11 @@ const AdminBlogManagementPage = () => {
           
           // Clear blog cache so changes are immediately visible on website
           CacheService.clearBlogCache()
+          
+          // Close modal and refresh to update dashboard stats
+          setShowAddModal(false)
+          setEditingPost(null)
+          return
         } else {
           const errorText = await response.text()
           console.error('Update failed:', response.status, errorText)
@@ -224,6 +239,11 @@ const AdminBlogManagementPage = () => {
           
           // Clear blog cache so changes are immediately visible on website
           CacheService.clearBlogCache()
+          
+          // Close modal and refresh to update dashboard stats  
+          setShowAddModal(false)
+          setEditingPost(null)
+          return
         } else {
           const errorText = await response.text()
           console.error('Create failed:', response.status, errorText)
@@ -244,17 +264,20 @@ const AdminBlogManagementPage = () => {
         const newPost = {
           ...postData,
           id: Date.now(),
+          created_at: new Date().toISOString(),
           date: new Date().toISOString(),
+          author_name: 'Event Hubble',
           author: 'Event Hubble'
         }
         const updatedPosts = [...blogPosts, newPost]
         setBlogPosts(updatedPosts)
         localStorage.setItem('blogPosts', JSON.stringify(updatedPosts))
       }
+      
+      // Close modal even in error case
+      setShowAddModal(false)
+      setEditingPost(null)
     }
-    
-    setShowAddModal(false)
-    setEditingPost(null)
   }
 
   // Loading removed for better UX
@@ -384,11 +407,11 @@ const AdminBlogManagementPage = () => {
                         <div className="flex items-center space-x-4 text-sm text-text/60">
                           <div className="flex items-center space-x-1">
                             <Calendar className="h-4 w-4" />
-                            <span>{formatDate(post.date)}</span>
+                            <span>{formatDate(post.created_at || post.date)}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <User className="h-4 w-4" />
-                            <span>{post.author}</span>
+                            <span>{post.author_name || post.author || 'Event Hubble'}</span>
                           </div>
                         </div>
                         <div className="flex space-x-2">

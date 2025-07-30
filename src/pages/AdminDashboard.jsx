@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { 
   BarChart3, Users, Image, FileText, Tag, Settings,
-  Calendar, Star, TrendingUp, Globe, Eye, Activity,
+  Calendar, Star, Globe, Eye, Activity,
   PlusCircle, ArrowRight, LogOut
 } from 'lucide-react'
 import LogoService from '../services/logoService'
@@ -94,8 +94,7 @@ const AdminDashboard = () => {
       subtitle: `${stats.activeEvents} ${language === 'TR' ? 'aktif' : 'active'}`,
       icon: Calendar,
       color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      trend: '+12%'
+      bgColor: 'bg-blue-50'
     },
     {
       title: language === 'TR' ? 'Blog Yazıları' : 'Blog Posts',
@@ -103,8 +102,7 @@ const AdminDashboard = () => {
       subtitle: `${stats.publishedBlogs} ${language === 'TR' ? 'yayında' : 'published'}`,
       icon: FileText,
       color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      trend: '+8%'
+      bgColor: 'bg-green-50'
     },
     {
       title: language === 'TR' ? 'Galeri Resimleri' : 'Gallery Images',
@@ -112,8 +110,7 @@ const AdminDashboard = () => {
       subtitle: language === 'TR' ? 'yüklendi' : 'uploaded',
       icon: Image,
       color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-      trend: '+24%'
+      bgColor: 'bg-purple-50'
     },
     {
       title: language === 'TR' ? 'Kategoriler' : 'Categories',
@@ -121,8 +118,7 @@ const AdminDashboard = () => {
       subtitle: language === 'TR' ? 'kategori' : 'categories',
       icon: Tag,
       color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-      trend: '+2%'
+      bgColor: 'bg-orange-50'
     }
   ]
 
@@ -253,10 +249,7 @@ const AdminDashboard = () => {
                     <Icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
                 </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xs text-green-600 font-medium">{stat.trend}</span>
-                  <TrendingUp className="h-3 w-3 text-green-600" />
-                </div>
+
               </div>
             )
           })}

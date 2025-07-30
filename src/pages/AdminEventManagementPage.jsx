@@ -137,13 +137,23 @@ const AdminEventManagementPage = () => {
 
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'Tarih belirtilmemiş'
-    const date = new Date(dateString)
-    return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
+    if (!dateString) return language === 'TR' ? 'Tarih belirtilmemiş' : 'Date not specified'
+    
+    try {
+      const date = new Date(dateString)
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return language === 'TR' ? 'Geçersiz tarih' : 'Invalid date'
+      }
+      
+      return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    } catch (error) {
+      return language === 'TR' ? 'Geçersiz tarih' : 'Invalid date'
+    }
   }
 
   const handleSaveEvent = async (eventData) => {
@@ -369,7 +379,7 @@ const AdminEventManagementPage = () => {
                         <div className="flex items-center space-x-4 text-sm text-text/60">
                           <div className="flex items-center space-x-1">
                             <Calendar className="h-4 w-4" />
-                            <span>{formatDate(event.date)}</span>
+                            <span>{formatDate(event.start_date || event.date || event.created_at)}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Clock className="h-4 w-4" />
