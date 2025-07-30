@@ -125,6 +125,15 @@ app.use('/images', express.static(imagesDir, {
   }
 }))
 
+// Uploaded logos'i serve et
+const logosDir = path.join(uploadsDir, 'logos')
+app.use('/logos', express.static(logosDir, {
+  setHeaders: (res, path) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Cache-Control', 'public, max-age=86400')
+  }
+}))
+
 // Also serve uploads directory for other files
 app.use('/uploads', express.static(uploadsDir, {
   setHeaders: (res, path) => {
@@ -143,13 +152,17 @@ const storage = multer.diskStorage({
       const imagesDir = path.join(uploadsDir, 'images')
       fs.ensureDirSync(imagesDir)
       cb(null, imagesDir)
+    } else if (req.path.includes('/logos/')) {
+      const logosDir = path.join(uploadsDir, 'logos')
+      fs.ensureDirSync(logosDir)
+      cb(null, logosDir)
     } else {
       cb(null, uploadsDir)
     }
   },
   filename: function (req, file, cb) {
-    // For images, use a cleaner naming convention
-    if (req.path.includes('/images/')) {
+    // For images and logos, use a cleaner naming convention
+    if (req.path.includes('/images/') || req.path.includes('/logos/')) {
       const ext = path.extname(file.originalname)
       const baseName = path.basename(file.originalname, ext)
         .toLowerCase()
@@ -614,6 +627,71 @@ app.delete('/api/logos/:logoId', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to delete logo' })
+  }
+})
+
+// Logo Upload + Database Save
+app.post('/api/logos/upload', upload.single('logo'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No logo file uploaded' })
+    }
+
+    // Generate file path for database
+    const fileName = req.file.filename
+    const filePath = `/uploads/logos/${fileName}`
+    
+    // File is already in the correct location due to multer configuration
+    console.log(`✅ Logo uploaded: ${req.file.path}`)
+    
+    // Prepare logo data for database
+    const logoData = {
+      logo_id: req.body.logo_id || `logo_${Date.now()}`,
+      display_name: req.body.display_name || req.file.originalname,
+      logo_url: filePath,
+      usage_context: req.body.usage_context || 'general',
+      alt_text: req.body.alt_text || '',
+      width: req.body.width ? parseInt(req.body.width) : null,
+      height: req.body.height ? parseInt(req.body.height) : null,
+      file_size: req.file.size,
+      mime_type: req.file.mimetype,
+      metadata: req.body.metadata ? JSON.parse(req.body.metadata) : {},
+      is_active: true
+    }
+    
+    // Save to database
+    const dbResult = await DatabaseService.createLogo(logoData)
+    
+    if (!dbResult.success) {
+      // If database save fails, remove the uploaded file
+      const fs = await import('fs-extra')
+      await fs.remove(req.file.path)
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Database save failed: ' + dbResult.error 
+      })
+    }
+    
+    // Generate logo URL
+    const logoUrl = process.env.NODE_ENV === 'production' 
+      ? `https://eventhubble.onrender.com${filePath}`
+      : `http://localhost:${PORT}${filePath}`
+    
+    res.status(201).json({
+      success: true,
+      message: 'Logo uploaded and saved successfully',
+      logo: {
+        ...dbResult.logo,
+        logoUrl: logoUrl
+      }
+    })
+    
+  } catch (error) {
+    console.error('Logo upload error:', error)
+    res.status(500).json({ 
+      success: false, 
+      error: 'Upload failed: ' + error.message 
+    })
   }
 })
 
