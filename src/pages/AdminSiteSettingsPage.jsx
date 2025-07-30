@@ -52,11 +52,17 @@ const AdminSiteSettingsPage = () => {
       setLogo(logoUrl)
 
       // Load site settings
-      const settingsData = await DatabaseService.getSiteSettings()
-      setSettings(settingsData || [])
+      const settingsResponse = await DatabaseService.getSiteSettings()
+      if (settingsResponse && settingsResponse.success) {
+        setSettings(settingsResponse.raw_data || [])
+      } else {
+        console.error('Failed to load site settings:', settingsResponse?.error)
+        setSettings([])
+      }
     } catch (error) {
       console.error('Data loading error:', error)
       alert(language === 'TR' ? 'Veriler yüklenirken hata oluştu!' : 'Error loading data!')
+      setSettings([])
     } finally {
       setIsLoading(false)
     }

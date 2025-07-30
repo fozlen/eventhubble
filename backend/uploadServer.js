@@ -6,6 +6,7 @@ import fs from 'fs-extra'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import supabaseService from './supabaseService.js'
+import DatabaseService from './databaseService.js'
 
 dotenv.config()
 
@@ -218,8 +219,6 @@ app.use((error, req, res, next) => {
   })
 })
 
-import DatabaseService from './databaseService.js'
-
 // ===== DATABASE CONTENT APIS =====
 
 // Logos API
@@ -329,6 +328,18 @@ app.get('/api/settings', async (req, res) => {
   }
 })
 
+// Site Settings API (Alternative path for frontend compatibility)
+app.get('/api/site-settings', async (req, res) => {
+  try {
+    const category = req.query.category
+    const result = await DatabaseService.getSiteSettings(category)
+    res.json(result)
+  } catch (error) {
+    console.error('Site settings fetch error:', error)
+    res.status(500).json({ success: false, error: 'Failed to fetch site settings' })
+  }
+})
+
 // Site Settings CRUD - Update multiple settings
 app.put('/api/settings', async (req, res) => {
   try {
@@ -345,6 +356,26 @@ app.put('/api/settings', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to update settings' })
+  }
+})
+
+// Site Settings CRUD - Update multiple settings (Alternative path)
+app.put('/api/site-settings', async (req, res) => {
+  try {
+    const { settings } = req.body
+    if (!settings || !Array.isArray(settings)) {
+      return res.status(400).json({ success: false, error: 'Settings array is required' })
+    }
+    
+    const result = await DatabaseService.updateSiteSettings(settings)
+    if (result.success) {
+      res.json(result)
+    } else {
+      res.status(400).json(result)
+    }
+  } catch (error) {
+    console.error('Site settings update error:', error)
+    res.status(500).json({ success: false, error: 'Failed to update site settings' })
   }
 })
 
