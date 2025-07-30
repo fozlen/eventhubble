@@ -3,6 +3,7 @@ import LogoService from '../services/logoService'
 import { Menu, X, Globe, Search, Bell, User } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
+import { COLORS } from '../constants/colors'
 
 const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLanguage }) => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -55,11 +56,18 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
   }
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-primary/98 backdrop-blur-lg shadow-xl border-b border-white/10' 
-        : 'bg-primary'
-    }`}>
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'backdrop-blur-lg shadow-xl border-b border-white/10' 
+          : ''
+      }`}
+      style={{
+        backgroundColor: isScrolled 
+          ? `${COLORS.PRIMARY}F7` // 97% opacity
+          : COLORS.PRIMARY
+      }}
+    >
       <div className="px-3 py-2">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -70,21 +78,23 @@ const MobileHeader = ({ onSearchClick, onMenuClick, logo, language, toggleLangua
                 alt="EventHubble" 
                 className="h-6 w-auto" 
               />
-              <span className={`text-base font-bold transition-all duration-300 ${
-                isScrolled 
-                  ? 'text-white drop-shadow-sm' 
-                  : 'text-white'
-              }`}>
-                <span className={`transition-all duration-300 ${
-                  isScrolled 
-                    ? 'text-primary-cream drop-shadow-sm' 
-                    : 'text-primary-cream'
-                }`}>Event</span>
-                <span className={`transition-all duration-300 ${
-                  isScrolled 
-                    ? 'text-primary-light drop-shadow-sm' 
-                    : 'text-primary-light'
-                }`}>Hubble</span>
+              <span className="text-base font-bold transition-all duration-300">
+                <span 
+                  className={`transition-all duration-300 ${
+                    isScrolled ? 'drop-shadow-sm' : ''
+                  }`}
+                  style={{ color: COLORS.PRIMARY_CREAM }}
+                >
+                  Event
+                </span>
+                <span 
+                  className={`transition-all duration-300 ${
+                    isScrolled ? 'drop-shadow-sm' : ''
+                  }`}
+                  style={{ color: COLORS.PRIMARY_LIGHT }}
+                >
+                  Hubble
+                </span>
               </span>
             </div>
           </div>

@@ -127,7 +127,7 @@ const WorldNewsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24 sm:pb-0">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Mobile Header */}
       <div className="block sm:hidden">
         <MobileHeader
@@ -200,7 +200,7 @@ const WorldNewsPage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 py-8 flex-1">
         {/* Page Header */}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -299,7 +299,7 @@ const WorldNewsPage = () => {
         <Footer language={language} />
 
         {/* Mobile Navigation */}
-        <div className="block sm:hidden">
+        <div className="block sm:hidden mb-20">
           <MobileNavigation language={language} />
         </div>
       </div>
