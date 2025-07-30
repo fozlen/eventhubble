@@ -487,6 +487,7 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
     content_en: post?.content_en || post?.content || '',
     category: post?.category || 'Music',
     image: post?.image || '',
+    cover_image_id: post?.cover_image_id || null,
     url: post?.url || '',
     tags: post?.tags?.join(', ') || '',
     // Schema'ya uygun yeni alanlar
@@ -696,7 +697,11 @@ const BlogPostModal = ({ post, onClose, onSave, language = 'EN' }) => {
                 <div>
                   <SearchableImageSelect
                     value={formData.image}
-                    onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
+                    onChange={(imageUrl, imageId) => setFormData({ 
+                      ...formData, 
+                      image: imageUrl,
+                      cover_image_id: imageId 
+                    })}
                     label={language === 'TR' ? 'Blog Resmi' : 'Blog Image'}
                     placeholder={language === 'TR' ? 'Bir resim seçin...' : 'Select an image...'}
                     category={null}

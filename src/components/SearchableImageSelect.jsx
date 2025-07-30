@@ -83,13 +83,13 @@ const SearchableImageSelect = ({
 
   const handleSelect = (image) => {
     const imageUrl = getImageUrl(image)
-    onChange(imageUrl)
+    onChange(imageUrl, image.id)
     setIsOpen(false)
     setSearchTerm('')
   }
 
   const handleClear = () => {
-    onChange('')
+    onChange('', null)
     setIsOpen(false)
     setSearchTerm('')
   }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Phone, Globe as GlobeIcon, Share2, Heart, ExternalLink, Tag } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import DatabaseService from '../services/databaseService'
 // Image paths for API compatibility  
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
@@ -17,6 +18,8 @@ const BlogDetailPage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
   const [blogPost, setBlogPost] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [postImageUrl, setPostImageUrl] = useState('')
   const { id } = useParams()
   const navigate = useNavigate()
 
@@ -39,6 +42,7 @@ const BlogDetailPage = () => {
   }, [id, language])
 
   const loadBlogPost = async () => {
+    setIsLoading(true)
     try {
       const response = await fetch(`${API_BASE_URL}/api/blog-posts/${id}`)
       if (response.ok) {
@@ -51,6 +55,8 @@ const BlogDetailPage = () => {
           content: language === 'TR' ? (post.content_tr || post.content) : (post.content_en || post.content)
         }
         setBlogPost(localizedPost)
+        // Load image for the post
+        await loadPostImage(localizedPost)
       } else {
         console.warn(`Blog post ${id} not found via API, trying localStorage...`)
         loadFromLocalStorage()
@@ -58,10 +64,12 @@ const BlogDetailPage = () => {
     } catch (error) {
       console.warn('Error loading blog post from API:', error.message)
       loadFromLocalStorage()
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  const loadFromLocalStorage = () => {
+  const loadFromLocalStorage = async () => {
     try {
       const storedPosts = localStorage.getItem('blogPosts')
       if (storedPosts) {
@@ -75,6 +83,8 @@ const BlogDetailPage = () => {
             content: language === 'TR' ? (post.content_tr || post.content) : (post.content_en || post.content)
           }
           setBlogPost(localizedPost)
+          // Load image for the post
+          await loadPostImage(localizedPost)
         } else {
           setBlogPost(null)
         }
@@ -84,6 +94,27 @@ const BlogDetailPage = () => {
     } catch (error) {
       console.error('Error loading from localStorage:', error)
       setBlogPost(null)
+    }
+  }
+
+  // Load image for blog post
+  const loadPostImage = async (post) => {
+    if (post.image) {
+      setPostImageUrl(post.image) // Direct image URL (legacy)
+    } else if (post.cover_image_id) {
+      try {
+        const image = await DatabaseService.getImageById(post.cover_image_id)
+        if (image) {
+          setPostImageUrl(DatabaseService.getImageUrl(image))
+        } else {
+          setPostImageUrl('/Logo.png') // Fallback
+        }
+      } catch (error) {
+        console.warn(`Failed to load image ${post.cover_image_id}:`, error)
+        setPostImageUrl('/Logo.png') // Fallback
+      }
+    } else {
+      setPostImageUrl('/Logo.png') // Fallback
     }
   }
 
@@ -154,7 +185,19 @@ const BlogDetailPage = () => {
     return translations[category] || category
   }
 
-  // Loading removed for better UX
+  // Show loading while fetching
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-lg text-text">
+            {language === 'TR' ? 'Yükleniyor...' : 'Loading...'}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   if (!blogPost) {
     return (
@@ -254,9 +297,12 @@ const BlogDetailPage = () => {
         <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           {/* Featured Image */}
           <img
-            src={blogPost.image}
+            src={postImageUrl || '/Logo.png'}
             alt={blogPost.title}
             className="w-full h-64 md:h-96 object-cover"
+            onError={(e) => {
+              e.target.src = '/Logo.png' // Fallback on error
+            }}
           />
           
           {/* Article Content */}

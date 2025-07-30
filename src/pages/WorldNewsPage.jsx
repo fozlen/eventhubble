@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { Sun, Moon, Globe, User, Calendar, ArrowRight } from 'lucide-react'
 import CacheService from '../services/cacheService'
 import LogoService from '../services/logoService'
+import DatabaseService from '../services/databaseService'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 import Footer from '../components/Footer'
@@ -14,6 +15,7 @@ const WorldNewsPage = () => {
   const [newsData, setNewsData] = useState([])
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [logos, setLogos] = useState({})
+  const [images, setImages] = useState({})
 
 
 
@@ -52,6 +54,8 @@ const WorldNewsPage = () => {
       try {
         const posts = await CacheService.getBlogPosts(language)
         setNewsData(posts)
+        // Load images for posts that have cover_image_id
+        loadPostImages(posts)
       } catch (error) {
         if (!import.meta.env.PROD) {
           console.error('Error loading blog posts:', error)
@@ -64,6 +68,33 @@ const WorldNewsPage = () => {
 
     loadBlogPosts()
   }, [language])
+
+  // Load images for blog posts
+  const loadPostImages = async (posts) => {
+    const imageMap = {}
+    for (const post of posts) {
+      if (post.cover_image_id) {
+        try {
+          const image = await DatabaseService.getImageById(post.cover_image_id)
+          if (image) {
+            imageMap[post.cover_image_id] = DatabaseService.getImageUrl(image)
+          }
+        } catch (error) {
+          console.warn(`Failed to load image ${post.cover_image_id}:`, error)
+        }
+      }
+    }
+    setImages(imageMap)
+  }
+
+  // Get image URL for a blog post
+  const getPostImageUrl = (post) => {
+    if (post.image) return post.image // Direct image URL (legacy)
+    if (post.cover_image_id && images[post.cover_image_id]) {
+      return images[post.cover_image_id]
+    }
+    return '/Logo.png' // Fallback image
+  }
 
   // Update page title based on language
   useEffect(() => {
@@ -190,9 +221,12 @@ const WorldNewsPage = () => {
                 {/* Image */}
                 <div className="aspect-video bg-gray-200 overflow-hidden">
                   <img 
-                    src={post.image} 
+                    src={getPostImageUrl(post)} 
                     alt={language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title)}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = '/Logo.png' // Fallback on error
+                    }}
                   />
                 </div>
                 
@@ -206,14 +240,22 @@ const WorldNewsPage = () => {
                     <div className="flex items-center space-x-1 text-gray-500 text-sm">
                       <Calendar className="h-4 w-4" />
                       <span>
-                        {post.date ? new Date(post.date).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
+                        {(post.created_at || post.date) ? new Date(post.created_at || post.date).toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
-                        }) : 'Tarih belirtilmemiş'}
+                        }) : (language === 'TR' ? 'Tarih belirtilmemiş' : 'Date not specified')}
                       </span>
                     </div>
                   </div>
+                  
+                  {/* Author */}
+                  {post.author_name && (
+                    <div className="flex items-center space-x-1 text-gray-500 text-xs mb-3">
+                      <User className="h-3 w-3" />
+                      <span>{post.author_name}</span>
+                    </div>
+                  )}
                   
                   {/* Title */}
                   <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
