@@ -1,7 +1,7 @@
 // Logo service for API-based logo management with local fallbacks
 class LogoService {
   // API Base URL configuration - standardized
-  static API_BASE_URL = import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001'
+  static API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 
   // Logo cache for better performance
   static logoCache = new Map()

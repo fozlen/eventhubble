@@ -280,19 +280,20 @@ class DatabaseService {
 
   // ===== UTILITY FUNCTIONS =====
   static getImageUrl(image) {
-    if (!image) return '/Logo.png' // fallback
+    if (!image) return `${this.API_BASE_URL}/assets/Logo.png` // API-based fallback
     
     if (image.file_path) {
       // If it's a full URL, return as is
       if (image.file_path.startsWith('http')) {
         return image.file_path
       }
-      // If it's a relative path, make it absolute
-      return image.file_path.startsWith('/') ? image.file_path : `/${image.file_path}`
+      // If it's a relative path, make it absolute with API base URL
+      const fullPath = image.file_path.startsWith('/') ? image.file_path : `/${image.file_path}`
+      return `${this.API_BASE_URL}${fullPath}`
     }
     
-    // Fallback to filename
-    return `/${image.filename}`
+    // Fallback to filename with API base URL
+    return `${this.API_BASE_URL}/${image.filename}`
   }
 
   static getLogoUrl(logo) {

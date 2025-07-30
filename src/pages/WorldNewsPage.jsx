@@ -93,7 +93,8 @@ const WorldNewsPage = () => {
     if (post.cover_image_id && images[post.cover_image_id]) {
       return images[post.cover_image_id]
     }
-    return '/Logo.png' // Fallback image
+    // Use API base URL for fallback instead of relative path
+    return logos.main || `${LogoService.API_BASE_URL}/assets/Logo.png`
   }
 
   // Update page title based on language
@@ -122,7 +123,7 @@ const WorldNewsPage = () => {
 
   // Get appropriate logo based on theme
   const getLogo = () => {
-    return logos.main || LogoService.API_BASE_URL + '/assets/Logo.png'
+    return logos.main || `${LogoService.API_BASE_URL}/assets/Logo.png`
   }
 
   return (
@@ -225,7 +226,10 @@ const WorldNewsPage = () => {
                     alt={language === 'TR' ? (post.title_tr || post.title) : (post.title_en || post.title)}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.target.src = '/Logo.png' // Fallback on error
+                      // Prevent infinite fallback loop
+                      if (!e.target.src.includes('Logo.png')) {
+                        e.target.src = `${LogoService.API_BASE_URL}/assets/Logo.png`
+                      }
                     }}
                   />
                 </div>

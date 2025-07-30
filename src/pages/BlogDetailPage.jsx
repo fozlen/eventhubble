@@ -309,11 +309,14 @@ const BlogDetailPage = () => {
         <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           {/* Featured Image */}
           <img
-            src={postImageUrl || '/Logo.png'}
+            src={postImageUrl || `${API_BASE_URL}/assets/Logo.png`}
             alt={blogPost.title}
             className="w-full h-64 md:h-96 object-cover"
             onError={(e) => {
-              e.target.src = '/Logo.png' // Fallback on error
+              // Prevent infinite fallback loop
+              if (!e.target.src.includes('Logo.png')) {
+                e.target.src = `${API_BASE_URL}/assets/Logo.png`
+              }
             }}
           />
           
