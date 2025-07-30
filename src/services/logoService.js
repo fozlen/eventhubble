@@ -5,7 +5,7 @@ class LogoService {
 
   // Logo cache for better performance
   static logoCache = new Map()
-  static cacheExpiry = 5 * 60 * 1000 // 5 minutes
+  static cacheExpiry = 30 * 1000 // 30 seconds for faster updates
   
   // Cache logos in localStorage to avoid repeated API calls
   static async getLogo(type = 'main') {
