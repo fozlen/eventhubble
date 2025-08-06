@@ -232,13 +232,20 @@ async function hashToken(token) {
 }
 
 function getCookieOptions(isRefresh = false) {
-  return {
+  const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     path: '/',
     maxAge: isRefresh ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000 // 7 days for refresh, 1 hour for access
   }
+  
+  // Set domain for production
+  if (process.env.NODE_ENV === 'production') {
+    options.domain = '.eventhubble.com' // Allow cookies for all subdomains
+  }
+  
+  return options
 }
 
 // =====================================
@@ -394,6 +401,28 @@ app.get('/api/debug/user', authMiddleware(), async (req, res) => {
     })
   } catch (error) {
     console.error('Error in debug endpoint:', error)
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+// Test endpoint to check cookies and authentication
+app.get('/api/debug/cookies', async (req, res) => {
+  try {
+    res.json({ 
+      success: true, 
+      data: {
+        cookies: req.cookies,
+        headers: {
+          'user-agent': req.headers['user-agent'],
+          'origin': req.headers['origin'],
+          'referer': req.headers['referer']
+        },
+        ip: req.ip,
+        timestamp: new Date().toISOString()
+      }
+    })
+  } catch (error) {
+    console.error('Error in cookies debug endpoint:', error)
     res.status(500).json({ success: false, error: error.message })
   }
 })
