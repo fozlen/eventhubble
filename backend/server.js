@@ -340,9 +340,9 @@ app.post('/api/auth/login', async (req, res) => {
         user: {
           id: user.id,
           email: user.email,
-          full_name: user.full_name,
+          full_name: user.full_name || null,
           role: user.role,
-          avatar_url: user.avatar_url
+          avatar_url: user.avatar_url || null
         },
         csrfToken
       }

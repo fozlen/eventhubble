@@ -82,15 +82,20 @@ class SupabaseService {
       // Hash password
       const password_hash = await bcrypt.hash(userData.password, 10)
       
+      const userInsertData = {
+        email: userData.email,
+        password_hash,
+        role: userData.role || 'viewer'
+      }
+      
+      // Only add full_name if it exists in database
+      if (userData.full_name) {
+        userInsertData.full_name = userData.full_name
+      }
+      
       const { data, error } = await supabaseAdmin
         .from('users')
-        .insert([{
-          email: userData.email,
-          password_hash,
-          full_name: userData.full_name,
-          role: userData.role || 'viewer',
-          preferences: userData.preferences || {}
-        }])
+        .insert([userInsertData])
         .select()
         .single()
 
@@ -148,7 +153,7 @@ class SupabaseService {
         throw new Error('Invalid credentials')
       }
 
-      // Check if account is locked
+      // Check if account is locked (only if locked_until column exists)
       if (user.locked_until && new Date() < new Date(user.locked_until)) {
         throw new Error('Account is temporarily locked')
       }
@@ -156,28 +161,40 @@ class SupabaseService {
       // Verify password
       const isValid = await bcrypt.compare(password, user.password_hash)
       if (!isValid) {
-        // Increment login attempts
-        await this.incrementLoginAttempts(user.id)
+        // Increment login attempts (only if login_attempts column exists)
+        try {
+          await this.incrementLoginAttempts(user.id)
+        } catch (attemptError) {
+          console.warn('Could not increment login attempts:', attemptError.message)
+        }
         throw new Error('Invalid credentials')
       }
 
-      // Reset login attempts on successful login
-      await this.resetLoginAttempts(user.id)
+      // Reset login attempts on successful login (only if columns exist)
+      try {
+        await this.resetLoginAttempts(user.id)
+      } catch (resetError) {
+        console.warn('Could not reset login attempts:', resetError.message)
+      }
 
-      // Update last login
-      await supabase
-        .from('users')
-        .update({ last_login: new Date().toISOString() })
-        .eq('id', user.id)
+      // Update last login (only if last_login column exists)
+      try {
+        await supabase
+          .from('users')
+          .update({ last_login: new Date().toISOString() })
+          .eq('id', user.id)
+      } catch (lastLoginError) {
+        console.warn('Could not update last login:', lastLoginError.message)
+      }
 
       return {
         user: {
           id: user.id,
           email: user.email,
-          full_name: user.full_name,
+          full_name: user.full_name || null,
           role: user.role,
-          avatar_url: user.avatar_url,
-          preferences: user.preferences
+          avatar_url: user.avatar_url || null,
+          preferences: user.preferences || {}
         }
       }
     } catch (error) {
