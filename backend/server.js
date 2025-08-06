@@ -100,7 +100,11 @@ app.get('/api/test', (req, res) => {
   res.json({ 
     success: true, 
     message: 'Backend is working!',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    cloudinaryConfigured: isCloudinaryConfigured,
+    cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME ? 'Set' : 'Not Set',
+    cloudinaryApiKey: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Not Set',
+    cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set'
   })
 })
 
@@ -349,7 +353,7 @@ app.post('/api/logos',
       } else if (req.file) {
         console.log('Cloudinary not configured, using direct file upload')
         // For now, just use a placeholder URL
-        logoUrl = 'https://via.placeholder.com/300x100?text=Logo'
+        logoUrl = 'https://placehold.co/300x100/6B7280/FFFFFF?text=Logo'
       }
 
       const logoData = {

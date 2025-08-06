@@ -43,9 +43,9 @@ CREATE POLICY "Allow admin users to delete logos" ON public.logos
 
 -- Insert some default logos
 INSERT INTO public.logos (variant, url, title, alt_text, is_active, display_order) VALUES
-('main', 'https://via.placeholder.com/300x100/3B82F6/FFFFFF?text=EventHubble', 'EventHubble Main Logo', 'EventHubble - Event Management Platform', true, 1),
-('footer', 'https://via.placeholder.com/200x60/6B7280/FFFFFF?text=EventHubble', 'EventHubble Footer Logo', 'EventHubble Footer', true, 2),
-('favicon', 'https://via.placeholder.com/32x32/3B82F6/FFFFFF?text=EH', 'EventHubble Favicon', 'EventHubble Favicon', true, 3)
+('main', 'https://placehold.co/300x100/3B82F6/FFFFFF?text=EventHubble', 'EventHubble Main Logo', 'EventHubble - Event Management Platform', true, 1),
+('footer', 'https://placehold.co/200x60/6B7280/FFFFFF?text=EventHubble', 'EventHubble Footer Logo', 'EventHubble Footer', true, 2),
+('favicon', 'https://placehold.co/32x32/3B82F6/FFFFFF?text=EH', 'EventHubble Favicon', 'EventHubble Favicon', true, 3)
 ON CONFLICT (variant) DO NOTHING;
 
 -- Create function to update updated_at timestamp

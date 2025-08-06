@@ -130,7 +130,7 @@ const AdminLogosPage = () => {
     if (logoItem.url && logoItem.url.startsWith('http')) {
       return logoItem.url
     }
-    return logoItem.url || 'https://via.placeholder.com/300x100?text=Logo'
+    return logoItem.url || 'https://placehold.co/300x100/6B7280/FFFFFF?text=Logo'
   }
 
   const formatFileSize = (bytes) => {
