@@ -68,13 +68,22 @@ class ApiService {
   // =====================================
 
   async login(email, password) {
+    console.log('=== LOGIN REQUEST START ===')
+    console.log('Email:', email)
+    
     const result = await this.request('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password })
     })
     
+    console.log('=== LOGIN RESPONSE ===')
+    console.log('Success:', result.success)
+    console.log('CSRF Token present:', !!result.data?.csrfToken)
+    console.log('User data:', result.data?.user)
+    
     if (result.success && result.data.csrfToken) {
       this.setCsrfToken(result.data.csrfToken)
+      console.log('CSRF token set in API service')
     }
     
     return result

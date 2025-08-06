@@ -49,13 +49,16 @@ const authMiddleware = (requiredRoles = []) => {
       // Verify access token
       const decoded = verifyToken(accessToken)
       console.log('Decoded token:', decoded)
+      console.log('Token type:', decoded?.type)
+      console.log('Token user ID:', decoded?.id)
       
       if (!decoded || decoded.type !== 'access') {
         console.log('Invalid token:', { decoded, type: decoded?.type })
         return res.status(401).json({ 
           success: false, 
           error: 'Invalid access token',
-          code: 'TOKEN_INVALID'
+          code: 'TOKEN_INVALID',
+          details: { decoded, type: decoded?.type }
         })
       }
 

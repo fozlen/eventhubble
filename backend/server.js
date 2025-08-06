@@ -294,9 +294,15 @@ app.post('/api/auth/login', async (req, res) => {
 
     // Generate tokens
     const tokens = generateTokens(user)
+    console.log('=== TOKEN GENERATION ===')
+    console.log('User ID:', user.id)
+    console.log('User role:', user.role)
+    console.log('Access token length:', tokens.accessToken.length)
+    console.log('Refresh token length:', tokens.refreshToken.length)
     
     // Generate CSRF token
     const csrfToken = crypto.randomBytes(32).toString('hex')
+    console.log('CSRF token length:', csrfToken.length)
     
     // Get client information
     const ipAddress = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'] || '127.0.0.1'
@@ -321,9 +327,13 @@ app.post('/api/auth/login', async (req, res) => {
     }
     
     // Set cookies
-    res.cookie('accessToken', tokens.accessToken, getCookieOptions(false))
+    const cookieOptions = getCookieOptions(false)
+    console.log('Cookie options:', cookieOptions)
+    
+    res.cookie('accessToken', tokens.accessToken, cookieOptions)
     res.cookie('refreshToken', tokens.refreshToken, getCookieOptions(true))
     
+    console.log('Cookies set successfully')
     console.log('Login successful for:', email)
     
     res.json({ 
