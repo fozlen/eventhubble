@@ -460,7 +460,9 @@ app.post('/api/logos',
       console.log('=== LOGO UPLOAD REQUEST START ===')
       console.log('User:', req.user)
       console.log('User role:', req.user?.role)
+      console.log('User ID:', req.user?.id)
       console.log('Request headers:', req.headers)
+      console.log('Request cookies:', req.cookies)
       console.log('Request body:', req.body)
       console.log('Request file:', req.file ? {
         fieldname: req.file.fieldname,

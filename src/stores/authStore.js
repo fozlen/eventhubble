@@ -40,9 +40,12 @@ const useAuthStore = create(
         })
 
         try {
+          console.log('=== LOGIN START ===')
           const response = await apiService.login(email, password)
+          console.log('Login response:', response)
           
           if (response.success) {
+            console.log('Login successful, setting CSRF token:', response.data.csrfToken)
             set((state) => {
               state.user = response.data.user
               state.isAuthenticated = true
@@ -50,8 +53,14 @@ const useAuthStore = create(
               state.isLoading = false
               state.error = null
             })
+            
+            // Also set CSRF token in API service
+            apiService.setCsrfToken(response.data.csrfToken)
+            console.log('CSRF token set in API service')
+            
             return { success: true }
           } else {
+            console.log('Login failed:', response.error)
             set((state) => {
               state.error = response.error
               state.isLoading = false
@@ -59,6 +68,7 @@ const useAuthStore = create(
             return { success: false, error: response.error }
           }
         } catch (error) {
+          console.log('Login error:', error)
           set((state) => {
             state.error = error.message
             state.isLoading = false

@@ -31,6 +31,12 @@ const authMiddleware = (requiredRoles = []) => {
       // Get token from httpOnly cookie
       const accessToken = req.cookies?.accessToken
       
+      console.log('=== TOKEN DEBUG ===')
+      console.log('All cookies:', req.cookies)
+      console.log('Access token present:', !!accessToken)
+      console.log('Access token length:', accessToken?.length)
+      console.log('Access token preview:', accessToken ? `${accessToken.substring(0, 20)}...` : 'None')
+      
       if (!accessToken) {
         console.log('No access token found')
         return res.status(401).json({ 
