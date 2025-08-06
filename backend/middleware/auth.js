@@ -70,10 +70,10 @@ const authMiddleware = (requiredRoles = []) => {
       if (requiredRoles.length > 0) {
         console.log('Checking role permissions:', { userRole: user.role, requiredRoles })
         
-        // Admin has all permissions
+        // Admin and super_admin have all permissions - they can access ANY endpoint
         if (user.role === 'admin' || user.role === 'super_admin') {
-          console.log('Admin access granted')
-          // Admin can access everything
+          console.log('Admin/Super Admin access granted - full permissions')
+          // Admin can access everything, no further checks needed
         } else if (!requiredRoles.includes(user.role)) {
           console.log('Insufficient permissions:', { userRole: user.role, requiredRoles })
           return res.status(403).json({ 
