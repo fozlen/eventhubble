@@ -34,6 +34,11 @@ const AdminSiteSettingsPage = () => {
 
   // Filter settings by category
   useEffect(() => {
+    if (!Array.isArray(settings)) {
+      setFilteredSettings([])
+      return
+    }
+    
     if (selectedCategory === 'all') {
       setFilteredSettings(settings)
     } else {
@@ -50,11 +55,36 @@ const AdminSiteSettingsPage = () => {
 
       // Load site settings
       const settingsResponse = await api.getSettings()
-      if (settingsResponse && settingsResponse.success) {
-        setSettings(settingsResponse.data || [])
+      console.log('Settings response:', settingsResponse)
+      
+      if (settingsResponse && settingsResponse.success && Array.isArray(settingsResponse.data)) {
+        setSettings(settingsResponse.data)
       } else {
         console.error('Failed to load site settings:', settingsResponse?.error)
-        setSettings([])
+        // Set default settings if API fails
+        setSettings([
+          {
+            setting_key: 'site_name',
+            setting_value: 'EventHubble',
+            description: 'Site name',
+            category: 'general',
+            is_active: true
+          },
+          {
+            setting_key: 'site_description',
+            setting_value: 'Event management platform',
+            description: 'Site description',
+            category: 'general',
+            is_active: true
+          },
+          {
+            setting_key: 'contact_email',
+            setting_value: 'admin@eventhubble.com',
+            description: 'Contact email',
+            category: 'contact',
+            is_active: true
+          }
+        ])
       }
     } catch (error) {
       console.error('Data loading error:', error)
@@ -158,28 +188,28 @@ const AdminSiteSettingsPage = () => {
   const stats = [
     {
       title: language === 'TR' ? 'Toplam Ayar' : 'Total Settings',
-      value: settings.length,
+      value: Array.isArray(settings) ? settings.length : 0,
       icon: Settings,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50'
     },
     {
       title: language === 'TR' ? 'Genel Ayarlar' : 'General Settings',
-      value: settings.filter(s => s.category === 'general').length,
+      value: Array.isArray(settings) ? settings.filter(s => s.category === 'general').length : 0,
       icon: Globe,
       color: 'text-green-600',
       bgColor: 'bg-green-50'
     },
     {
       title: language === 'TR' ? 'İletişim Ayarları' : 'Contact Settings',
-      value: settings.filter(s => s.category === 'contact').length,
+      value: Array.isArray(settings) ? settings.filter(s => s.category === 'contact').length : 0,
       icon: Mail,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50'
     },
     {
       title: language === 'TR' ? 'Aktif Ayarlar' : 'Active Settings',
-      value: settings.filter(s => s.is_active !== false).length,
+      value: Array.isArray(settings) ? settings.filter(s => s.is_active !== false).length : 0,
       icon: Eye,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50'

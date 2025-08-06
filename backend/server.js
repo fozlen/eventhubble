@@ -918,11 +918,29 @@ app.get('/api/settings', async (req, res) => {
     } catch (dbError) {
       console.warn('Settings fetch failed, returning defaults:', dbError.message)
       // Return default settings if database fails
-      const defaultSettings = {
-        site_name: { value: 'EventHubble', type: 'text', category: 'general' },
-        site_description: { value: 'Event management platform', type: 'text', category: 'general' },
-        contact_email: { value: 'admin@eventhubble.com', type: 'email', category: 'contact' }
-      }
+      const defaultSettings = [
+        {
+          setting_key: 'site_name',
+          setting_value: 'EventHubble',
+          description: 'Site name',
+          category: 'general',
+          is_active: true
+        },
+        {
+          setting_key: 'site_description',
+          setting_value: 'Event management platform',
+          description: 'Site description',
+          category: 'general',
+          is_active: true
+        },
+        {
+          setting_key: 'contact_email',
+          setting_value: 'admin@eventhubble.com',
+          description: 'Contact email',
+          category: 'contact',
+          is_active: true
+        }
+      ]
       res.json({ success: true, data: defaultSettings })
     }
   } catch (error) {
