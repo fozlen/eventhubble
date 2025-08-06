@@ -93,8 +93,14 @@ class ApiService {
   }
 
   async getCurrentUser() {
-    // Temporarily disabled to avoid authentication errors
-    return { success: false, error: 'Authentication not implemented yet' }
+    try {
+      return await this.request('/api/auth/me', {
+        auth: true
+      })
+    } catch (error) {
+      console.warn('Get current user failed:', error.message)
+      return { success: false, error: error.message }
+    }
   }
 
   // =====================================
