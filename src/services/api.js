@@ -152,26 +152,21 @@ class ApiService {
     
     console.log('=== LOGO UPLOAD REQUEST ===')
     console.log('URL:', url)
-    console.log('CSRF Token:', this.csrfToken)
-    console.log('CSRF Token length:', this.csrfToken?.length)
-    console.log('FormData entries:')
-    for (let [key, value] of formData.entries()) {
-      console.log(`  ${key}:`, value instanceof File ? `File(${value.name}, ${value.size} bytes)` : value)
-    }
+    console.log('CSRF Token present:', !!this.csrfToken)
+    console.log('FormData entries count:', formData.entries().length)
     
     try {
       const response = await fetch(url, {
         method: 'POST',
         credentials: 'include',
         headers: {
-          'X-CSRF-Token': this.csrfToken
+          'X-CSRF-Token': this.csrfToken || ''
         },
         body: formData
       })
 
       console.log('Response status:', response.status)
       console.log('Response status text:', response.statusText)
-      console.log('Response headers:', response.headers)
 
       if (!response.ok) {
         const error = await response.json()

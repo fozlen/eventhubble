@@ -64,17 +64,14 @@ app.use(helmet({
   }
 }))
 
-// CORS configuration - More specific for production
+// CORS configuration - More permissive for debugging
 app.use(cors({
-  origin: [
-    'https://eventhubble.com',
-    'https://www.eventhubble.com',
-    'http://localhost:5173',
-    'http://localhost:3000'
-  ],
+  origin: true, // Allow all origins temporarily
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'Origin', 'Accept', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'Origin', 'Accept', 'X-Requested-With', 'User-Agent'],
+  exposedHeaders: ['Set-Cookie'],
+  maxAge: 86400 // 24 hours
 }))
 
 // Middleware
@@ -501,9 +498,8 @@ app.post('/api/logos',
       console.log('User:', req.user)
       console.log('User role:', req.user?.role)
       console.log('User ID:', req.user?.id)
-      console.log('Request headers:', req.headers)
-      console.log('Request cookies:', req.cookies)
-      console.log('Request body:', req.body)
+      console.log('Request cookies count:', Object.keys(req.cookies || {}).length)
+      console.log('Request body keys:', Object.keys(req.body || {}))
       console.log('Request file:', req.file ? {
         fieldname: req.file.fieldname,
         originalname: req.file.originalname,
