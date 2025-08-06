@@ -154,9 +154,9 @@ app.post('/api/auth/login', async (req, res) => {
       })
     }
 
-    const result = await supabaseService.login(email, password)
-    
-    if (result.success) {
+    try {
+      const result = await supabaseService.login(email, password)
+      
       // Generate tokens
       const tokens = generateTokens(result.user)
       
@@ -187,12 +187,16 @@ app.post('/api/auth/login', async (req, res) => {
           csrfToken
         }
       })
-    } else {
-      res.status(401).json({ success: false, error: result.error })
+    } catch (loginError) {
+      console.error('Login error:', loginError)
+      res.status(401).json({ 
+        success: false, 
+        error: loginError.message || 'Invalid credentials' 
+      })
     }
   } catch (error) {
-    console.error('Error logging in:', error)
-    res.status(401).json({ success: false, error: error.message })
+    console.error('Error in login endpoint:', error)
+    res.status(500).json({ success: false, error: 'Internal server error' })
   }
 })
 
