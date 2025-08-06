@@ -33,28 +33,10 @@ const AdminEventManagementPage = () => {
     loadLogo()
   }, [])
 
-  // Check authentication
+  // Load events
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('adminAuthenticated')
-    const loginTime = localStorage.getItem('adminLoginTime')
-    
-    if (!isAuthenticated || !loginTime) {
-      navigate('/admin/login')
-      return
-    }
-
-    // Check if session is expired (24 hours)
-    const now = Date.now()
-    const loginTimestamp = parseInt(loginTime)
-    if (now - loginTimestamp > 24 * 60 * 60 * 1000) {
-      localStorage.removeItem('adminAuthenticated')
-      localStorage.removeItem('adminLoginTime')
-      navigate('/admin/login')
-      return
-    }
-
     loadEvents()
-  }, [navigate])
+  }, [])
 
   const loadEvents = async () => {
     try {
@@ -87,9 +69,7 @@ const AdminEventManagementPage = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('adminAuthenticated')
-    localStorage.removeItem('adminLoginTime')
-    navigate('/admin/login')
+    navigate('/admin/dashboard')
   }
 
   const handleAddEvent = () => {

@@ -33,28 +33,10 @@ const AdminBlogManagementPage = () => {
     loadLogo()
   }, [])
 
-  // Check authentication
+  // Load blog posts
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('adminAuthenticated')
-    const loginTime = localStorage.getItem('adminLoginTime')
-    
-    if (!isAuthenticated || !loginTime) {
-      navigate('/admin/login')
-      return
-    }
-
-    // Check if session is expired (24 hours)
-    const now = Date.now()
-    const loginTimestamp = parseInt(loginTime)
-    if (now - loginTimestamp > 24 * 60 * 60 * 1000) {
-      localStorage.removeItem('adminAuthenticated')
-      localStorage.removeItem('adminLoginTime')
-      navigate('/admin/login')
-      return
-    }
-
     loadBlogPosts()
-  }, [navigate])
+  }, [])
 
   const loadBlogPosts = async () => {
     try {
@@ -85,9 +67,7 @@ const AdminBlogManagementPage = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('adminAuthenticated')
-    localStorage.removeItem('adminLoginTime')
-    navigate('/admin/login')
+    navigate('/admin/dashboard')
   }
 
   const handleAddPost = () => {
