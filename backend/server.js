@@ -5,7 +5,7 @@ import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
 import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
-import supabaseService from './services/supabaseService.js'
+import supabaseService, { supabase } from './services/supabaseService.js'
 import authMiddleware, { 
   rateLimit
 } from './middleware/auth.js'
@@ -106,6 +106,41 @@ app.get('/api/test', (req, res) => {
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Not Set',
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set'
   })
+})
+
+// Test logos table endpoint
+app.get('/api/test/logos-table', async (req, res) => {
+  try {
+    console.log('Testing logos table...')
+    
+    // Test if table exists
+    const { data: logos, error } = await supabase
+      .from('logos')
+      .select('*')
+      .limit(1)
+    
+    if (error) {
+      console.error('Logos table test error:', error)
+      res.json({ 
+        success: false, 
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      })
+    } else {
+      console.log('Logos table test successful:', logos)
+      res.json({ 
+        success: true, 
+        message: 'Logos table exists and is accessible',
+        count: logos?.length || 0,
+        sample: logos?.[0] || null
+      })
+    }
+  } catch (error) {
+    console.error('Logos table test exception:', error)
+    res.status(500).json({ success: false, error: error.message })
+  }
 })
 
 // Test admin creation endpoint

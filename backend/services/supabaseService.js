@@ -1230,4 +1230,6 @@ class SupabaseService {
   }
 }
 
-export default new SupabaseService() 
+const supabaseService = new SupabaseService()
+export { supabase }
+export default supabaseService 
