@@ -13,9 +13,12 @@ class ApiService {
   }
 
   // Get headers with auth
-  getHeaders(includeAuth = false) {
-    const headers = {
-      'Content-Type': 'application/json'
+  getHeaders(includeAuth = false, isFormData = false) {
+    const headers = {}
+    
+    // Only add Content-Type for JSON requests
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json'
     }
     
     if (includeAuth && this.csrfToken) {
@@ -40,7 +43,7 @@ class ApiService {
         ...options,
         credentials: 'include', // Include cookies
         headers: {
-          ...this.getHeaders(options.auth),
+          ...this.getHeaders(options.auth, options.isFormData),
           ...options.headers
         }
       })
@@ -154,11 +157,13 @@ class ApiService {
     
     try {
       // Use the request method to ensure proper authentication
-      const response = await fetch(`${API_BASE_URL}/api/logos`, {
+      const url = `${API_BASE_URL}/api/logos`
+      const response = await fetch(url, {
         method: 'POST',
         credentials: 'include',
         headers: {
-          'X-CSRF-Token': this.csrfToken || ''
+          'X-CSRF-Token': this.csrfToken || '',
+          ...this.getHeaders(true, true) // Add authentication headers for FormData
         },
         body: formData
       })
