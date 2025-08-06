@@ -52,14 +52,24 @@ const queryClient = new QueryClient({
 const ProtectedRoute = ({ children, requiredRole = null }) => {
   const { isAuthenticated, user, hasRole } = useAuthStore()
   
+  console.log('ProtectedRoute check:', {
+    isAuthenticated,
+    user,
+    requiredRole,
+    hasRole: requiredRole ? hasRole(requiredRole) : 'N/A'
+  })
+  
   if (!isAuthenticated) {
+    console.log('Not authenticated, redirecting to login')
     return <Navigate to="/admin/login" replace />
   }
   
   if (requiredRole && !hasRole(requiredRole)) {
+    console.log(`User doesn't have required role: ${requiredRole}`)
     return <Navigate to="/admin/dashboard" replace />
   }
   
+  console.log('Access granted to protected route')
   return children
 }
 

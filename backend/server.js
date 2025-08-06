@@ -327,10 +327,17 @@ app.post('/api/logos',
   upload.single('logo'), 
   async (req, res) => {
     try {
+      console.log('Logo upload request received:', {
+        file: req.file ? 'File present' : 'No file',
+        body: req.body,
+        cloudinaryConfigured: isCloudinaryConfigured
+      })
+
       let logoUrl = req.body.url // Direct URL if provided
 
       // Upload to Cloudinary if file provided
       if (req.file && isCloudinaryConfigured) {
+        console.log('Uploading to Cloudinary...')
         const uploadResult = await new Promise((resolve, reject) => {
           cloudinary.uploader.upload_stream(
             {
@@ -348,24 +355,35 @@ app.post('/api/logos',
           ).end(req.file.buffer)
         })
         logoUrl = uploadResult.secure_url
+        console.log('Cloudinary upload successful:', logoUrl)
+      } else if (req.file) {
+        console.log('Cloudinary not configured, using direct file upload')
+        // For now, just use a placeholder URL
+        logoUrl = 'https://via.placeholder.com/300x100?text=Logo'
       }
 
       const logoData = {
-        variant: req.body.variant,
+        variant: req.body.variant || 'main',
         url: logoUrl,
-        title: req.body.title,
-        alt_text: req.body.alt_text,
-        is_active: req.body.is_active === 'true'
+        title: req.body.title || req.file?.originalname || 'Logo',
+        alt_text: req.body.alt_text || 'Logo',
+        is_active: req.body.is_active === 'true' || true
       }
+
+      console.log('Creating logo with data:', logoData)
 
       const logo = await supabaseService.createLogo(logoData)
       
-      // Logo created successfully
+      console.log('Logo created successfully:', logo)
       
       res.status(201).json({ success: true, data: logo })
     } catch (error) {
       console.error('Error creating logo:', error)
-      res.status(500).json({ success: false, error: error.message })
+      res.status(500).json({ 
+        success: false, 
+        error: error.message,
+        details: error.stack 
+      })
     }
   }
 )
