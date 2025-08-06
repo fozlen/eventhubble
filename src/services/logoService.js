@@ -17,6 +17,12 @@ class LogoService {
       }
 
       const response = await fetch(`${API_BASE_URL}/api/logos?active=true`)
+      
+      if (!response.ok) {
+        console.warn(`Logo fetch failed with status: ${response.status}`)
+        return `${API_BASE_URL}/assets/Logo.png`
+      }
+      
       const result = await response.json()
       
       if (result.success && result.data && result.data.length > 0) {

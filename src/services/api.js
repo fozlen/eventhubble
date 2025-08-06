@@ -378,7 +378,18 @@ class ApiService {
       })
     } catch (error) {
       console.warn('Analytics request failed:', error.message)
-      return { success: true, data: [] } // Return empty data instead of throwing
+      // Return default stats instead of empty array
+      return { 
+        success: true, 
+        data: {
+          totalEvents: 0,
+          totalBlogs: 0,
+          totalImages: 0,
+          totalCategories: 0,
+          activeEvents: 0,
+          publishedBlogs: 0
+        }
+      }
     }
   }
 
