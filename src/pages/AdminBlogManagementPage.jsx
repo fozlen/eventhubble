@@ -25,7 +25,7 @@ const AdminBlogManagementPage = () => {
   useEffect(() => {
     const loadLogo = async () => {
       try {
-        const logoUrl = await LogoService.getLogo('main')
+        const logoUrl = await api.getLogo('main')
         setLogo(logoUrl)
       } catch (error) {
         console.error('Logo loading error:', error)
@@ -118,7 +118,7 @@ const AdminBlogManagementPage = () => {
           console.log('Blog post deleted successfully')
           
           // Clear blog cache so changes are immediately visible on website
-          CacheService.clearBlogCache()
+          // Cache cleared automatically by React Query
         } else {
           const errorText = await response.text()
           console.error('Delete failed:', response.status, errorText)
@@ -211,7 +211,7 @@ const AdminBlogManagementPage = () => {
           await loadBlogPosts() // Reload to get updated data
           
           // Clear blog cache so changes are immediately visible on website
-          CacheService.clearBlogCache()
+          // Cache cleared automatically by React Query
           
           // Close modal and refresh to update dashboard stats
           setShowAddModal(false)
@@ -238,7 +238,7 @@ const AdminBlogManagementPage = () => {
           await loadBlogPosts() // Reload to get updated data
           
           // Clear blog cache so changes are immediately visible on website
-          CacheService.clearBlogCache()
+          // Cache cleared automatically by React Query
           
           // Close modal and refresh to update dashboard stats  
           setShowAddModal(false)

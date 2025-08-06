@@ -6,7 +6,7 @@ import {
   Tag, Eye, Hash, Palette, ChevronRight, Star, ArrowLeft 
 } from 'lucide-react'
 import { COLORS, getAdminColors } from '../constants/colors'
-import LogoService from '../services/logoService'
+import { api } from '../services/api'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
 
@@ -22,7 +22,7 @@ const AdminCategoriesPage = () => {
   useEffect(() => {
     const loadLogo = async () => {
       try {
-        const logoUrl = await LogoService.getLogo('main')
+        const logoUrl = await api.getLogo('main')
         setLogo(logoUrl)
       } catch (error) {
         console.error('Logo loading error:', error)

@@ -45,11 +45,11 @@ const AdminSiteSettingsPage = () => {
     setIsLoading(true)
     try {
       // Load logo
-        const logoUrl = await LogoService.getLogo('main')
+        const logoUrl = await api.getLogo('main')
         setLogo(logoUrl)
 
       // Load site settings
-      const settingsResponse = await DatabaseService.getSiteSettings()
+              const settingsResponse = await api.getSettings()
       if (settingsResponse && settingsResponse.success) {
         setSettings(settingsResponse.raw_data || [])
       } else {
@@ -96,7 +96,7 @@ const AdminSiteSettingsPage = () => {
         setting_value: newValue
       }
 
-      await DatabaseService.updateSiteSettings([updatedSetting])
+              await api.updateSettings([updatedSetting])
       
       // Update local state
       setSettings(prev => prev.map(setting => 

@@ -30,7 +30,7 @@ const AdminDashboard = () => {
 
   const loadLogo = async () => {
     try {
-      const logoUrl = await LogoService.getLogo('main')
+              const logoUrl = await api.getLogo('main')
       setLogo(logoUrl)
     } catch (error) {
       console.error('Logo loading error:', error)
@@ -40,7 +40,7 @@ const AdminDashboard = () => {
   const loadStats = async () => {
     try {
       setIsLoading(true)
-      const stats = await DatabaseService.getAdminDashboardStats()
+              const stats = await api.getAnalytics()
       setStats(stats)
     } catch (error) {
       console.error('Error loading stats:', error)

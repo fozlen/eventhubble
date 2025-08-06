@@ -24,7 +24,7 @@ const AdminEventManagementPage = () => {
   useEffect(() => {
     const loadLogo = async () => {
       try {
-        const logoUrl = await LogoService.getLogo('main')
+        const logoUrl = await api.getLogo('main')
         setLogo(logoUrl)
       } catch (error) {
         console.error('Logo loading error:', error)
@@ -61,7 +61,7 @@ const AdminEventManagementPage = () => {
       // Loading removed for better UX
       
       // Database'den etkinlikleri yükle
-      const dbEvents = await DatabaseService.getEvents()
+      const dbEvents = await api.getEvents()
       
       // Manuel etkinlikleri de yükle (fallback olarak)
       const storedEvents = localStorage.getItem('manualEvents')
@@ -115,7 +115,7 @@ const AdminEventManagementPage = () => {
         
         if (eventToDelete?.event_id) {
           // Database event - use API
-          await DatabaseService.deleteEvent(eventToDelete.event_id)
+          await api.deleteEvent(eventToDelete.event_id)
         } else {
           // Local event - remove from localStorage
           const storedEvents = localStorage.getItem('manualEvents')
@@ -160,7 +160,7 @@ const AdminEventManagementPage = () => {
         // Update existing event
         if (editingEvent.event_id) {
           // Database event - use API
-          await DatabaseService.updateEvent(editingEvent.event_id, eventData)
+          await api.updateEvent(editingEvent.event_id, eventData)
         } else {
           // Local event - update localStorage
           const storedEvents = localStorage.getItem('manualEvents')
@@ -184,7 +184,7 @@ const AdminEventManagementPage = () => {
             is_active: true
           }
           
-          await DatabaseService.createEvent(newEventData)
+          await api.createEvent(newEventData)
         } catch (dbError) {
           // Fallback to localStorage
           const newEvent = {

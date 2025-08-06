@@ -5,7 +5,7 @@ import {
   Upload, Crown, Trash2, Eye, ArrowLeft,
   Star, Download, Grid, List
 } from 'lucide-react'
-import LogoService from '../services/logoService'
+import { api } from '../services/api'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 
@@ -26,7 +26,7 @@ const AdminLogosPage = () => {
 
   const loadLogo = async () => {
     try {
-      const logoUrl = await LogoService.getLogo('main')
+              const logoUrl = await api.getLogo('main')
       setLogo(logoUrl)
     } catch (error) {
       console.error('Logo loading error:', error)
