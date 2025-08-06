@@ -81,7 +81,7 @@ const HomePage = () => {
     const loadCategories = async () => {
       try {
         const result = await api.getCategories()
-        const categoriesData = result.success ? result.data : result
+        const categoriesData = result.success && result.data ? result.data : []
         
         // Map categories with icons and counts
         const mappedCategories = categoriesData.map(cat => {
@@ -125,7 +125,7 @@ const HomePage = () => {
         }
         
         const result = await api.getEvents(params)
-        const eventsData = result.data || []
+        const eventsData = result.success && result.data ? result.data : []
         
         setEvents(eventsData)
       } catch (error) {
@@ -167,7 +167,7 @@ const HomePage = () => {
   }
 
   const getLogo = () => {
-    return logos.main || '/assets/Logo.png'
+    return logos.main || `${import.meta.env.VITE_API_URL || 'https://eventhubble.onrender.com'}/assets/Logo.svg`
   }
 
   const getSortLabel = () => {
@@ -185,7 +185,7 @@ const HomePage = () => {
 
   // Calculate dynamic counts for each category
   const categoriesWithCounts = categories.map(category => {
-    const count = events.filter(event => event.category === category.category_id).length
+    const count = Array.isArray(events) ? events.filter(event => event.category === category.category_id).length : 0
     return {
       ...category,
       count: count,
@@ -194,7 +194,7 @@ const HomePage = () => {
   })
 
   // Filtrelenmiş ve sıralanmış etkinlikler
-  const filteredEvents = events.filter(event => {
+  const filteredEvents = Array.isArray(events) ? events.filter(event => {
     if (selectedCategory && event.category !== selectedCategory) return false
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
@@ -214,7 +214,7 @@ const HomePage = () => {
       default:
         return 0
     }
-  })
+  }) : []
 
   return (
     <div className="min-h-screen bg-background pb-24 sm:pb-0">
