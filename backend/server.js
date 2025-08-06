@@ -422,6 +422,8 @@ app.post('/api/logos',
   async (req, res) => {
     try {
       console.log('=== LOGO UPLOAD REQUEST START ===')
+      console.log('User:', req.user)
+      console.log('User role:', req.user?.role)
       console.log('Request headers:', req.headers)
       console.log('Request body:', req.body)
       console.log('Request file:', req.file ? {
@@ -953,7 +955,20 @@ app.get('/api/settings', async (req, res) => {
         category, 
         isPublic: isPublic !== 'false' // Default to public only
       })
-      res.json({ success: true, data: settings })
+      
+      // Convert object to array format for frontend
+      const settingsArray = Object.entries(settings).map(([key, value]) => ({
+        setting_key: key,
+        setting_value: value.value,
+        setting_type: value.type,
+        category: value.category,
+        description: value.description,
+        is_public: value.is_public,
+        is_required: value.is_required,
+        is_active: true
+      }))
+      
+      res.json({ success: true, data: settingsArray })
     } catch (dbError) {
       console.warn('Settings fetch failed, returning defaults:', dbError.message)
       // Return default settings if database fails

@@ -24,10 +24,15 @@ const verifyToken = (token, secret = JWT_SECRET) => {
 const authMiddleware = (requiredRoles = []) => {
   return async (req, res, next) => {
     try {
+      console.log('=== AUTH MIDDLEWARE START ===')
+      console.log('Required roles:', requiredRoles)
+      console.log('Cookies:', req.cookies)
+      
       // Get token from httpOnly cookie
       const accessToken = req.cookies?.accessToken
       
       if (!accessToken) {
+        console.log('No access token found')
         return res.status(401).json({ 
           success: false, 
           error: 'Access token required',
@@ -37,7 +42,10 @@ const authMiddleware = (requiredRoles = []) => {
 
       // Verify access token
       const decoded = verifyToken(accessToken)
+      console.log('Decoded token:', decoded)
+      
       if (!decoded || decoded.type !== 'access') {
+        console.log('Invalid token:', { decoded, type: decoded?.type })
         return res.status(401).json({ 
           success: false, 
           error: 'Invalid access token',
@@ -47,7 +55,10 @@ const authMiddleware = (requiredRoles = []) => {
 
       // Check if user exists and is active
       const user = await supabaseService.getUserById(decoded.id)
+      console.log('Found user:', user)
+      
       if (!user || !user.is_active) {
+        console.log('User not found or inactive:', { user, isActive: user?.is_active })
         return res.status(401).json({ 
           success: false, 
           error: 'User not found or inactive',
@@ -57,10 +68,14 @@ const authMiddleware = (requiredRoles = []) => {
 
       // Check role permissions
       if (requiredRoles.length > 0) {
+        console.log('Checking role permissions:', { userRole: user.role, requiredRoles })
+        
         // Admin has all permissions
         if (user.role === 'admin' || user.role === 'super_admin') {
+          console.log('Admin access granted')
           // Admin can access everything
         } else if (!requiredRoles.includes(user.role)) {
+          console.log('Insufficient permissions:', { userRole: user.role, requiredRoles })
           return res.status(403).json({ 
             success: false, 
             error: 'Insufficient permissions',
@@ -79,6 +94,8 @@ const authMiddleware = (requiredRoles = []) => {
         full_name: user.full_name
       }
 
+      console.log('=== AUTH MIDDLEWARE SUCCESS ===')
+      console.log('User added to request:', req.user)
       next()
     } catch (error) {
       console.error('Auth middleware error:', error)
