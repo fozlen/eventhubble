@@ -42,7 +42,12 @@ const SearchableImageSelect = ({
         url += `?category=${category}`
       }
       
-      const response = await fetch(url)
+      const response = await fetch(url, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       const result = await response.json()
       
       // Handle different response formats

@@ -31,7 +31,12 @@ const ImagePicker = ({ isOpen, onClose, onSelect, selectedImage, category = null
         url += `?category=${selectedCategory}`
       }
       
-      const response = await fetch(url)
+      const response = await fetch(url, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       const result = await response.json()
       setImages(result.data || [])
     } catch (error) {
