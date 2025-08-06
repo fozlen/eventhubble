@@ -241,8 +241,7 @@ app.post('/api/logos',
 
       const logo = await supabaseService.createLogo(logoData)
       
-      // Emit real-time update
-      io.emit('content:updated', { type: 'logo', action: 'created', data: logo })
+      // Logo created successfully
       
       res.status(201).json({ success: true, data: logo })
     } catch (error) {
@@ -259,8 +258,7 @@ app.put('/api/logos/:id',
     try {
       const logo = await supabaseService.updateLogo(req.params.id, req.body)
       
-      // Emit real-time update
-      io.emit('content:updated', { type: 'logo', action: 'updated', data: logo })
+      // Logo updated successfully
       
       res.json({ success: true, data: logo })
     } catch (error) {
@@ -277,8 +275,7 @@ app.delete('/api/logos/:id',
     try {
       await supabaseService.deleteLogo(req.params.id)
       
-      // Emit real-time update
-      io.emit('content:updated', { type: 'logo', action: 'deleted', id: req.params.id })
+      // Logo deleted successfully
       
       res.json({ success: true, message: 'Logo deleted successfully' })
     } catch (error) {
@@ -336,7 +333,7 @@ app.post('/api/blogs',
       const blog = await supabaseService.createBlog(req.body)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'blog', action: 'created', data: blog })
+      
       
       res.status(201).json({ success: true, data: blog })
     } catch (error) {
@@ -354,7 +351,7 @@ app.put('/api/blogs/:id',
       const blog = await supabaseService.updateBlog(req.params.id, req.body)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'blog', action: 'updated', data: blog })
+      
       
       res.json({ success: true, data: blog })
     } catch (error) {
@@ -372,7 +369,7 @@ app.delete('/api/blogs/:id',
       await supabaseService.deleteBlog(req.params.id)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'blog', action: 'deleted', id: req.params.id })
+      
       
       res.json({ success: true, message: 'Blog deleted successfully' })
     } catch (error) {
@@ -444,7 +441,7 @@ app.post('/api/events',
       const event = await supabaseService.createEvent(req.body)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'event', action: 'created', data: event })
+      
       
       res.status(201).json({ success: true, data: event })
     } catch (error) {
@@ -462,7 +459,7 @@ app.put('/api/events/:id',
       const event = await supabaseService.updateEvent(req.params.id, req.body)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'event', action: 'updated', data: event })
+      
       
       res.json({ success: true, data: event })
     } catch (error) {
@@ -480,7 +477,7 @@ app.delete('/api/events/:id',
       await supabaseService.deleteEvent(req.params.id)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'event', action: 'deleted', id: req.params.id })
+      
       
       res.json({ success: true, message: 'Event deleted successfully' })
     } catch (error) {
@@ -546,7 +543,7 @@ app.post('/api/images/upload',
       const image = await supabaseService.createImage(imageData)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'image', action: 'created', data: image })
+      
       
       res.status(201).json({ success: true, data: image })
     } catch (error) {
@@ -587,7 +584,7 @@ app.delete('/api/images/:id',
       await supabaseService.deleteImage(req.params.id)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'image', action: 'deleted', id: req.params.id })
+      
       
       res.json({ success: true, message: 'Image deleted successfully' })
     } catch (error) {
@@ -620,7 +617,7 @@ app.post('/api/categories',
       const category = await supabaseService.createCategory(req.body)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'category', action: 'created', data: category })
+      
       
       res.status(201).json({ success: true, data: category })
     } catch (error) {
@@ -638,7 +635,7 @@ app.put('/api/categories/:id',
       const category = await supabaseService.updateCategory(req.params.id, req.body)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'category', action: 'updated', data: category })
+      
       
       res.json({ success: true, data: category })
     } catch (error) {
@@ -656,7 +653,7 @@ app.delete('/api/categories/:id',
       await supabaseService.deleteCategory(req.params.id)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'category', action: 'deleted', id: req.params.id })
+      
       
       res.json({ success: true, message: 'Category deleted successfully' })
     } catch (error) {
@@ -698,7 +695,7 @@ app.put('/api/settings',
       const updated = await supabaseService.updateSettings(settings)
       
       // Emit real-time update
-      io.emit('content:updated', { type: 'settings', action: 'updated', data: updated })
+      
       
       res.json({ success: true, data: updated })
     } catch (error) {
