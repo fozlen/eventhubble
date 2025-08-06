@@ -16,7 +16,12 @@ class LogoService {
         return this.cache.get(variant)
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/logos?active=true`)
+      const response = await fetch(`${API_BASE_URL}/api/logos?active=true`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       
       if (!response.ok) {
         console.warn(`Logo fetch failed with status: ${response.status}`)
@@ -43,7 +48,12 @@ class LogoService {
   // Get all logos
   async getAllLogos() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/logos`)
+      const response = await fetch(`${API_BASE_URL}/api/logos`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       const result = await response.json()
       
       if (result.success) {
@@ -60,7 +70,12 @@ class LogoService {
   // Get active logos by variant
   async getActiveLogos() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/logos?active=true`)
+      const response = await fetch(`${API_BASE_URL}/api/logos?active=true`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       const result = await response.json()
       
       if (result.success) {
