@@ -148,15 +148,13 @@ class ApiService {
   }
 
   async createLogo(formData) {
-    const url = `${API_BASE_URL}/api/logos`
-    
     console.log('=== LOGO UPLOAD REQUEST ===')
-    console.log('URL:', url)
     console.log('CSRF Token present:', !!this.csrfToken)
     console.log('FormData entries count:', formData.entries().length)
     
     try {
-      const response = await fetch(url, {
+      // Use the request method to ensure proper authentication
+      const response = await fetch(`${API_BASE_URL}/api/logos`, {
         method: 'POST',
         credentials: 'include',
         headers: {

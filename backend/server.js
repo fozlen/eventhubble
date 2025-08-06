@@ -208,7 +208,7 @@ function generateTokens(user) {
       role: user.role,
       type: 'access'
     },
-    process.env.JWT_SECRET || 'fallback-secret',
+    process.env.JWT_SECRET || 'your-secret-key-change-in-production',
     { expiresIn: '1h' }
   )
   
@@ -217,7 +217,7 @@ function generateTokens(user) {
       id: user.id, 
       type: 'refresh' 
     },
-    process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret',
+    process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key-change-in-production',
     { expiresIn: '7d' }
   )
   
@@ -416,14 +416,29 @@ app.get('/api/debug/user', authMiddleware(), async (req, res) => {
 // Test endpoint to check cookies and authentication
 app.get('/api/debug/cookies', async (req, res) => {
   try {
+    console.log('=== COOKIE DEBUG ENDPOINT ===')
+    console.log('All cookies:', req.cookies)
+    console.log('Access token present:', !!req.cookies?.accessToken)
+    console.log('Refresh token present:', !!req.cookies?.refreshToken)
+    console.log('Headers:', {
+      'user-agent': req.headers['user-agent'],
+      'origin': req.headers['origin'],
+      'referer': req.headers['referer'],
+      'host': req.headers['host']
+    })
+    
     res.json({ 
       success: true, 
       data: {
         cookies: req.cookies,
+        cookieCount: Object.keys(req.cookies || {}).length,
+        accessTokenPresent: !!req.cookies?.accessToken,
+        refreshTokenPresent: !!req.cookies?.refreshToken,
         headers: {
           'user-agent': req.headers['user-agent'],
           'origin': req.headers['origin'],
-          'referer': req.headers['referer']
+          'referer': req.headers['referer'],
+          'host': req.headers['host']
         },
         ip: req.ip,
         timestamp: new Date().toISOString()
