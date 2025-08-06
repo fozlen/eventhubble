@@ -208,7 +208,8 @@ function generateTokens(user) {
     { 
       id: user.id, 
       email: user.email, 
-      role: user.role 
+      role: user.role,
+      type: 'access'
     },
     process.env.JWT_SECRET || 'fallback-secret',
     { expiresIn: '1h' }
@@ -243,7 +244,7 @@ function getCookieOptions(isRefresh = false) {
 // AUTHENTICATION API ENDPOINTS
 // =====================================
 
-// Login - Simplified for debugging
+// Login - Real user authentication
 app.post('/api/auth/login', async (req, res) => {
   try {
     console.log('Login request received:', req.body)
@@ -257,27 +258,54 @@ app.post('/api/auth/login', async (req, res) => {
       })
     }
 
-    // Simple test login - accept any credentials for now
-    const mockUser = {
-      id: 'admin-user-1',
-      email: email,
-      full_name: 'Event Hubble Admin',
-      role: 'admin',
-      avatar_url: null
+    // Get user from database
+    const user = await supabaseService.getUserByEmail(email)
+    if (!user) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Invalid email or password' 
+      })
+    }
+
+    // Check if user is active
+    if (!user.is_active) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Account is deactivated' 
+      })
+    }
+
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash)
+    if (!isValidPassword) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Invalid email or password' 
+      })
     }
 
     // Generate tokens
-    const tokens = generateTokens(mockUser)
+    const tokens = generateTokens(user)
     
     // Generate CSRF token
     const csrfToken = crypto.randomBytes(32).toString('hex')
+    
+    // Set cookies
+    res.cookie('accessToken', tokens.accessToken, getCookieOptions(false))
+    res.cookie('refreshToken', tokens.refreshToken, getCookieOptions(true))
     
     console.log('Login successful for:', email)
     
     res.json({ 
       success: true, 
       data: {
-        user: mockUser,
+        user: {
+          id: user.id,
+          email: user.email,
+          full_name: user.full_name,
+          role: user.role,
+          avatar_url: user.avatar_url
+        },
         csrfToken
       }
     })
@@ -307,19 +335,10 @@ app.post('/api/auth/logout', authMiddleware(), async (req, res) => {
 })
 
 // Get current user
-app.get('/api/auth/me', async (req, res) => {
+app.get('/api/auth/me', authMiddleware(), async (req, res) => {
   try {
-    // For now, return a mock user to test routing
-    // In production, this should use authMiddleware()
-    const mockUser = {
-      id: 'admin-user-1',
-      email: 'admin@eventhubble.com',
-      full_name: 'Event Hubble Admin',
-      role: 'admin',
-      avatar_url: null
-    }
-    
-    res.json({ success: true, data: mockUser })
+    // Return the authenticated user from the request
+    res.json({ success: true, data: req.user })
   } catch (error) {
     console.error('Error fetching user:', error)
     res.status(500).json({ success: false, error: error.message })
