@@ -39,7 +39,10 @@ const WorldNewsPage = () => {
   // Load blog posts with React Query
   const { data: newsData = [] } = useQuery({
     queryKey: ['blog-posts', language],
-    queryFn: () => api.getBlogs({ language }),
+    queryFn: async () => {
+      const result = await api.getBlogs({ language })
+      return result.success && result.data ? result.data : []
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
 
@@ -93,7 +96,7 @@ const WorldNewsPage = () => {
 
   // Get appropriate logo based on theme
   const getLogo = () => {
-    return logos.main || '/assets/Logo.png'
+    return logos.main || `${import.meta.env.VITE_API_URL || 'https://eventhubble.onrender.com'}/assets/Logo.svg`
   }
 
   return (
@@ -185,7 +188,7 @@ const WorldNewsPage = () => {
         </div>
 
         {/* News Grid */}
-        {(
+        {Array.isArray(newsData) && newsData.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {newsData.map((post) => (
               <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -256,7 +259,7 @@ const WorldNewsPage = () => {
         )}
 
         {/* No Posts Message */}
-        {newsData.length === 0 && (
+        {(!Array.isArray(newsData) || newsData.length === 0) && (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
               {language === 'TR' ? 'Henüz haber bulunmuyor.' : 'No news available yet.'}
