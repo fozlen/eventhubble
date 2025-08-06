@@ -153,6 +153,12 @@ const useAuthStore = create(
         const { user } = get()
         if (!user) return false
         
+        // Admin has all permissions
+        if (user.role === 'admin' || user.role === 'super_admin') {
+          return true
+        }
+        
+        // Specific role checks
         if (role === 'admin') {
           return ['admin', 'super_admin'].includes(user.role)
         }
@@ -163,12 +169,17 @@ const useAuthStore = create(
       canEdit: () => {
         const { user } = get()
         if (!user) return false
-        return ['editor', 'admin', 'super_admin'].includes(user.role)
+        // Admin can edit everything
+        if (user.role === 'admin' || user.role === 'super_admin') {
+          return true
+        }
+        return ['editor'].includes(user.role)
       },
 
       canDelete: () => {
         const { user } = get()
         if (!user) return false
+        // Only admin can delete
         return ['admin', 'super_admin'].includes(user.role)
       }
     })),
