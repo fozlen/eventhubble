@@ -11,6 +11,7 @@ import authMiddleware, {
 } from './middleware/auth.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 
 dotenv.config()
 
@@ -228,7 +229,7 @@ app.post('/api/auth/login', async (req, res) => {
       res.cookie('refreshToken', tokens.refreshToken, getCookieOptions(true))
       
       // Generate CSRF token
-      const csrfToken = require('crypto').randomBytes(32).toString('hex')
+      const csrfToken = crypto.randomBytes(32).toString('hex')
       res.cookie('csrfToken', csrfToken, { 
         httpOnly: false, 
         secure: process.env.NODE_ENV === 'production',
