@@ -125,6 +125,12 @@ const useAuthStore = create(
               state.isAuthenticated = true
               state.error = null
             })
+            
+            // Set CSRF token if available
+            if (response.data.csrfToken) {
+              apiService.setCsrfToken(response.data.csrfToken)
+            }
+            
             return { success: true }
           } else {
             set((state) => {

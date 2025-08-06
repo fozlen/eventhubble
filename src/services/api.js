@@ -122,21 +122,39 @@ class ApiService {
   }
 
   async createLogo(formData) {
-    const response = await fetch(`${API_BASE_URL}/api/logos`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'X-CSRF-Token': this.csrfToken
-      },
-      body: formData
-    })
+    const url = `${API_BASE_URL}/api/logos`
     
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.error || 'Failed to create logo')
+    console.log('=== LOGO UPLOAD REQUEST ===')
+    console.log('URL:', url)
+    console.log('CSRF Token:', this.csrfToken)
+    console.log('FormData:', formData)
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'X-CSRF-Token': this.csrfToken
+        },
+        body: formData
+      })
+
+      console.log('Response status:', response.status)
+      console.log('Response headers:', response.headers)
+
+      if (!response.ok) {
+        const error = await response.json()
+        console.error('Logo upload error response:', error)
+        throw new Error(error.error || 'Failed to create logo')
+      }
+
+      const result = await response.json()
+      console.log('Logo upload success:', result)
+      return result
+    } catch (error) {
+      console.error('API Error [/api/logos]:', error)
+      throw error
     }
-    
-    return response.json()
   }
 
   async updateLogo(id, data) {
