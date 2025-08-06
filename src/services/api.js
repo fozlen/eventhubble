@@ -29,6 +29,12 @@ class ApiService {
   async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`
     
+    console.log('=== API REQUEST ===')
+    console.log('URL:', url)
+    console.log('Options:', options)
+    console.log('Auth required:', options.auth)
+    console.log('Headers:', this.getHeaders(options.auth))
+    
     try {
       const response = await fetch(url, {
         ...options,
@@ -39,12 +45,17 @@ class ApiService {
         }
       })
 
+      console.log('Response status:', response.status)
+      console.log('Response headers:', response.headers)
+
       if (!response.ok) {
         const error = await response.json()
+        console.error('API Error Response:', error)
         throw new Error(error.error || `HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
+      console.log('API Response data:', data)
       return data
     } catch (error) {
       console.error(`API Error [${endpoint}]:`, error)
@@ -94,9 +105,15 @@ class ApiService {
 
   async getCurrentUser() {
     try {
-      return await this.request('/api/auth/me', {
+      console.log('=== GET CURRENT USER START ===')
+      console.log('CSRF Token:', this.csrfToken)
+      
+      const result = await this.request('/api/auth/me', {
         auth: true
       })
+      
+      console.log('=== GET CURRENT USER RESULT ===', result)
+      return result
     } catch (error) {
       console.warn('Get current user failed:', error.message)
       return { success: false, error: error.message }

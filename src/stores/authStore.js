@@ -117,7 +117,9 @@ const useAuthStore = create(
 
       checkAuth: async () => {
         try {
+          console.log('=== CHECK AUTH START ===')
           const response = await apiService.getCurrentUser()
+          console.log('Auth check response:', response)
           
           if (response.success) {
             set((state) => {
@@ -131,8 +133,10 @@ const useAuthStore = create(
               apiService.setCsrfToken(response.data.csrfToken)
             }
             
+            console.log('=== CHECK AUTH SUCCESS ===')
             return { success: true }
           } else {
+            console.log('=== CHECK AUTH FAILED ===')
             set((state) => {
               state.user = null
               state.isAuthenticated = false
@@ -141,6 +145,7 @@ const useAuthStore = create(
             return { success: false, error: response.error }
           }
         } catch (error) {
+          console.log('=== CHECK AUTH ERROR ===', error)
           set((state) => {
             state.user = null
             state.isAuthenticated = false
