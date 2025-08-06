@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
-import { useAuthStore } from '../stores/authStore'
+import useAuthStore from '../stores/authStore'
 import { 
   Upload, Crown, Trash2, Eye, ArrowLeft,
   Star, Download, Grid, List, Globe, Settings, LogOut
