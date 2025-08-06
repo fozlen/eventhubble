@@ -9,6 +9,8 @@ import supabaseService from './services/supabaseService.js'
 import authMiddleware, { 
   rateLimit
 } from './middleware/auth.js'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
 
 dotenv.config()
 
@@ -62,10 +64,14 @@ app.use(helmet({
 }))
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
+const corsOrigins = process.env.CORS_ORIGINS 
+  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  : process.env.NODE_ENV === 'production' 
     ? ['https://eventhubble.com', 'https://www.eventhubble.com', 'https://eventhubble.netlify.app']
-    : ['http://localhost:3000', 'http://localhost:5173'],
+    : ['http://localhost:3000', 'http://localhost:5173']
+
+app.use(cors({
+  origin: corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
@@ -91,6 +97,46 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   })
 })
+
+// =====================================
+// JWT TOKEN FUNCTIONS
+// =====================================
+
+function generateTokens(user) {
+  const accessToken = jwt.sign(
+    { 
+      id: user.id, 
+      email: user.email, 
+      role: user.role 
+    },
+    process.env.JWT_SECRET || 'fallback-secret',
+    { expiresIn: '1h' }
+  )
+  
+  const refreshToken = jwt.sign(
+    { 
+      id: user.id, 
+      type: 'refresh' 
+    },
+    process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret',
+    { expiresIn: '7d' }
+  )
+  
+  return { accessToken, refreshToken }
+}
+
+async function hashToken(token) {
+  return await bcrypt.hash(token, 10)
+}
+
+function getCookieOptions(isRefresh = false) {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: isRefresh ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000 // 7 days for refresh, 1 hour for access
+  }
+}
 
 // =====================================
 // AUTHENTICATION API ENDPOINTS
