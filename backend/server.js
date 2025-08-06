@@ -98,6 +98,57 @@ app.get('/health', (req, res) => {
   })
 })
 
+// Test admin creation endpoint
+app.post('/api/test/create-admin', async (req, res) => {
+  try {
+    const adminEmail = 'admin@eventhubble.com'
+    const adminPassword = 'admin123'
+    const passwordHash = await bcrypt.hash(adminPassword, 10)
+    
+    // Check if admin exists
+    const existingUser = await supabaseService.getUserByEmail(adminEmail)
+    
+    if (existingUser) {
+      // Update existing admin
+      const updatedUser = await supabaseService.updateUser(existingUser.id, {
+        password_hash: passwordHash,
+        full_name: 'Event Hubble Admin',
+        role: 'admin',
+        is_active: true
+      })
+      
+      res.json({ 
+        success: true, 
+        message: 'Admin updated successfully',
+        credentials: {
+          email: adminEmail,
+          password: adminPassword
+        }
+      })
+    } else {
+      // Create new admin
+      const newUser = await supabaseService.createUser({
+        email: adminEmail,
+        password: adminPassword,
+        full_name: 'Event Hubble Admin',
+        role: 'admin'
+      })
+      
+      res.json({ 
+        success: true, 
+        message: 'Admin created successfully',
+        credentials: {
+          email: adminEmail,
+          password: adminPassword
+        }
+      })
+    }
+  } catch (error) {
+    console.error('Error creating admin:', error)
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
 // =====================================
 // JWT TOKEN FUNCTIONS
 // =====================================
