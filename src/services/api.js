@@ -303,8 +303,21 @@ class ApiService {
   // =====================================
 
   async getSettings(params = {}) {
-    const queryString = new URLSearchParams(params).toString()
-    return this.request(`/api/settings${queryString ? `?${queryString}` : ''}`)
+    try {
+      const queryString = new URLSearchParams(params).toString()
+      return await this.request(`/api/settings${queryString ? `?${queryString}` : ''}`)
+    } catch (error) {
+      console.warn('Settings request failed:', error.message)
+      // Return default settings instead of throwing
+      return { 
+        success: true, 
+        data: {
+          site_name: { value: 'EventHubble', type: 'text', category: 'general' },
+          site_description: { value: 'Event management platform', type: 'text', category: 'general' },
+          contact_email: { value: 'admin@eventhubble.com', type: 'email', category: 'contact' }
+        }
+      }
+    }
   }
 
   async updateSettings(settings) {

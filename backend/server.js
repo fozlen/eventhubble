@@ -791,14 +791,26 @@ app.delete('/api/categories/:id',
 app.get('/api/settings', async (req, res) => {
   try {
     const { category, public: isPublic } = req.query
-    const settings = await supabaseService.getSettings({ 
-      category, 
-      isPublic: isPublic !== 'false' // Default to public only
-    })
-    res.json({ success: true, data: settings })
+    
+    try {
+      const settings = await supabaseService.getSettings({ 
+        category, 
+        isPublic: isPublic !== 'false' // Default to public only
+      })
+      res.json({ success: true, data: settings })
+    } catch (dbError) {
+      console.warn('Settings fetch failed, returning defaults:', dbError.message)
+      // Return default settings if database fails
+      const defaultSettings = {
+        site_name: { value: 'EventHubble', type: 'text', category: 'general' },
+        site_description: { value: 'Event management platform', type: 'text', category: 'general' },
+        contact_email: { value: 'admin@eventhubble.com', type: 'email', category: 'contact' }
+      }
+      res.json({ success: true, data: defaultSettings })
+    }
   } catch (error) {
-    console.error('Error fetching settings:', error)
-    res.status(500).json({ success: false, error: error.message })
+    console.error('Error in settings endpoint:', error)
+    res.status(500).json({ success: false, error: 'Internal server error' })
   }
 })
 
