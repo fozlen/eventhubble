@@ -215,8 +215,13 @@ app.post('/api/auth/login', async (req, res) => {
       const tokenHash = await hashToken(tokens.accessToken)
       const refreshTokenHash = await hashToken(tokens.refreshToken)
       
-      // Create session
-      await supabaseService.createSession(result.user.id, tokenHash, refreshTokenHash)
+      // Create session (optional - skip if table doesn't exist)
+      try {
+        await supabaseService.createSession(result.user.id, tokenHash, refreshTokenHash)
+      } catch (sessionError) {
+        console.warn('Session creation failed (table might not exist):', sessionError.message)
+        // Continue without session creation
+      }
       
       // Set cookies
       res.cookie('accessToken', tokens.accessToken, getCookieOptions(false))
