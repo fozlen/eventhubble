@@ -381,6 +381,7 @@ app.get('/api/logos/:id', async (req, res) => {
 
 // Upload and create new logo
 app.post('/api/logos', 
+  authMiddleware(['admin', 'editor']),
   upload.single('logo'), 
   async (req, res) => {
     try {
@@ -467,6 +468,7 @@ app.post('/api/logos',
 
 // Update logo
 app.put('/api/logos/:id', 
+  authMiddleware(['admin', 'editor']),
   async (req, res) => {
     try {
       const logo = await supabaseService.updateLogo(req.params.id, req.body)
@@ -483,6 +485,7 @@ app.put('/api/logos/:id',
 
 // Delete logo
 app.delete('/api/logos/:id', 
+  authMiddleware(['admin', 'editor']),
   async (req, res) => {
     try {
       await supabaseService.deleteLogo(req.params.id)

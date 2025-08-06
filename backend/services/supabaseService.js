@@ -6,15 +6,21 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const supabaseUrl = process.env.SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_ANON_KEY
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 
-if (!supabaseUrl || !supabaseKey) {
+if (!supabaseUrl || !supabaseAnonKey) {
   console.error('❌ Supabase environment variables missing!')
   console.error('Please set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file')
 }
 
-const supabase = createClient(supabaseUrl || '', supabaseKey || '')
+if (!supabaseServiceKey) {
+  console.error('⚠️  SUPABASE_SERVICE_ROLE_KEY not set - authenticated operations may fail')
+}
+
+const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '')
+const supabaseAdmin = createClient(supabaseUrl || '', supabaseServiceKey || '')
 
 class SupabaseService {
   // =====================================
@@ -76,7 +82,7 @@ class SupabaseService {
       // Hash password
       const password_hash = await bcrypt.hash(userData.password, 10)
       
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('users')
         .insert([{
           email: userData.email,
@@ -104,7 +110,7 @@ class SupabaseService {
         delete updates.password
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('users')
         .update(updates)
         .eq('id', id)
@@ -121,7 +127,7 @@ class SupabaseService {
 
   async deleteUser(id) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('users')
         .delete()
         .eq('id', id)
@@ -224,7 +230,7 @@ class SupabaseService {
   
   async createSession(userId, tokenHash, refreshTokenHash) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('sessions')
         .insert([{
           user_id: userId,
@@ -266,7 +272,7 @@ class SupabaseService {
 
   async updateSession(sessionId, updates) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('sessions')
         .update(updates)
         .eq('id', sessionId)
@@ -283,7 +289,7 @@ class SupabaseService {
 
   async deleteSession(sessionId) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('sessions')
         .delete()
         .eq('id', sessionId)
@@ -298,7 +304,7 @@ class SupabaseService {
 
   async deleteAllUserSessions(userId) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('sessions')
         .delete()
         .eq('user_id', userId)
@@ -317,7 +323,7 @@ class SupabaseService {
   
   async createAuditLog(auditData) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('audit_logs')
         .insert([auditData])
         .select()
@@ -406,7 +412,7 @@ class SupabaseService {
 
   async createLogo(logoData) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('logos')
         .insert([logoData])
         .select()
@@ -422,7 +428,7 @@ class SupabaseService {
 
   async updateLogo(id, updates) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('logos')
         .update(updates)
         .eq('id', id)
@@ -439,7 +445,7 @@ class SupabaseService {
 
   async deleteLogo(id) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('logos')
         .delete()
         .eq('id', id)
@@ -534,7 +540,7 @@ class SupabaseService {
         blogData.published_at = new Date().toISOString()
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('blog_posts')
         .insert([blogData])
         .select()
@@ -565,7 +571,7 @@ class SupabaseService {
         updates.reading_time = Math.ceil(wordCount / 200)
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('blog_posts')
         .update(updates)
         .eq('id', id)
@@ -582,7 +588,7 @@ class SupabaseService {
 
   async deleteBlog(id) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('blog_posts')
         .delete()
         .eq('id', id)
@@ -694,7 +700,7 @@ class SupabaseService {
         eventData.published_at = new Date().toISOString()
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('events')
         .insert([eventData])
         .select()
@@ -718,7 +724,7 @@ class SupabaseService {
         }
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('events')
         .update(updates)
         .eq('id', id)
@@ -735,7 +741,7 @@ class SupabaseService {
 
   async deleteEvent(id) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('events')
         .delete()
         .eq('id', id)
@@ -817,7 +823,7 @@ class SupabaseService {
 
   async createImage(imageData) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('images')
         .insert([imageData])
         .select()
@@ -833,7 +839,7 @@ class SupabaseService {
 
   async updateImage(id, updates) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('images')
         .update(updates)
         .eq('id', id)
@@ -850,7 +856,7 @@ class SupabaseService {
 
   async deleteImage(id) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('images')
         .delete()
         .eq('id', id)
@@ -929,7 +935,7 @@ class SupabaseService {
         categoryData.slug = this.generateSlug(categoryData.name)
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('categories')
         .insert([categoryData])
         .select()
@@ -945,7 +951,7 @@ class SupabaseService {
 
   async updateCategory(id, updates) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('categories')
         .update(updates)
         .eq('id', id)
@@ -962,7 +968,7 @@ class SupabaseService {
 
   async deleteCategory(id) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('categories')
         .delete()
         .eq('id', id)
@@ -1021,7 +1027,7 @@ class SupabaseService {
       const updates = []
       
       for (const setting of settings) {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
           .from('site_settings')
           .upsert({
             setting_key: setting.key,
@@ -1052,7 +1058,7 @@ class SupabaseService {
   
   async createContactSubmission(data) {
     try {
-      const { data: submission, error } = await supabase
+      const { data: submission, error } = await supabaseAdmin
         .from('contact_submissions')
         .insert([data])
         .select()
@@ -1095,7 +1101,7 @@ class SupabaseService {
 
   async updateContactSubmission(id, updates) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('contact_submissions')
         .update(updates)
         .eq('id', id)
@@ -1112,7 +1118,7 @@ class SupabaseService {
 
   async subscribeNewsletter({ email, name }) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('newsletters')
         .upsert({
           email,
@@ -1146,7 +1152,7 @@ class SupabaseService {
         ...deviceInfo
       }
 
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('analytics')
         .insert([analyticsData])
 

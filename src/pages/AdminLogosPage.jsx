@@ -66,6 +66,7 @@ const AdminLogosPage = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/logos`, {
         method: 'POST',
+        credentials: 'include',
         body: formData
       })
 
@@ -91,7 +92,8 @@ const AdminLogosPage = () => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/logos/${logoId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       })
 
       if (response.ok) {
