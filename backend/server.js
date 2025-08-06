@@ -321,38 +321,54 @@ app.post('/api/logos',
   upload.single('logo'), 
   async (req, res) => {
     try {
-      console.log('Logo upload request received:', {
-        file: req.file ? 'File present' : 'No file',
-        body: req.body,
-        cloudinaryConfigured: isCloudinaryConfigured
-      })
+      console.log('=== LOGO UPLOAD REQUEST START ===')
+      console.log('Request headers:', req.headers)
+      console.log('Request body:', req.body)
+      console.log('Request file:', req.file ? {
+        fieldname: req.file.fieldname,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        buffer: req.file.buffer ? 'Buffer present' : 'No buffer'
+      } : 'No file')
+      console.log('Cloudinary configured:', isCloudinaryConfigured)
 
       let logoUrl = req.body.url // Direct URL if provided
 
       // Upload to Cloudinary if file provided
       if (req.file && isCloudinaryConfigured) {
         console.log('Uploading to Cloudinary...')
-        const uploadResult = await new Promise((resolve, reject) => {
-          cloudinary.uploader.upload_stream(
-            {
-              resource_type: 'image',
-              folder: 'eventhubble/logos',
-              transformation: [
-                { quality: 'auto:best' },
-                { fetch_format: 'auto' }
-              ]
-            },
-            (error, result) => {
-              if (error) reject(error)
-              else resolve(result)
-            }
-          ).end(req.file.buffer)
-        })
-        logoUrl = uploadResult.secure_url
-        console.log('Cloudinary upload successful:', logoUrl)
+        try {
+          const uploadResult = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+              {
+                resource_type: 'image',
+                folder: 'eventhubble/logos',
+                transformation: [
+                  { quality: 'auto:best' },
+                  { fetch_format: 'auto' }
+                ]
+              },
+              (error, result) => {
+                if (error) {
+                  console.error('Cloudinary upload error:', error)
+                  reject(error)
+                } else {
+                  console.log('Cloudinary upload result:', result)
+                  resolve(result)
+                }
+              }
+            ).end(req.file.buffer)
+          })
+          logoUrl = uploadResult.secure_url
+          console.log('Cloudinary upload successful:', logoUrl)
+        } catch (cloudinaryError) {
+          console.error('Cloudinary upload failed:', cloudinaryError)
+          // Fallback to placeholder
+          logoUrl = 'https://placehold.co/300x100/6B7280/FFFFFF?text=Logo'
+        }
       } else if (req.file) {
-        console.log('Cloudinary not configured, using direct file upload')
-        // For now, just use a placeholder URL
+        console.log('Cloudinary not configured, using placeholder URL')
         logoUrl = 'https://placehold.co/300x100/6B7280/FFFFFF?text=Logo'
       }
 
@@ -369,10 +385,14 @@ app.post('/api/logos',
       const logo = await supabaseService.createLogo(logoData)
       
       console.log('Logo created successfully:', logo)
+      console.log('=== LOGO UPLOAD REQUEST END ===')
       
       res.status(201).json({ success: true, data: logo })
     } catch (error) {
+      console.error('=== LOGO UPLOAD ERROR ===')
       console.error('Error creating logo:', error)
+      console.error('Error stack:', error.stack)
+      console.error('=== LOGO UPLOAD ERROR END ===')
       res.status(500).json({ 
         success: false, 
         error: error.message,
