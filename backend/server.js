@@ -235,14 +235,15 @@ function getCookieOptions(isRefresh = false) {
   const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    sameSite: 'lax', // More permissive for cross-origin requests
     path: '/',
     maxAge: isRefresh ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000 // 7 days for refresh, 1 hour for access
   }
   
   // Set domain for production
   if (process.env.NODE_ENV === 'production') {
-    options.domain = '.eventhubble.com' // Allow cookies for all subdomains
+    // Don't set domain for now to avoid cross-subdomain issues
+    // options.domain = '.eventhubble.com'
   }
   
   return options
