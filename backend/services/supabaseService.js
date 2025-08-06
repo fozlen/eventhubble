@@ -228,7 +228,7 @@ class SupabaseService {
   // SESSION MANAGEMENT
   // =====================================
   
-  async createSession(userId, tokenHash, refreshTokenHash) {
+  async createSession(userId, tokenHash, refreshTokenHash, clientInfo = {}) {
     try {
       const { data, error } = await supabaseAdmin
         .from('sessions')
@@ -237,8 +237,9 @@ class SupabaseService {
           token_hash: tokenHash,
           refresh_token_hash: refreshTokenHash,
           expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-          ip_address: '127.0.0.1', // Will be set by middleware
-          user_agent: 'Unknown' // Will be set by middleware
+          ip_address: clientInfo.ip_address || '127.0.0.1',
+          user_agent: clientInfo.user_agent || 'Unknown',
+          is_active: true
         }])
         .select()
         .single()

@@ -291,6 +291,28 @@ app.post('/api/auth/login', async (req, res) => {
     // Generate CSRF token
     const csrfToken = crypto.randomBytes(32).toString('hex')
     
+    // Get client information
+    const ipAddress = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'] || '127.0.0.1'
+    const userAgent = req.headers['user-agent'] || 'Unknown'
+    
+    console.log('Client info:', { ipAddress, userAgent })
+    
+    // Create session in database
+    try {
+      const tokenHash = await hashToken(tokens.accessToken)
+      const refreshTokenHash = await hashToken(tokens.refreshToken)
+      
+      await supabaseService.createSession(user.id, tokenHash, refreshTokenHash, {
+        ip_address: ipAddress,
+        user_agent: userAgent
+      })
+      
+      console.log('Session created successfully for user:', user.id)
+    } catch (sessionError) {
+      console.error('Error creating session:', sessionError)
+      // Continue with login even if session creation fails
+    }
+    
     // Set cookies
     res.cookie('accessToken', tokens.accessToken, getCookieOptions(false))
     res.cookie('refreshToken', tokens.refreshToken, getCookieOptions(true))
@@ -325,8 +347,21 @@ app.post('/api/auth/login', async (req, res) => {
 // Logout
 app.post('/api/auth/logout', authMiddleware(), async (req, res) => {
   try {
+    // Get current session and deactivate it
+    try {
+      const session = await supabaseService.getSessionByUserId(req.user.id)
+      if (session) {
+        await supabaseService.updateSession(session.id, { is_active: false })
+        console.log('Session deactivated for user:', req.user.id)
+      }
+    } catch (sessionError) {
+      console.error('Error deactivating session:', sessionError)
+      // Continue with logout even if session deactivation fails
+    }
+    
     // Clear cookies
     res.clearCookie('accessToken')
+    res.clearCookie('refreshToken')
     
     res.json({ success: true, message: 'Logged out successfully' })
   } catch (error) {
