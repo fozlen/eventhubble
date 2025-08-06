@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
-import { api } from '../services/api'
+import CacheService from '../services/cacheService'
 import LogoService from '../services/logoService'
+import EventService from '../services/eventService'
+import DatabaseService from '../services/databaseService'
 import MobileHeader from '../components/MobileHeader'
 import MobileEventCard from '../components/MobileEventCard'
 import MobileFilters from '../components/MobileFilters'
@@ -35,7 +37,6 @@ import {
 const HomePage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [events, setEvents] = useState([])
-  const [categories, setCategories] = useState([])
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -53,21 +54,44 @@ const HomePage = () => {
     document.documentElement.classList.remove('dark')
   }, [])
 
-  // Load logos
+  // Categories - with modern icons and dynamic counts
+  const categories = [
+    { id: 'music', name: language === 'TR' ? 'Müzik' : 'Music', icon: Music, subtitle: language === 'TR' ? 'Konserler & Festivaller' : 'Concerts & Festivals' },
+    { id: 'theater', name: language === 'TR' ? 'Tiyatro' : 'Theater', icon: Film, subtitle: language === 'TR' ? 'Oyunlar & Gösteriler' : 'Plays & Shows' },
+    { id: 'sports', name: language === 'TR' ? 'Spor' : 'Sports', icon: Trophy, subtitle: language === 'TR' ? 'Maçlar & Turnuvalar' : 'Matches & Tournaments' },
+    { id: 'art', name: language === 'TR' ? 'Sanat' : 'Art', icon: Palette, subtitle: language === 'TR' ? 'Sergiler & Atölyeler' : 'Exhibitions & Workshops' },
+    { id: 'gastronomy', name: language === 'TR' ? 'Gastronomi' : 'Gastronomy', icon: ChefHat, subtitle: language === 'TR' ? 'Tatma & Atölyeler' : 'Tastings & Workshops' },
+    { id: 'education', name: language === 'TR' ? 'Eğitim' : 'Education', icon: GraduationCap, subtitle: language === 'TR' ? 'Seminerler & Kurslar' : 'Seminars & Courses' }
+  ]
+
+  // Calculate dynamic counts for each category
+  const categoriesWithCounts = categories.map(category => {
+    const count = events.filter(event => event.category === category.id).length
+    return {
+      ...category,
+      count: count,
+      total: count > 0 ? `${count}+` : '0'
+    }
+  })
+
+  // Cities
+  const cities = ['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Antalya', 'Adana', 'Konya', 'Gaziantep']
+
+  // Logo'ları yükle
   useEffect(() => {
     const loadLogos = async () => {
       try {
-        const [mainLogo, largeLogo, transparentLogo] = await Promise.all([
-          LogoService.getLogo('main'),
-          LogoService.getLogo('large'),
-          LogoService.getLogo('transparent')
-        ])
+                  const [mainLogo, largeLogo, transparentLogo] = await Promise.all([
+                    LogoService.getLogo('main'),
+         LogoService.getLogo('large'),
+         LogoService.getLogo('transparent')
+          ])
         
-        setLogos({
-          main: mainLogo,
-          large: largeLogo,
-          transparent: transparentLogo
-        })
+                  setLogos({
+            main: mainLogo,
+            large: largeLogo,
+            transparent: transparentLogo
+          })
       } catch (error) {
         console.error('Logo loading error:', error)
       }
@@ -76,72 +100,32 @@ const HomePage = () => {
     loadLogos()
   }, [])
 
-  // Load categories from API
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const result = await api.getCategories()
-        const categoriesData = result.success ? result.data : result
-        
-        // Map categories with icons and counts
-        const mappedCategories = categoriesData.map(cat => {
-          const categoryIcons = {
-            'music': Music,
-            'theater': Film,
-            'sports': Trophy,
-            'art': Palette,
-            'gastronomy': ChefHat,
-            'education': GraduationCap
-          }
-          
-          return {
-            ...cat,
-            icon: categoryIcons[cat.category_id] || Star,
-            subtitle: language === 'TR' ? 'Etkinlikler' : 'Events'
-          }
-        })
-        
-        setCategories(mappedCategories)
-      } catch (error) {
-        console.error('Categories loading error:', error)
-      }
-    }
-
-    loadCategories()
-  }, [language])
-
-  // Load events from API
+  // Etkinlikleri yükle
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        setError(null)
+        // Database ve eventService'den tüm eventleri yükle
+        const dbEvents = await DatabaseService.getEvents()
+        const apiEvents = await EventService.getEvents()
         
-        const params = {
-          limit: 100
-        }
-        
-        if (selectedCategory) {
-          params.category = selectedCategory
-        }
-        
-        const result = await api.getEvents(params)
-        const eventsData = result.data || []
-        
-        setEvents(eventsData)
+        // Database ve API eventlerini birleştir
+        const allEvents = [...dbEvents, ...apiEvents]
+        setEvents(allEvents)
       } catch (error) {
-        console.error('Event loading error:', error)
+        if (!import.meta.env.PROD) {
+          console.error('Event loading error:', error)
+        }
         setError(error.message || 'Failed to load events')
         setEvents([])
+      } finally {
+        // Loading removed for better UX
       }
     }
 
     loadEvents()
-    
-    // Track page view
-    api.trackEvent('page_view', { page: 'home' })
-  }, [selectedCategory])
+  }, [])
 
-  // Search handler
+  // Arama işlemi
   const handleSearch = () => {
     if (searchTerm.trim()) {
       const searchParams = new URLSearchParams()
@@ -151,23 +135,26 @@ const HomePage = () => {
     }
   }
 
-  // Category filter handler
+  // Kategori filtreleme
   const handleCategoryFilter = (categoryId) => {
     setSelectedCategory(categoryId === selectedCategory ? '' : categoryId)
   }
 
-  // Event detail handler
+  // Etkinlik detayına git
   const handleEventDetail = (eventId) => {
     navigate(`/event/${eventId}`)
-    api.trackEvent('event_click', { event_id: eventId })
   }
 
+  // Dark mode toggle - no longer used
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
+    // Single theme
   }
 
+
+
+  // Get logo
   const getLogo = () => {
-    return logos.main || '/assets/Logo.png'
+    return logos.main || LogoService.API_BASE_URL + '/assets/Logo.png'
   }
 
   const getSortLabel = () => {
@@ -182,16 +169,6 @@ const HomePage = () => {
         return language === 'TR' ? 'Sırala' : 'Sort'
     }
   }
-
-  // Calculate dynamic counts for each category
-  const categoriesWithCounts = categories.map(category => {
-    const count = events.filter(event => event.category === category.category_id).length
-    return {
-      ...category,
-      count: count,
-      total: count > 0 ? `${count}+` : '0'
-    }
-  })
 
   // Filtrelenmiş ve sıralanmış etkinlikler
   const filteredEvents = events.filter(event => {
@@ -334,6 +311,8 @@ const HomePage = () => {
               </button>
             </div>
           </div>
+
+
         </div>
       </section>
 
@@ -352,11 +331,11 @@ const HomePage = () => {
                 <div
                   key={category.id}
                   className={`text-center p-4 md:p-6 rounded-xl border-2 cursor-pointer transition-all hover:shadow-lg hover:scale-105 ${
-                    selectedCategory === category.category_id 
+                    selectedCategory === category.id 
                       ? 'border-primary bg-primary/5' 
                       : 'border-primary/20 bg-white hover:border-primary/40'
                   }`}
-                  onClick={() => handleCategoryFilter(category.category_id)}
+                  onClick={() => handleCategoryFilter(category.id)}
                 >
                   <div className="flex justify-center mb-2 md:mb-3">
                     <IconComponent size={24} className="md:w-8 md:h-8 text-primary" />
@@ -473,44 +452,74 @@ const HomePage = () => {
                 </div>
               </div>
 
-              {/* Desktop Event Grid */}
-              <div className="hidden sm:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Desktop Event Cards */}
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {filteredEvents.map((event) => (
-                  <div
-                    key={event.id}
-                    className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
-                    onClick={() => handleEventDetail(event.id)}
-                  >
-                    <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary-light/20 relative overflow-hidden">
-                      {event.cover_image ? (
-                        <img
-                          src={event.cover_image}
-                          alt={event.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Calendar className="w-12 h-12 text-primary/40" />
+                  <div key={event.id} className="rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow bg-white">
+                    {/* Event Image */}
+                    <div className="relative group">
+                      <img
+                        src={event.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop'}
+                        alt={event.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute top-3 left-3 bg-primary text-white px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
+                        {event.platform}
+                      </div>
+                      <button 
+                        onClick={() => setShowMap(true)}
+                        className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-white"
+                        title="Show on map"
+                      >
+                        <MapPin size={16} className="text-gray-700" />
+                      </button>
+                    </div>
+
+                    {/* Event Content */}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors text-text">{event.title}</h3>
+                      <p className="text-sm mb-4 line-clamp-2 text-text/70">{event.description}</p>
+                      
+                      {/* Event Details */}
+                      <div className="space-y-3 mb-4">
+                        <div className="flex items-center text-sm text-text/60">
+                          <Calendar size={14} className="mr-2 text-primary" />
+                          <span className="font-medium">{event.date} • {event.time}</span>
                         </div>
-                      )}
-                      <div className="absolute top-3 left-3">
-                        <span className="bg-primary text-white px-2 py-1 rounded-full text-xs font-medium">
+                        <div className="flex items-center text-sm text-text/60">
+                          <MapPin size={14} className="mr-2 text-text-accent" />
+                          <span className="font-medium">{event.venue}, {event.city}</span>
+                        </div>
+                      </div>
+
+                      {/* Category Tags */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="px-2 py-1 rounded text-xs bg-primary/10 text-primary">
                           {event.category}
                         </span>
+                        {event.category === 'music' && (
+                          <>
+                            <span className="bg-text-accent/10 text-text-accent px-2 py-1 rounded text-xs">pop</span>
+                            <span className="bg-primary-light/10 text-primary-light px-2 py-1 rounded text-xs">turkish</span>
+                          </>
+                        )}
                       </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-lg mb-2 text-text line-clamp-2">{event.title}</h3>
-                      <p className="text-text/70 text-sm mb-3 line-clamp-2">{event.description}</p>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center space-x-2 text-text/60">
-                          <Calendar size={14} />
-                          <span>{new Date(event.date).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-text/60">
-                          <MapPin size={14} />
-                          <span>{event.venue}</span>
-                        </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={() => handleEventDetail(event.id)}
+                          className={`flex-1 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700'}`}
+                        >
+                          {language === 'TR' ? 'Detaylar' : 'Details'}
+                        </button>
+                        <button
+                          onClick={() => window.open(event.url, '_blank')}
+                          className="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                          {language === 'TR' ? 'Bilet Al' : 'Buy Ticket'}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -519,59 +528,78 @@ const HomePage = () => {
             </>
           ) : (
             <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                <Calendar className="w-8 h-8 text-primary" />
+              <div className="flex justify-center mb-4">
+                <Film className="text-text/50" size={48} />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-text">
-                {language === 'TR' ? 'Henüz etkinlik bulunmuyor' : 'No events found'}
+              <h3 className="text-xl font-semibold mb-2 text-text">
+                {language === 'TR' ? 'Etkinlik bulunamadı' : 'No events found'}
               </h3>
-              <p className="text-text/60">
-                {language === 'TR' 
-                  ? 'Daha sonra tekrar kontrol edin veya farklı bir kategori seçin'
-                  : 'Check back later or try a different category'
-                }
+              <p className="text-text/70">
+                {language === 'TR' ? 'Arama kriterlerinizi ayarlamayı deneyin.' : 'Try adjusting your search criteria.'}
               </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Mobile Navigation */}
-      <MobileNavigation />
-
       {/* Footer */}
       <Footer language={language} />
 
-      {/* Mobile Menu Overlay */}
-      {showMobileMenu && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden">
-          <div className="bg-background w-80 h-full">
-            <div className="p-4">
-              <button
-                onClick={() => setShowMobileMenu(false)}
-                className="text-text hover:text-primary transition-colors"
+      {/* Map Modal */}
+      {showMap && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="rounded-xl p-6 max-w-2xl w-full mx-4 bg-white">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-text">
+                {language === 'TR' ? 'Etkinlik Konumları' : 'Event Locations'}
+              </h3>
+              <button 
+                onClick={() => setShowMap(false)}
+                className="text-text/50 hover:text-text"
               >
                 ✕
               </button>
             </div>
-            {/* Add mobile menu content here */}
+            <div className="rounded-lg p-4 h-64 flex items-center justify-center bg-background-secondary">
+              <div className="text-center">
+                <Map size={48} className="text-text/50 mx-auto mb-2" />
+                <p className="text-text/70">
+                  {language === 'TR' ? 'İnteraktif harita yakında!' : 'Interactive map coming soon!'}
+                </p>
+                <p className="text-sm mt-1 text-text/60">
+                  {language === 'TR' ? 'Google Maps entegrasyonu üzerinde çalışıyoruz' : 'We\'re working on integrating Google Maps'}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 space-y-2">
+              {events.map(event => (
+                <div key={event.id} className="flex items-center space-x-3 p-2 hover:bg-background-secondary rounded">
+                  <MapPin size={16} className="text-text-accent" />
+                  <div>
+                    <p className="font-medium text-text">{event.title}</p>
+                    <p className="text-sm text-text/60">{event.venue}, {event.city}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
       {/* Mobile Filters */}
-      {showFilters && (
-        <MobileFilters
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategorySelect={handleCategoryFilter}
-          cities={['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Antalya', 'Adana', 'Konya', 'Gaziantep']}
-          selectedCity=""
-          onCitySelect={() => {}}
-          onClose={() => setShowFilters(false)}
-          language={language}
-        />
-      )}
+      <MobileFilters
+        isOpen={showFilters}
+        onClose={() => setShowFilters(false)}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        language={language}
+      />
+
+      {/* Mobile Navigation */}
+      <MobileNavigation language={language} />
+
     </div>
   )
 }
