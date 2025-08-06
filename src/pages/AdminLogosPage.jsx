@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
+import { useAuthStore } from '../stores/authStore'
 import { 
   Upload, Crown, Trash2, Eye, ArrowLeft,
   Star, Download, Grid, List, Globe, Settings, LogOut
@@ -19,11 +20,19 @@ const AdminLogosPage = () => {
   const [logo, setLogo] = useState('/assets/Logo.png')
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
+  const { isAdmin } = useAuthStore()
 
   useEffect(() => {
+    // Check if user is admin
+    if (!isAdmin()) {
+      console.log('User is not admin, redirecting to dashboard')
+      navigate('/admin/dashboard')
+      return
+    }
+    
     loadLogo()
     loadLogos()
-  }, [])
+  }, [isAdmin, navigate])
 
   const loadLogo = async () => {
     try {

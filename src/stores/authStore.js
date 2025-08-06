@@ -166,6 +166,13 @@ const useAuthStore = create(
         return user.role === role
       },
 
+      // Check if user is admin
+      isAdmin: () => {
+        const { user } = get()
+        if (!user) return false
+        return user.role === 'admin' || user.role === 'super_admin'
+      },
+
       canEdit: () => {
         const { user } = get()
         if (!user) return false

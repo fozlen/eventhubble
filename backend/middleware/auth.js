@@ -56,12 +56,19 @@ const authMiddleware = (requiredRoles = []) => {
       }
 
       // Check role permissions
-      if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
-        return res.status(403).json({ 
-          success: false, 
-          error: 'Insufficient permissions',
-          code: 'INSUFFICIENT_PERMISSIONS'
-        })
+      if (requiredRoles.length > 0) {
+        // Admin has all permissions
+        if (user.role === 'admin' || user.role === 'super_admin') {
+          // Admin can access everything
+        } else if (!requiredRoles.includes(user.role)) {
+          return res.status(403).json({ 
+            success: false, 
+            error: 'Insufficient permissions',
+            code: 'INSUFFICIENT_PERMISSIONS',
+            userRole: user.role,
+            requiredRoles: requiredRoles
+          })
+        }
       }
 
       // Add user to request

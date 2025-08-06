@@ -345,6 +345,23 @@ app.get('/api/auth/me', authMiddleware(), async (req, res) => {
   }
 })
 
+// Debug endpoint to check user role and permissions
+app.get('/api/debug/user', authMiddleware(), async (req, res) => {
+  try {
+    res.json({ 
+      success: true, 
+      data: {
+        user: req.user,
+        hasAdminRole: req.user.role === 'admin' || req.user.role === 'super_admin',
+        canAccessLogos: req.user.role === 'admin' || req.user.role === 'super_admin'
+      }
+    })
+  } catch (error) {
+    console.error('Error in debug endpoint:', error)
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
 // =====================================
 // LOGOS API ENDPOINTS
 // =====================================
@@ -400,7 +417,7 @@ app.get('/api/logos/:id', async (req, res) => {
 
 // Upload and create new logo
 app.post('/api/logos', 
-  authMiddleware(['admin', 'editor']),
+  authMiddleware(['admin']),
   upload.single('logo'), 
   async (req, res) => {
     try {
@@ -487,7 +504,7 @@ app.post('/api/logos',
 
 // Update logo
 app.put('/api/logos/:id', 
-  authMiddleware(['admin', 'editor']),
+  authMiddleware(['admin']),
   async (req, res) => {
     try {
       const logo = await supabaseService.updateLogo(req.params.id, req.body)
@@ -504,7 +521,7 @@ app.put('/api/logos/:id',
 
 // Delete logo
 app.delete('/api/logos/:id', 
-  authMiddleware(['admin', 'editor']),
+  authMiddleware(['admin']),
   async (req, res) => {
     try {
       await supabaseService.deleteLogo(req.params.id)
