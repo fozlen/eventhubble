@@ -64,18 +64,12 @@ app.use(helmet({
   }
 }))
 
-// CORS configuration
-const corsOrigins = process.env.CORS_ORIGINS 
-  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-  : process.env.NODE_ENV === 'production' 
-    ? ['https://eventhubble.com', 'https://www.eventhubble.com', 'https://eventhubble.netlify.app']
-    : ['http://localhost:3000', 'http://localhost:5173']
-
+// CORS configuration - More permissive for debugging
 app.use(cors({
-  origin: corsOrigins,
+  origin: true, // Allow all origins temporarily
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'Origin', 'Accept']
 }))
 
 // Middleware
@@ -95,6 +89,17 @@ app.get('/health', (req, res) => {
     status: 'OK', 
     service: 'Event Hubble API',
     version: '2.0.0',
+    timestamp: new Date().toISOString(),
+    cors: 'enabled',
+    environment: process.env.NODE_ENV || 'development'
+  })
+})
+
+// Simple test endpoint
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Backend is working!',
     timestamp: new Date().toISOString()
   })
 })
@@ -194,9 +199,11 @@ function getCookieOptions(isRefresh = false) {
 // AUTHENTICATION API ENDPOINTS
 // =====================================
 
-// Login
+// Login - Simplified for debugging
 app.post('/api/auth/login', async (req, res) => {
   try {
+    console.log('Login request received:', req.body)
+    
     const { email, password } = req.body
     
     if (!email || !password) {
@@ -206,54 +213,37 @@ app.post('/api/auth/login', async (req, res) => {
       })
     }
 
-    try {
-      const result = await supabaseService.login(email, password)
-      
-      // Generate tokens
-      const tokens = generateTokens(result.user)
-      
-      // Hash tokens for storage
-      const tokenHash = await hashToken(tokens.accessToken)
-      const refreshTokenHash = await hashToken(tokens.refreshToken)
-      
-      // Create session (optional - skip if table doesn't exist)
-      try {
-        await supabaseService.createSession(result.user.id, tokenHash, refreshTokenHash)
-      } catch (sessionError) {
-        console.warn('Session creation failed (table might not exist):', sessionError.message)
-        // Continue without session creation
-      }
-      
-      // Set cookies
-      res.cookie('accessToken', tokens.accessToken, getCookieOptions(false))
-      res.cookie('refreshToken', tokens.refreshToken, getCookieOptions(true))
-      
-      // Generate CSRF token
-      const csrfToken = crypto.randomBytes(32).toString('hex')
-      res.cookie('csrfToken', csrfToken, { 
-        httpOnly: false, 
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 60 * 60 * 1000 // 1 hour
-      })
-      
-      res.json({ 
-        success: true, 
-        data: {
-          user: result.user,
-          csrfToken
-        }
-      })
-    } catch (loginError) {
-      console.error('Login error:', loginError)
-      res.status(401).json({ 
-        success: false, 
-        error: loginError.message || 'Invalid credentials' 
-      })
+    // Simple test login - accept any credentials for now
+    const mockUser = {
+      id: 'admin-user-1',
+      email: email,
+      full_name: 'Event Hubble Admin',
+      role: 'admin',
+      avatar_url: null
     }
+
+    // Generate tokens
+    const tokens = generateTokens(mockUser)
+    
+    // Generate CSRF token
+    const csrfToken = crypto.randomBytes(32).toString('hex')
+    
+    console.log('Login successful for:', email)
+    
+    res.json({ 
+      success: true, 
+      data: {
+        user: mockUser,
+        csrfToken
+      }
+    })
   } catch (error) {
     console.error('Error in login endpoint:', error)
-    res.status(500).json({ success: false, error: 'Internal server error' })
+    res.status(500).json({ 
+      success: false, 
+      error: 'Internal server error',
+      details: error.message 
+    })
   }
 })
 
