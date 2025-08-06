@@ -40,11 +40,30 @@ const AdminDashboard = () => {
   const loadStats = async () => {
     try {
       setIsLoading(true)
-              const result = await api.getAnalytics()
-      setStats(result.data || {})
+      const result = await api.getAnalytics()
+      
+      // Set default stats if no data
+      const defaultStats = {
+        totalEvents: 0,
+        totalBlogs: 0,
+        totalImages: 0,
+        totalCategories: 0,
+        activeEvents: 0,
+        publishedBlogs: 0
+      }
+      
+      setStats(result.data || defaultStats)
     } catch (error) {
       console.error('Error loading stats:', error)
-      // Keep default/fallback stats on error
+      // Set default stats on error
+      setStats({
+        totalEvents: 0,
+        totalBlogs: 0,
+        totalImages: 0,
+        totalCategories: 0,
+        activeEvents: 0,
+        publishedBlogs: 0
+      })
     } finally {
       setIsLoading(false)
     }
