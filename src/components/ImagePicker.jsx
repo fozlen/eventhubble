@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { X, Search, Image as ImageIcon } from 'lucide-react'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 
 const ImagePicker = ({ isOpen, onClose, onSelect, selectedImage, category = null }) => {
   const [images, setImages] = useState([])
@@ -32,8 +32,8 @@ const ImagePicker = ({ isOpen, onClose, onSelect, selectedImage, category = null
       }
       
       const response = await fetch(url)
-      const data = await response.json()
-      setImages(data.images || [])
+      const result = await response.json()
+      setImages(result.data || [])
     } catch (error) {
       console.error('Error loading images:', error)
       setImages([])

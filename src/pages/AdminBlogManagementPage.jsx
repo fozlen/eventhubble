@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '../services/api'
 import SearchableImageSelect from '../components/SearchableImageSelect'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 const logo = '/assets/Logo.png'
 
 const AdminBlogManagementPage = () => {
@@ -58,10 +58,10 @@ const AdminBlogManagementPage = () => {
 
   const loadBlogPosts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/blog-posts`)
+      const response = await fetch(`${API_BASE_URL}/api/blogs`)
       if (response.ok) {
-        const posts = await response.json()
-        setBlogPosts(posts)
+        const result = await response.json()
+        setBlogPosts(result.data || [])
       } else {
         console.error('API Error:', response.status, response.statusText)
         // API hatası durumunda localStorage'dan çek (fallback)
@@ -107,7 +107,7 @@ const AdminBlogManagementPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/blog-posts/${postId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/blogs/${postId}`, {
           method: 'DELETE'
         })
 
@@ -196,7 +196,7 @@ const AdminBlogManagementPage = () => {
 
       if (editingPost) {
         // Update existing post
-        const response = await fetch(`${API_BASE_URL}/api/blog-posts/${editingPost.id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/blogs/${editingPost.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -223,7 +223,7 @@ const AdminBlogManagementPage = () => {
         }
       } else {
         // Add new post
-        const response = await fetch(`${API_BASE_URL}/api/blog-posts`, {
+        const response = await fetch(`${API_BASE_URL}/api/blogs`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

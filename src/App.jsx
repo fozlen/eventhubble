@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { LanguageProvider } from './contexts/LanguageContext'
 import useAuthStore from './stores/authStore'
 import useAppStore from './stores/appStore'
-import websocketService from './services/websocket'
+
 import { api } from './services/api'
 import HomePage from './pages/HomePage'
 import EventDetailPage from './pages/EventDetailPage'
@@ -105,21 +105,11 @@ const AppInitializer = ({ children }) => {
   }, [checkAuth, setCsrfToken])
 
   useEffect(() => {
-    // Initialize WebSocket connection
-    if (isAuthenticated) {
-      websocketService.connect()
-      
-      // Join admin room if user has admin role
-      if (user && ['admin', 'super_admin'].includes(user.role)) {
-        websocketService.joinAdminRoom(user.role)
-      }
-    } else {
-      websocketService.disconnect()
-    }
+
 
     // Cleanup on unmount
     return () => {
-      websocketService.disconnect()
+      // Cleanup logic here if needed
     }
   }, [isAuthenticated, user])
 

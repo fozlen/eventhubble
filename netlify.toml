@@ -6,7 +6,7 @@
 [build.environment]
   NODE_VERSION = "18"
   NODE_ENV = "production"
-  VITE_API_BASE_URL = "https://eventhubble.onrender.com"
+  VITE_API_URL = "https://eventhubble.onrender.com"
 
 # Auto-deploy settings
 [build.processing]
@@ -16,17 +16,17 @@
 [context.production]
   command = "npm run build"
   [context.production.environment]
-    VITE_API_BASE_URL = "https://eventhubble.onrender.com"
+    VITE_API_URL = "https://eventhubble.onrender.com"
 
 [context.deploy-preview]
   command = "npm run build"
   [context.deploy-preview.environment]
-    VITE_API_BASE_URL = "https://eventhubble.onrender.com"
+    VITE_API_URL = "https://eventhubble.onrender.com"
 
 [context.branch-deploy]
   command = "npm run build"
   [context.branch-deploy.environment]
-    VITE_API_BASE_URL = "https://eventhubble.onrender.com"
+    VITE_API_URL = "https://eventhubble.onrender.com"
 
 # Security Headers
 [[headers]]

@@ -1,46 +1,13 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { v4 as uuidv4 } from 'uuid'
 import supabaseService from '../services/supabaseService.js'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 const REFRESH_SECRET = process.env.REFRESH_SECRET || 'your-refresh-secret-key-change-in-production'
 
-// Cookie options
-const getCookieOptions = (isRefresh = false) => ({
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'strict',
-  maxAge: isRefresh ? 30 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000, // 30 days for refresh, 1 hour for access
-  path: '/'
-})
 
-// Generate tokens
-const generateTokens = (user) => {
-  const accessToken = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      full_name: user.full_name,
-      type: 'access'
-    },
-    JWT_SECRET,
-    { expiresIn: '1h' }
-  )
 
-  const refreshToken = jwt.sign(
-    {
-      id: user.id,
-      type: 'refresh',
-      jti: uuidv4()
-    },
-    REFRESH_SECRET,
-    { expiresIn: '30d' }
-  )
 
-  return { accessToken, refreshToken }
-}
 
 // Verify token
 const verifyToken = (token, secret = JWT_SECRET) => {
@@ -51,15 +18,7 @@ const verifyToken = (token, secret = JWT_SECRET) => {
   }
 }
 
-// Hash refresh token for storage
-const hashToken = async (token) => {
-  return await bcrypt.hash(token, 10)
-}
 
-// Verify refresh token hash
-const verifyTokenHash = async (token, hash) => {
-  return await bcrypt.compare(token, hash)
-}
 
 // Main authentication middleware
 const authMiddleware = (requiredRoles = []) => {
@@ -241,70 +200,11 @@ const rateLimit = (windowMs = 15 * 60 * 1000, max = 100) => {
   }
 }
 
-// CSRF protection middleware
-const csrfProtection = (req, res, next) => {
-  // Skip CSRF for GET requests
-  if (req.method === 'GET') {
-    return next()
-  }
 
-  const csrfToken = req.headers['x-csrf-token']
-  const sessionToken = req.cookies?.csrfToken
-
-  if (!csrfToken || !sessionToken || csrfToken !== sessionToken) {
-    return res.status(403).json({
-      success: false,
-      error: 'CSRF token validation failed',
-      code: 'CSRF_ERROR'
-    })
-  }
-
-  next()
-}
-
-// Audit logging middleware
-const auditLog = (action, resourceType) => {
-  return async (req, res, next) => {
-    const originalSend = res.send
-    
-    res.send = function(data) {
-      // Log after response is sent
-      if (req.user) {
-        supabaseService.createAuditLog({
-          user_id: req.user.id,
-          action,
-          resource_type: resourceType,
-          resource_id: req.params.id || req.body.id,
-          old_values: req.method === 'PUT' || req.method === 'DELETE' ? req.originalBody : null,
-          new_values: req.method === 'POST' || req.method === 'PUT' ? req.body : null,
-          ip_address: req.ip,
-          user_agent: req.get('User-Agent')
-        }).catch(console.error)
-      }
-      
-      originalSend.call(this, data)
-    }
-    
-    // Store original body for audit
-    if (req.method === 'PUT' || req.method === 'DELETE') {
-      req.originalBody = { ...req.body }
-    }
-    
-    next()
-  }
-}
 
 export {
   authMiddleware,
-  refreshTokenMiddleware,
-  rateLimit,
-  csrfProtection,
-  auditLog,
-  generateTokens,
-  verifyToken,
-  hashToken,
-  verifyTokenHash,
-  getCookieOptions
+  rateLimit
 }
 
 export default authMiddleware 

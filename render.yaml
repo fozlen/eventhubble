@@ -25,6 +25,6 @@ services:
         value: uploads
       - key: CDN_BASE_URL
         value: https://eventhubble.onrender.com
-    healthCheckPath: /api/health
+    healthCheckPath: /health
     autoDeploy: true
     branch: main 

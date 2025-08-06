@@ -49,9 +49,9 @@ const AdminSiteSettingsPage = () => {
         setLogo(logoData?.url || '/assets/Logo.png')
 
       // Load site settings
-              const settingsResponse = await api.getSettings()
+      const settingsResponse = await api.getSettings()
       if (settingsResponse && settingsResponse.success) {
-        setSettings(settingsResponse.raw_data || [])
+        setSettings(settingsResponse.data || [])
       } else {
         console.error('Failed to load site settings:', settingsResponse?.error)
         setSettings([])

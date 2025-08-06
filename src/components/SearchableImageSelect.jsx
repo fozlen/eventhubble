@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Search, X, ChevronDown, Image as ImageIcon } from 'lucide-react'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 
 const SearchableImageSelect = ({ 
   value, 
@@ -43,19 +43,19 @@ const SearchableImageSelect = ({
       }
       
       const response = await fetch(url)
-      const data = await response.json()
+      const result = await response.json()
       
       // Handle different response formats
-      if (data.success === false) {
+      if (result.success === false) {
         setImages([])
         return
       }
       
       // Support both direct array and wrapped object formats
-      if (Array.isArray(data)) {
-        setImages(data)
-      } else if (data.images && Array.isArray(data.images)) {
-        setImages(data.images)
+      if (Array.isArray(result)) {
+        setImages(result)
+      } else if (result.data && Array.isArray(result.data)) {
+        setImages(result.data)
       } else {
         setImages([])
       }

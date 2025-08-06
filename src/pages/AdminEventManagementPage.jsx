@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '../services/api'
 import SearchableImageSelect from '../components/SearchableImageSelect'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 
 const AdminEventManagementPage = () => {
   const [events, setEvents] = useState([])
@@ -61,7 +61,8 @@ const AdminEventManagementPage = () => {
       // Loading removed for better UX
       
       // Database'den etkinlikleri yükle
-      const dbEvents = await api.getEvents()
+      const result = await api.getEvents()
+      const dbEvents = result.data || []
       
       // Manuel etkinlikleri de yükle (fallback olarak)
       const storedEvents = localStorage.getItem('manualEvents')

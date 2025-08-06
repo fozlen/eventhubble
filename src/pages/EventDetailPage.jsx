@@ -85,7 +85,7 @@ const EventDetailPage = () => {
   // Use React Query for event data
   const { data: event, isLoading, error } = useQuery({
     queryKey: ['event', eventId],
-    queryFn: () => api.getEventById(eventId),
+    queryFn: () => api.getEvent(eventId),
     enabled: !!eventId,
     staleTime: 5 * 60 * 1000, // 5 minutes
   })

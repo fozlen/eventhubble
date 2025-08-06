@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { api } from '../services/api'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 
 const AdminLogosPage = () => {
   const [logos, setLogos] = useState([])
@@ -36,8 +36,8 @@ const AdminLogosPage = () => {
   const loadLogos = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/logos`)
-      const data = await response.json()
-      setLogos(data.logos || [])
+      const result = await response.json()
+      setLogos(result.data || [])
     } catch (error) {
       console.error('Error loading logos:', error)
       setLogos([])
@@ -59,7 +59,7 @@ const AdminLogosPage = () => {
     formData.append('usage_context', 'header')
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/logos/upload`, {
+      const response = await fetch(`${API_BASE_URL}/api/logos`, {
         method: 'POST',
         body: formData
       })

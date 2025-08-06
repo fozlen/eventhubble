@@ -5,31 +5,14 @@ import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
 import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
-import { createServer } from 'http'
-import { Server } from 'socket.io'
 import supabaseService from './services/supabaseService.js'
 import authMiddleware, { 
-  refreshTokenMiddleware, 
-  rateLimit, 
-  csrfProtection, 
-  auditLog,
-  generateTokens,
-  hashToken,
-  getCookieOptions
+  rateLimit
 } from './middleware/auth.js'
 
 dotenv.config()
 
 const app = express()
-const server = createServer(app)
-const io = new Server(server, {
-  cors: {
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['https://eventhubble.com', 'https://www.eventhubble.com', 'https://eventhubble.netlify.app']
-      : ['http://localhost:3000', 'http://localhost:5173'],
-    credentials: true
-  }
-})
 
 const PORT = process.env.PORT || 3001
 
@@ -164,44 +147,13 @@ app.post('/api/auth/login', async (req, res) => {
   }
 })
 
-// Refresh token
-app.post('/api/auth/refresh', refreshTokenMiddleware, async (req, res) => {
-  try {
-    // Generate new CSRF token
-    const csrfToken = require('crypto').randomBytes(32).toString('hex')
-    res.cookie('csrfToken', csrfToken, { 
-      httpOnly: false, 
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 1000 // 1 hour
-    })
-    
-    res.json({ 
-      success: true, 
-      data: {
-        user: req.user,
-        csrfToken
-      }
-    })
-  } catch (error) {
-    console.error('Error refreshing token:', error)
-    res.status(500).json({ success: false, error: error.message })
-  }
-})
+
 
 // Logout
 app.post('/api/auth/logout', authMiddleware(), async (req, res) => {
   try {
-    // Delete session
-    const session = await supabaseService.getSessionByUserId(req.user.id)
-    if (session) {
-      await supabaseService.deleteSession(session.id)
-    }
-    
     // Clear cookies
     res.clearCookie('accessToken')
-    res.clearCookie('refreshToken')
-    res.clearCookie('csrfToken')
     
     res.json({ success: true, message: 'Logged out successfully' })
   } catch (error) {
@@ -253,8 +205,6 @@ app.get('/api/logos/:id', async (req, res) => {
 // Upload and create new logo
 app.post('/api/logos', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('create', 'logo'),
   upload.single('logo'), 
   async (req, res) => {
     try {
@@ -305,8 +255,6 @@ app.post('/api/logos',
 // Update logo
 app.put('/api/logos/:id', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('update', 'logo'),
   async (req, res) => {
     try {
       const logo = await supabaseService.updateLogo(req.params.id, req.body)
@@ -325,8 +273,6 @@ app.put('/api/logos/:id',
 // Delete logo
 app.delete('/api/logos/:id', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('delete', 'logo'),
   async (req, res) => {
     try {
       await supabaseService.deleteLogo(req.params.id)
@@ -385,8 +331,6 @@ app.get('/api/blogs/:identifier', async (req, res) => {
 // Create new blog
 app.post('/api/blogs', 
   authMiddleware(['admin', 'editor']), 
-  csrfProtection,
-  auditLog('create', 'blog'),
   async (req, res) => {
     try {
       const blog = await supabaseService.createBlog(req.body)
@@ -405,8 +349,6 @@ app.post('/api/blogs',
 // Update blog
 app.put('/api/blogs/:id', 
   authMiddleware(['admin', 'editor']), 
-  csrfProtection,
-  auditLog('update', 'blog'),
   async (req, res) => {
     try {
       const blog = await supabaseService.updateBlog(req.params.id, req.body)
@@ -425,8 +367,6 @@ app.put('/api/blogs/:id',
 // Delete blog
 app.delete('/api/blogs/:id', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('delete', 'blog'),
   async (req, res) => {
     try {
       await supabaseService.deleteBlog(req.params.id)
@@ -499,8 +439,6 @@ app.get('/api/events/:id', async (req, res) => {
 // Create new event
 app.post('/api/events', 
   authMiddleware(['admin', 'editor']), 
-  csrfProtection,
-  auditLog('create', 'event'),
   async (req, res) => {
     try {
       const event = await supabaseService.createEvent(req.body)
@@ -519,8 +457,6 @@ app.post('/api/events',
 // Update event
 app.put('/api/events/:id', 
   authMiddleware(['admin', 'editor']), 
-  csrfProtection,
-  auditLog('update', 'event'),
   async (req, res) => {
     try {
       const event = await supabaseService.updateEvent(req.params.id, req.body)
@@ -539,8 +475,6 @@ app.put('/api/events/:id',
 // Delete event
 app.delete('/api/events/:id', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('delete', 'event'),
   async (req, res) => {
     try {
       await supabaseService.deleteEvent(req.params.id)
@@ -563,7 +497,6 @@ app.delete('/api/events/:id',
 // Upload image to Cloudinary
 app.post('/api/images/upload', 
   authMiddleware(['admin', 'editor']), 
-  csrfProtection,
   upload.single('image'), 
   async (req, res) => {
     try {
@@ -642,8 +575,6 @@ app.get('/api/images', async (req, res) => {
 // Delete image
 app.delete('/api/images/:id', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('delete', 'image'),
   async (req, res) => {
     try {
       const image = await supabaseService.getImageById(req.params.id)
@@ -684,8 +615,6 @@ app.get('/api/categories', async (req, res) => {
 // Create category
 app.post('/api/categories', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('create', 'category'),
   async (req, res) => {
     try {
       const category = await supabaseService.createCategory(req.body)
@@ -704,8 +633,6 @@ app.post('/api/categories',
 // Update category
 app.put('/api/categories/:id', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('update', 'category'),
   async (req, res) => {
     try {
       const category = await supabaseService.updateCategory(req.params.id, req.body)
@@ -724,8 +651,6 @@ app.put('/api/categories/:id',
 // Delete category
 app.delete('/api/categories/:id', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('delete', 'category'),
   async (req, res) => {
     try {
       await supabaseService.deleteCategory(req.params.id)
@@ -763,8 +688,6 @@ app.get('/api/settings', async (req, res) => {
 // Update settings (batch update)
 app.put('/api/settings', 
   authMiddleware(['admin']), 
-  csrfProtection,
-  auditLog('update', 'settings'),
   async (req, res) => {
     try {
       const { settings } = req.body
@@ -904,26 +827,7 @@ app.get('/api/analytics', authMiddleware(['admin']), async (req, res) => {
   }
 })
 
-// =====================================
-// WEBSOCKET CONNECTIONS
-// =====================================
 
-io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id)
-
-  // Join admin room if authenticated
-  socket.on('join-admin', (data) => {
-    if (data.role && ['admin', 'super_admin'].includes(data.role)) {
-      socket.join('admin-room')
-      console.log('Admin joined room:', socket.id)
-    }
-  })
-
-  // Handle disconnection
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id)
-  })
-})
 
 // =====================================
 // ERROR HANDLING
@@ -964,11 +868,10 @@ async function startServer() {
       console.warn('⚠️  Supabase connection failed - some features may not work')
     }
 
-    server.listen(PORT, () => {
+    app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`)
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`)
       console.log(`🌐 Health check: http://localhost:${PORT}/health`)
-      console.log(`🔌 WebSocket server ready`)
     })
   } catch (error) {
     console.error('❌ Failed to start server:', error)

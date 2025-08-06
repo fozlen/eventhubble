@@ -21,9 +21,9 @@ const WorldNewsPage = () => {
     queryKey: ['logos'],
     queryFn: async () => {
       const [mainLogo, largeLogo, transparentLogo] = await Promise.all([
-        api.getLogo('main'),
-        api.getLogo('large'),
-        api.getLogo('transparent')
+        api.getActiveLogo('main'),
+        api.getActiveLogo('large'),
+        api.getActiveLogo('transparent')
       ])
       return {
         main: mainLogo,

@@ -38,9 +38,10 @@ const BlogDetailPage = () => {
   const loadBlogPost = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(`${API_BASE_URL}/api/blog-posts/${id}`)
+      const response = await fetch(`${API_BASE_URL}/api/blogs/${id}`)
       if (response.ok) {
-        const post = await response.json()
+        const result = await response.json()
+        const post = result.data
         // Localize the blog post based on current language
         const localizedPost = {
           ...post,

@@ -8,7 +8,7 @@ import {
 import { COLORS, getAdminColors } from '../constants/colors'
 import { api } from '../services/api'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 
 const AdminCategoriesPage = () => {
   const [categories, setCategories] = useState([])
@@ -60,7 +60,7 @@ const AdminCategoriesPage = () => {
       if (response.ok) {
         const result = await response.json()
         if (result.success) {
-          setCategories(result.categories || [])
+          setCategories(result.data || [])
         }
       }
     } catch (error) {
