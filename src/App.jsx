@@ -127,7 +127,7 @@ const AppInitializer = ({ children }) => {
     // Check API health on app start
     const checkHealth = async () => {
       try {
-        await apiService.healthCheck()
+        await api.healthCheck()
         console.log('✅ API connection successful')
       } catch (error) {
         console.error('⚠️ API connection failed:', error)

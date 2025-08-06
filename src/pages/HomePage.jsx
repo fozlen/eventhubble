@@ -66,9 +66,9 @@ const HomePage = () => {
     const loadLogos = async () => {
       try {
         const [mainLogo, transparentLogo, darkLogo] = await Promise.all([
-          apiService.getActiveLogo('large'),
-          apiService.getActiveLogo('transparent'),
-          apiService.getActiveLogo('dark')
+          api.getActiveLogo('large'),
+          api.getActiveLogo('transparent'),
+          api.getActiveLogo('dark')
         ])
         
         setLogos({
@@ -94,7 +94,7 @@ const HomePage = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const result = await apiService.getCategories()
+        const result = await api.getCategories()
         const categoriesData = result.success ? result.data : result
         
         // Map categories with icons and counts
@@ -131,7 +131,7 @@ const HomePage = () => {
           params.city = selectedCity
         }
         
-        const result = await apiService.getEvents(params)
+        const result = await api.getEvents(params)
         const eventsData = result.data || []
         
         setEvents(eventsData)
@@ -156,7 +156,7 @@ const HomePage = () => {
     loadEvents()
     
     // Track page view
-    apiService.trackEvent('page_view', { page: 'home' })
+    api.trackEvent('page_view', { page: 'home' })
   }, [selectedCategory, selectedCity])
 
   // Search handler
@@ -178,7 +178,7 @@ const HomePage = () => {
   // Event detail handler
   const handleEventDetail = (eventId) => {
     navigate(`/event/${eventId}`)
-    apiService.trackEvent('event_click', { event_id: eventId })
+    api.trackEvent('event_click', { event_id: eventId })
   }
 
   // Sort events

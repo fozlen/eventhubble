@@ -32,7 +32,7 @@ const ContactPage = () => {
     setError('')
 
     try {
-      await apiService.submitContact(formData)
+              await api.submitContact(formData)
       setSuccess(true)
       setFormData({
         name: '',
