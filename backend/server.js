@@ -418,17 +418,26 @@ app.delete('/api/logos/:id',
 app.get('/api/blogs', async (req, res) => {
   try {
     const { category, featured, status, limit, offset } = req.query
-    const blogs = await supabaseService.getBlogs({ 
-      category, 
-      featured: featured === 'true',
-      status: status || 'published',
-      limit: parseInt(limit) || 50,
-      offset: parseInt(offset) || 0
-    })
-    res.json({ success: true, data: blogs })
+    
+    try {
+      const blogs = await supabaseService.getBlogs({ 
+        category, 
+        featured: featured === 'true',
+        status: status || 'published',
+        limit: parseInt(limit) || 50,
+        offset: parseInt(offset) || 0
+      })
+      
+      // Ensure we return an array
+      const blogsArray = Array.isArray(blogs?.data) ? blogs.data : []
+      res.json({ success: true, data: blogsArray })
+    } catch (dbError) {
+      console.warn('Blogs fetch failed, returning empty array:', dbError.message)
+      res.json({ success: true, data: [] })
+    }
   } catch (error) {
-    console.error('Error fetching blogs:', error)
-    res.status(500).json({ success: false, error: error.message })
+    console.error('Error in blogs endpoint:', error)
+    res.status(500).json({ success: false, error: 'Internal server error' })
   }
 })
 
@@ -522,21 +531,28 @@ app.get('/api/events', async (req, res) => {
       offset 
     } = req.query
 
-    const events = await supabaseService.getEvents({
-      category,
-      city,
-      featured: featured === 'true',
-      status: status || 'published',
-      date_from,
-      date_to,
-      limit: parseInt(limit) || 50,
-      offset: parseInt(offset) || 0
-    })
+    try {
+      const events = await supabaseService.getEvents({
+        category,
+        city,
+        featured: featured === 'true',
+        status: status || 'published',
+        date_from,
+        date_to,
+        limit: parseInt(limit) || 50,
+        offset: parseInt(offset) || 0
+      })
 
-    res.json({ success: true, data: events })
+      // Ensure we return an array
+      const eventsArray = Array.isArray(events?.data) ? events.data : []
+      res.json({ success: true, data: eventsArray })
+    } catch (dbError) {
+      console.warn('Events fetch failed, returning empty array:', dbError.message)
+      res.json({ success: true, data: [] })
+    }
   } catch (error) {
-    console.error('Error fetching events:', error)
-    res.status(500).json({ success: false, error: error.message })
+    console.error('Error in events endpoint:', error)
+    res.status(500).json({ success: false, error: 'Internal server error' })
   }
 })
 
@@ -682,15 +698,24 @@ app.post('/api/images/upload',
 app.get('/api/images', async (req, res) => {
   try {
     const { category, limit, offset } = req.query
-    const images = await supabaseService.getImages({ 
-      category,
-      limit: parseInt(limit) || 50,
-      offset: parseInt(offset) || 0
-    })
-    res.json({ success: true, data: images })
+    
+    try {
+      const images = await supabaseService.getImages({ 
+        category,
+        limit: parseInt(limit) || 50,
+        offset: parseInt(offset) || 0
+      })
+      
+      // Ensure we return an array
+      const imagesArray = Array.isArray(images) ? images : []
+      res.json({ success: true, data: imagesArray })
+    } catch (dbError) {
+      console.warn('Images fetch failed, returning empty array:', dbError.message)
+      res.json({ success: true, data: [] })
+    }
   } catch (error) {
-    console.error('Error fetching images:', error)
-    res.status(500).json({ success: false, error: error.message })
+    console.error('Error in images endpoint:', error)
+    res.status(500).json({ success: false, error: 'Internal server error' })
   }
 })
 

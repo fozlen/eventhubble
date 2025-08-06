@@ -48,7 +48,10 @@ const AdminImagesPage = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/images`)
       const result = await response.json()
-      setImages(result.data || [])
+      
+      // Ensure we always have an array
+      const imagesArray = Array.isArray(result.data) ? result.data : []
+      setImages(imagesArray)
     } catch (error) {
       console.error('Error loading images:', error)
       setImages([])
