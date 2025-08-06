@@ -76,6 +76,9 @@ app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(cookieParser())
 
+// Static file serving
+app.use('/assets', express.static('assets'))
+
 // Rate limiting
 app.use(rateLimit(15 * 60 * 1000, 100)) // 100 requests per 15 minutes
 

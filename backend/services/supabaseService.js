@@ -632,7 +632,7 @@ class SupabaseService {
         .from('events')
         .select('*', { count: 'exact' })
         .eq('is_active', true)
-        .order('date', { ascending: true })
+        .order('created_at', { ascending: true })
         .range(offset, offset + limit - 1)
 
       if (category) {
@@ -645,10 +645,10 @@ class SupabaseService {
         query = query.eq('is_featured', featured)
       }
       if (date_from) {
-        query = query.gte('date', date_from)
+        query = query.gte('created_at', date_from)
       }
       if (date_to) {
-        query = query.lte('date', date_to)
+        query = query.lte('created_at', date_to)
       }
 
       const { data, error, count } = await query
