@@ -6,8 +6,8 @@ import {
   Database, Shield, Mail, Phone, Twitter, Instagram, 
   Facebook, Youtube, CreditCard, Clock, Eye, Tag, MapPin 
 } from 'lucide-react'
-import LogoService from '../services/logoService'
-import DatabaseService from '../services/databaseService'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../services/api'
 
 const AdminSiteSettingsPage = () => {
   const [settings, setSettings] = useState([])

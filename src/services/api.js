@@ -370,4 +370,5 @@ class ApiService {
 
 // Create and export singleton instance
 const apiService = new ApiService()
-export default apiService 
+export default apiService
+export { apiService as api } 

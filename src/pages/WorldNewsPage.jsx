@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { Sun, Moon, Globe, User, Calendar, ArrowRight } from 'lucide-react'
-import CacheService from '../services/cacheService'
-import LogoService from '../services/logoService'
-import DatabaseService from '../services/databaseService'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../services/api'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 import Footer from '../components/Footer'
@@ -12,35 +11,28 @@ import Footer from '../components/Footer'
 const WorldNewsPage = () => {
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
-  const [newsData, setNewsData] = useState([])
   const [isDarkMode, setIsDarkMode] = useState(false)
-  const [logos, setLogos] = useState({})
   const [images, setImages] = useState({})
 
 
 
-  // Load logos
-  useEffect(() => {
-    const loadLogos = async () => {
-      try {
-                  const [mainLogo, largeLogo, transparentLogo] = await Promise.all([
-                   LogoService.getLogo('main'),
-         LogoService.getLogo('large'),
-         LogoService.getLogo('transparent')
-          ])
-        
-                  setLogos({
-            main: mainLogo,
-            large: largeLogo,
-            transparent: transparentLogo
-          })
-      } catch (error) {
-        console.error('Logo loading error:', error)
+  // Load logos with React Query
+  const { data: logos = {} } = useQuery({
+    queryKey: ['logos'],
+    queryFn: async () => {
+      const [mainLogo, largeLogo, transparentLogo] = await Promise.all([
+        api.getLogo('main'),
+        api.getLogo('large'),
+        api.getLogo('transparent')
+      ])
+      return {
+        main: mainLogo,
+        large: largeLogo,
+        transparent: transparentLogo
       }
-    }
-
-    loadLogos()
-  }, [])
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  })
 
   // Load dark mode from localStorage
   useEffect(() => {
@@ -48,26 +40,12 @@ const WorldNewsPage = () => {
     setIsDarkMode(savedDarkMode)
   }, [])
 
-  // Load blog posts with caching
-  useEffect(() => {
-    const loadBlogPosts = async () => {
-      try {
-        const posts = await CacheService.getBlogPosts(language)
-        setNewsData(posts)
-        // Load images for posts that have cover_image_id
-        loadPostImages(posts)
-      } catch (error) {
-        if (!import.meta.env.PROD) {
-          console.error('Error loading blog posts:', error)
-        }
-        setNewsData([])
-      } finally {
-        // Loading removed for better UX
-      }
-    }
-
-    loadBlogPosts()
-  }, [language])
+  // Load blog posts with React Query
+  const { data: newsData = [] } = useQuery({
+    queryKey: ['blog-posts', language],
+    queryFn: () => api.getBlogs({ language }),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 
   // Load images for blog posts
   const loadPostImages = async (posts) => {
@@ -93,8 +71,8 @@ const WorldNewsPage = () => {
     if (post.cover_image_id && images[post.cover_image_id]) {
       return images[post.cover_image_id]
     }
-    // Use API base URL for fallback instead of relative path
-    return logos.main || `${LogoService.API_BASE_URL}/assets/Logo.png`
+    // Use API base URL for fallback
+    return logos.main || `${api.baseURL}/assets/Logo.png`
   }
 
   // Update page title based on language

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Phone, Globe as GlobeIcon, Share2, Heart, ExternalLink, Tag } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
-import DatabaseService from '../services/databaseService'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../services/api'
 // Image paths for API compatibility  
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
 const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`

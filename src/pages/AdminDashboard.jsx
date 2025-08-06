@@ -6,8 +6,8 @@ import {
   Calendar, Star, Globe, Eye, Activity,
   PlusCircle, ArrowRight, LogOut
 } from 'lucide-react'
-import LogoService from '../services/logoService'
-import DatabaseService from '../services/databaseService'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../services/api'
 
 const AdminDashboard = () => {
   const { language, toggleLanguage } = useLanguage()

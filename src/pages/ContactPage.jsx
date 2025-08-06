@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
-import apiService from '../services/api'
+import { api } from '../services/api'
 import MobileHeader from '../components/MobileHeader'
 import Footer from '../components/Footer'
 import { Mail, Phone, MapPin, Send, Loader2, CheckCircle } from 'lucide-react'

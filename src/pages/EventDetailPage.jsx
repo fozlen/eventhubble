@@ -8,7 +8,8 @@ const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
 const logo = `${API_BASE_URL}/assets/Logo.png`
 const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
 const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
-import EventService from '../services/eventService'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../services/api'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 import Footer from '../components/Footer'
@@ -18,7 +19,6 @@ const EventDetailPage = () => {
   const { eventId } = useParams()
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
-  const [event, setEvent] = useState(null)
   const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
 
   // Get logo
@@ -93,28 +93,13 @@ const EventDetailPage = () => {
       }
   }
 
-  useEffect(() => {
-    const loadEventDetail = async () => {
-      try {
-        // EventService kullanarak event detaylarını yükle
-        const eventDetail = await EventService.getEventDetails(eventId)
-        if (eventDetail) {
-          setEvent(eventDetail)
-        } else {
-          // Event bulunamadı
-          setEvent(null)
-        }
-      } catch (error) {
-        if (!import.meta.env.PROD) {
-          console.error('Event detail loading error:', error)
-        }
-        setEvent(null)
-      }
-      // Loading removed for better UX
-    }
-
-    loadEventDetail()
-  }, [eventId, language])
+  // Use React Query for event data
+  const { data: event, isLoading, error } = useQuery({
+    queryKey: ['event', eventId],
+    queryFn: () => api.getEventById(eventId),
+    enabled: !!eventId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 
   // Loading removed for better UX
 

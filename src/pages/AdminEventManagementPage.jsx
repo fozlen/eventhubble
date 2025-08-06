@@ -5,10 +5,8 @@ import {
   Plus, Edit, Trash2, Eye, LogOut, Calendar, User, Globe, Settings, 
   BarChart3, MapPin, Clock, DollarSign, Users, Star, Phone, ExternalLink, Tag, FileText, ArrowLeft 
 } from 'lucide-react'
-import LogoService from '../services/logoService'
-
-import EventService from '../services/eventService'
-import DatabaseService from '../services/databaseService'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../services/api'
 import SearchableImageSelect from '../components/SearchableImageSelect'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')

@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import { COLORS, getCategoryColor } from '../constants/colors'
-import LogoService from '../services/logoService'
-import EventService from '../services/eventService'
-import DatabaseService from '../services/databaseService'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../services/api'
 import { 
   Megaphone, 
   Settings, 
