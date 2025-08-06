@@ -375,9 +375,6 @@ class SupabaseService {
         .select('*')
         .order('created_at', { ascending: false })
 
-      if (variant) {
-        query = query.eq('variant', variant)
-      }
       if (active !== undefined) {
         query = query.eq('is_active', active === 'true' || active === true)
       }
@@ -459,7 +456,7 @@ class SupabaseService {
   // BLOGS (Enhanced with new fields)
   // =====================================
   
-  async getBlogs({ limit = 50, offset = 0, status, category, featured } = {}) {
+  async getBlogs({ limit = 50, offset = 0, category, featured } = {}) {
     try {
       let query = supabase
         .from('blog_posts')
@@ -467,9 +464,6 @@ class SupabaseService {
         .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1)
 
-      if (status) {
-        query = query.eq('status', status)
-      }
       if (category) {
         query = query.eq('category', category)
       }
@@ -628,7 +622,6 @@ class SupabaseService {
     category, 
     city, 
     featured, 
-    status = 'published',
     date_from,
     date_to,
     limit = 50, 
@@ -642,9 +635,6 @@ class SupabaseService {
         .order('date', { ascending: true })
         .range(offset, offset + limit - 1)
 
-      if (status) {
-        query = query.eq('status', status)
-      }
       if (category) {
         query = query.eq('category', category)
       }
@@ -901,7 +891,7 @@ class SupabaseService {
       let query = supabase
         .from('categories')
         .select('*')
-        .order('order_index', { ascending: true })
+        .order('created_at', { ascending: true })
 
       if (!includeInactive) {
         query = query.eq('is_active', true)
@@ -1212,7 +1202,7 @@ class SupabaseService {
     const ua = userAgent.toLowerCase()
     
     let deviceType = 'desktop'
-    let browser = 'unknown'
+    let browserName = 'unknown'
     let os = 'unknown'
 
     // Detect device type
@@ -1223,11 +1213,11 @@ class SupabaseService {
     }
 
     // Detect browser
-    if (ua.includes('chrome')) browser = 'chrome'
-    else if (ua.includes('firefox')) browser = 'firefox'
-    else if (ua.includes('safari')) browser = 'safari'
-    else if (ua.includes('edge')) browser = 'edge'
-    else if (ua.includes('opera')) browser = 'opera'
+    if (ua.includes('chrome')) browserName = 'chrome'
+    else if (ua.includes('firefox')) browserName = 'firefox'
+    else if (ua.includes('safari')) browserName = 'safari'
+    else if (ua.includes('edge')) browserName = 'edge'
+    else if (ua.includes('opera')) browserName = 'opera'
 
     // Detect OS
     if (ua.includes('windows')) os = 'windows'
@@ -1236,7 +1226,7 @@ class SupabaseService {
     else if (ua.includes('android')) os = 'android'
     else if (ua.includes('ios')) os = 'ios'
 
-    return { device_type: deviceType, browser, os }
+    return { device_type: deviceType, browser_name: browserName, os }
   }
 }
 

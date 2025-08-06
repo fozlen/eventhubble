@@ -16,7 +16,7 @@ class LogoService {
         return this.cache.get(variant)
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/logos?variant=${variant}&active=true`)
+      const response = await fetch(`${API_BASE_URL}/api/logos?active=true`)
       const result = await response.json()
       
       if (result.success && result.data && result.data.length > 0) {
@@ -59,8 +59,12 @@ class LogoService {
       
       if (result.success) {
         const logos = {}
-        result.data.forEach(logo => {
-          logos[logo.variant] = logo.url
+        result.data.forEach((logo, index) => {
+          // Use index-based mapping since variant column doesn't exist
+          const variants = ['main', 'large', 'transparent', 'dark']
+          if (variants[index]) {
+            logos[variants[index]] = logo.url
+          }
         })
         return logos
       }
