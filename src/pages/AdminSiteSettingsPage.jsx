@@ -4,7 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { 
   Plus, Edit, Trash2, Save, X, LogOut, Globe, Settings, 
   Database, Shield, Mail, Phone, Twitter, Instagram, 
-  Facebook, Youtube, CreditCard, Clock, Eye, Tag, MapPin 
+  Facebook, Youtube, CreditCard, Clock, Eye, Tag, MapPin, ArrowLeft 
 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../services/api'
@@ -45,8 +45,8 @@ const AdminSiteSettingsPage = () => {
     setIsLoading(true)
     try {
       // Load logo
-        const logoData = await api.getActiveLogo('main')
-        setLogo(logoData?.url || '/assets/Logo.png')
+      const logoData = await api.getActiveLogo('main')
+      setLogo(logoData?.url || '/assets/Logo.png')
 
       // Load site settings
       const settingsResponse = await api.getSettings()
@@ -58,7 +58,6 @@ const AdminSiteSettingsPage = () => {
       }
     } catch (error) {
       console.error('Data loading error:', error)
-      alert(language === 'TR' ? 'Veriler yüklenirken hata oluştu!' : 'Error loading data!')
       setSettings([])
     } finally {
       setIsLoading(false)
@@ -77,26 +76,20 @@ const AdminSiteSettingsPage = () => {
         setting_value: newValue
       }
 
-              await api.updateSettings([updatedSetting])
+      await api.updateSettings([updatedSetting])
       
       // Update local state
-      setSettings(prev => prev.map(setting => 
-        setting.setting_key === settingKey 
-          ? { ...setting, setting_value: newValue }
-          : setting
+      setSettings(settings.map(s => 
+        s.setting_key === settingKey ? updatedSetting : s
       ))
-
-      // Clear editing state
+      
       setEditingSettings(prev => {
         const newState = { ...prev }
         delete newState[settingKey]
         return newState
       })
-
-      alert(language === 'TR' ? 'Ayar başarıyla güncellendi!' : 'Setting updated successfully!')
     } catch (error) {
-      console.error('Save setting error:', error)
-      alert(language === 'TR' ? 'Ayar güncellenirken hata oluştu!' : 'Error updating setting!')
+      console.error('Error saving setting:', error)
     }
   }
 
@@ -116,64 +109,34 @@ const AdminSiteSettingsPage = () => {
   }
 
   const getCategoryIcon = (category) => {
-    switch (category) {
-      case 'contact': return Mail
-      case 'general': return Globe
-      default: return Settings
-    }
+    const categoryData = categories.find(c => c.key === category)
+    return categoryData ? categoryData.icon : Settings
   }
 
   const renderSettingValue = (setting) => {
-    const isEditing = editingSettings.hasOwnProperty(setting.setting_key)
-    const Icon = getCategoryIcon(setting.category)
-
-    if (isEditing) {
+    if (editingSettings[setting.setting_key] !== undefined) {
       return (
-        <div className="flex items-center space-x-2">
-          {setting.setting_type === 'text' ? (
-            <textarea
-              value={editingSettings[setting.setting_key]}
-              onChange={(e) => setEditingSettings(prev => ({
-                ...prev,
-                [setting.setting_key]: e.target.value
-              }))}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              rows="3"
-            />
-          ) : setting.setting_type === 'boolean' ? (
-            <select
-              value={editingSettings[setting.setting_key]}
-              onChange={(e) => setEditingSettings(prev => ({
-                ...prev,
-                [setting.setting_key]: e.target.value
-              }))}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              <option value="true">True</option>
-              <option value="false">False</option>
-            </select>
-          ) : (
-            <input
-              type="text"
-              value={editingSettings[setting.setting_key]}
-              onChange={(e) => setEditingSettings(prev => ({
-                ...prev,
-                [setting.setting_key]: e.target.value
-              }))}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          )}
+        <div className="flex space-x-2">
+          <input
+            type="text"
+            value={editingSettings[setting.setting_key]}
+            onChange={(e) => setEditingSettings(prev => ({
+              ...prev,
+              [setting.setting_key]: e.target.value
+            }))}
+            className="flex-1 px-3 py-1 border border-gray-300 rounded text-sm"
+          />
           <button
             onClick={() => handleSaveSetting(setting.setting_key, editingSettings[setting.setting_key])}
-            className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
           >
-            <Save className="h-4 w-4" />
+            <Save className="h-3 w-3" />
           </button>
           <button
             onClick={() => handleCancelEdit(setting.setting_key)}
-            className="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            className="px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
           >
-            <X className="h-4 w-4" />
+            <X className="h-3 w-3" />
           </button>
         </div>
       )
@@ -181,160 +144,202 @@ const AdminSiteSettingsPage = () => {
 
     return (
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <Icon className="h-5 w-5 text-primary" />
-          <div>
-            <div className="font-medium text-text">
-              {setting.setting_key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-            </div>
-            <div className="text-sm text-text/60">{setting.description}</div>
-            <div className="text-sm font-mono bg-gray-100 px-2 py-1 rounded mt-1">
-              {setting.setting_type === 'text' && setting.setting_value.length > 100
-                ? setting.setting_value.substring(0, 100) + '...'
-                : setting.setting_value
-              }
-            </div>
-          </div>
-        </div>
+        <span className="text-sm text-gray-600">{setting.setting_value}</span>
         <button
           onClick={() => handleEditSetting(setting.setting_key, setting.setting_value)}
-          className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          className="px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
         >
-          <Edit className="h-4 w-4" />
+          <Edit className="h-3 w-3" />
         </button>
       </div>
     )
   }
 
+  const stats = [
+    {
+      title: language === 'TR' ? 'Toplam Ayar' : 'Total Settings',
+      value: settings.length,
+      icon: Settings,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      title: language === 'TR' ? 'Genel Ayarlar' : 'General Settings',
+      value: settings.filter(s => s.category === 'general').length,
+      icon: Globe,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
+    },
+    {
+      title: language === 'TR' ? 'İletişim Ayarları' : 'Contact Settings',
+      value: settings.filter(s => s.category === 'contact').length,
+      icon: Mail,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    },
+    {
+      title: language === 'TR' ? 'Aktif Ayarlar' : 'Active Settings',
+      value: settings.filter(s => s.is_active !== false).length,
+      icon: Eye,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50'
+    }
+  ]
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-primary border-b border-primary/20 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo and Brand */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
+              <button
+                onClick={() => navigate('/admin/dashboard')}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
+              </button>
               <img src={logo} alt="EventHubble" className="h-8 w-auto" />
-                <span className="text-xl font-bold">
-                <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light"> Hubble</span>
-                </span>
-              <span className="text-primary-light/60 hidden sm:inline">
-                | {language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
-              </span>
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900">
+                  {language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
+                </h1>
+                <p className="text-sm text-gray-500">
+                  {language === 'TR' ? 'Site ayarlarını yönet' : 'Manage site settings'}
+                </p>
+              </div>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center space-x-4">
-              <button 
+              <button
                 onClick={toggleLanguage}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-primary-light/20 hover:bg-primary-light/30 transition-colors duration-200"
+                className="flex items-center space-x-1 px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
               >
-                <Globe className="h-4 w-4 text-primary-cream" />
-                <span className="text-primary-cream font-medium">{language}</span>
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">{language}</span>
               </button>
               
               <button
-                onClick={() => {
-                  localStorage.removeItem('adminAuthenticated')
-                  localStorage.removeItem('adminLoginTime')
-                  navigate('/admin/login')
-                }}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                onClick={() => navigate('/admin/dashboard')}
+                className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               >
                 <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">
-                  {language === 'TR' ? 'Çıkış' : 'Logout'}
-                </span>
+                <span className="text-sm">{language === 'TR' ? 'Çıkış' : 'Logout'}</span>
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Navigation */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex flex-wrap gap-2 mb-6">
-                <button
-            onClick={() => navigate('/admin/dashboard')}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-            {language === 'TR' ? '← Ana Panel' : '← Dashboard'}
-                </button>
-        </div>
-
-        {/* Category Filter */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">
-            {language === 'TR' ? 'Kategori Filtresi' : 'Category Filter'}
-          </h3>
-          <div className="flex flex-wrap gap-3">
-            {categories.map(category => {
-              const Icon = category.icon
-              return (
-                <button
-                  key={category.key}
-                  onClick={() => setSelectedCategory(category.key)}
-                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
-                    selectedCategory === category.key
-                      ? 'bg-primary border-primary text-white shadow-md transform scale-105'
-                      : 'bg-white border-gray-200 text-gray-700 hover:border-primary/50 hover:bg-primary/5'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span className="font-medium">{category.label}</span>
-                  {selectedCategory === category.key && (
-                    <div className="w-2 h-2 bg-white rounded-full ml-1"></div>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-                {/* Settings List */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-6 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-            <h2 className="text-2xl font-bold text-gray-900">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Page Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
             </h2>
-            <p className="text-gray-600 mt-1">
-              {language === 'TR' 
-                ? `${filteredSettings.length} ayar gösteriliyor` 
-                : `Showing ${filteredSettings.length} settings`}
+            <p className="text-gray-600">
+              {language === 'TR' ? 'Site ayarlarınızı yönetin ve düzenleyin' : 'Manage and edit your site settings'}
             </p>
           </div>
-          
-          {isLoading ? (
-            <div className="p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-3 border-primary mx-auto mb-6"></div>
-              <p className="text-gray-500 text-lg">
-                {language === 'TR' ? 'Ayarlar yükleniyor...' : 'Loading settings...'}
-              </p>
-            </div>
-          ) : filteredSettings.length === 0 ? (
-            <div className="p-12 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                <Settings className="w-8 h-8 text-gray-400" />
-              </div>
-              <p className="text-gray-500 text-lg font-medium">
-                {language === 'TR' ? 'Bu kategoride ayar bulunamadı' : 'No settings found in this category'}
-              </p>
-              <p className="text-gray-400 text-sm mt-2">
-                {language === 'TR' ? 'Farklı bir kategori deneyin' : 'Try a different category'}
-              </p>
-            </div>
-          ) : (
-            <div className="divide-y divide-gray-100">
-              {filteredSettings.map((setting, index) => (
-                <div key={setting.setting_key} className={`p-6 hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
-                  {renderSettingValue(setting)}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
-      </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                    {isLoading ? (
+                      <div className="w-12 h-8 bg-gray-200 rounded animate-pulse"></div>
+                    ) : (
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    )}
+                  </div>
+                  <div className={`p-3 rounded-lg ${stat.bgColor}`}>
+                    <Icon className={`h-6 w-6 ${stat.color}`} />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Settings Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-900">
+                {language === 'TR' ? 'Site Ayarları' : 'Site Settings'}
+              </h3>
+              
+              {/* Category Filter */}
+              <div className="flex space-x-2">
+                {categories.map((category) => {
+                  const Icon = category.icon
+                  return (
+                    <button
+                      key={category.key}
+                      onClick={() => setSelectedCategory(category.key)}
+                      className={`flex items-center space-x-1 px-3 py-2 rounded-lg text-sm transition-colors ${
+                        selectedCategory === category.key
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{category.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-6">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              </div>
+            ) : filteredSettings.length === 0 ? (
+              <div className="text-center py-12">
+                <Settings className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {language === 'TR' ? 'Henüz ayar yok' : 'No settings yet'}
+                </h3>
+                <p className="text-gray-500">
+                  {language === 'TR' ? 'Site ayarları yüklenemedi.' : 'Site settings could not be loaded.'}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredSettings.map((setting) => {
+                  const CategoryIcon = getCategoryIcon(setting.category)
+                  return (
+                    <div key={setting.setting_key} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <CategoryIcon className="h-4 w-4 text-gray-500" />
+                        <h4 className="font-semibold text-gray-900">{setting.setting_key}</h4>
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          setting.is_active !== false ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {setting.is_active !== false ? (language === 'TR' ? 'Aktif' : 'Active') : (language === 'TR' ? 'Pasif' : 'Inactive')}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">{setting.description || 'No description'}</p>
+                      {renderSettingValue(setting)}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   )
 }

@@ -15,9 +15,9 @@ const AdminEventManagementPage = () => {
   const [events, setEvents] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState(null)
-
   const { language, toggleLanguage } = useLanguage()
   const [logo, setLogo] = useState('/assets/Logo.png')
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
   // Load logo
@@ -40,31 +40,15 @@ const AdminEventManagementPage = () => {
 
   const loadEvents = async () => {
     try {
-      // Loading removed for better UX
-      
-      // Database'den etkinlikleri yükle
+      setIsLoading(true)
       const result = await api.getEvents()
       const dbEvents = result.data || []
-      
-      // Manuel etkinlikleri de yükle (fallback olarak)
-      const storedEvents = localStorage.getItem('manualEvents')
-      const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
-      
-      // Database ve manuel etkinlikleri birleştir
-      const allEvents = [...dbEvents, ...manualEvents]
-      setEvents(allEvents)
-      
-      // İlk kez yükleniyorsa localStorage'ı initialize et
-      if (!storedEvents) {
-        localStorage.setItem('manualEvents', JSON.stringify([]))
-      }
+      setEvents(dbEvents)
     } catch (error) {
-      // Hata durumunda sadece local events'i göster
-      const storedEvents = localStorage.getItem('manualEvents')
-      const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
-      setEvents(manualEvents)
+      console.error('Error loading events:', error)
+      setEvents([])
     } finally {
-      // Loading removed for better UX
+      setIsLoading(false)
     }
   }
 
@@ -82,8 +66,6 @@ const AdminEventManagementPage = () => {
     setShowAddModal(true)
   }
 
-
-
   const handleDeleteEvent = async (eventId) => {
     const confirmMessage = language === 'TR' 
       ? 'Bu etkinliği silmek istediğinizden emin misiniz?'
@@ -91,124 +73,109 @@ const AdminEventManagementPage = () => {
     
     if (window.confirm(confirmMessage)) {
       try {
-        // Find the event to determine if it's database or local
-        const eventToDelete = events.find(e => e.id === eventId)
+        const response = await fetch(`${API_BASE_URL}/api/events/${eventId}`, {
+          method: 'DELETE'
+        })
         
-        if (eventToDelete?.event_id) {
-          // Database event - use API
-          await api.deleteEvent(eventToDelete.event_id)
+        if (response.ok) {
+          setEvents(events.filter(event => event.id !== eventId))
         } else {
-          // Local event - remove from localStorage
-          const storedEvents = localStorage.getItem('manualEvents')
-          const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
-          const updatedManualEvents = manualEvents.filter(event => event.id !== eventId)
-          localStorage.setItem('manualEvents', JSON.stringify(updatedManualEvents))
+          console.error('Delete failed:', response.status)
         }
-        
-        // Reload events to get updated data
-        await loadEvents()
       } catch (error) {
-        alert(language === 'TR' ? 'Etkinlik silinirken hata oluştu' : 'Error deleting event')
+        console.error('Error deleting event:', error)
       }
     }
   }
 
-
-
   const formatDate = (dateString) => {
-    if (!dateString) return language === 'TR' ? 'Tarih belirtilmemiş' : 'Date not specified'
-    
-    try {
-      const date = new Date(dateString)
-      // Check if date is valid
-      if (isNaN(date.getTime())) {
-        return language === 'TR' ? 'Geçersiz tarih' : 'Invalid date'
-      }
-      
-      return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
-    } catch (error) {
-      return language === 'TR' ? 'Geçersiz tarih' : 'Invalid date'
-    }
+    if (!dateString) return '-'
+    const date = new Date(dateString)
+    return date.toLocaleDateString(language === 'TR' ? 'tr-TR' : 'en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
   }
 
   const handleSaveEvent = async (eventData) => {
     try {
-      if (editingEvent) {
-        // Update existing event
-        if (editingEvent.event_id) {
-          // Database event - use API
-          await api.updateEvent(editingEvent.event_id, eventData)
-        } else {
-          // Local event - update localStorage
-          const storedEvents = localStorage.getItem('manualEvents')
-          const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
-          const updatedEvents = manualEvents.map(event => 
-            event.id === editingEvent.id ? { ...eventData, id: event.id } : event
-          )
-          localStorage.setItem('manualEvents', JSON.stringify(updatedEvents))
-        }
-      } else {
-        // Add new event - try database first, fallback to localStorage
-        try {
-          const newEventData = {
-            ...eventData,
-            event_id: `event_${Date.now()}`,
-            organizer_name: eventData.organizer_name || 'Event Hubble', // Otomatik organizatör
-            scraped_at: new Date().toISOString(),
-            created_at: new Date().toISOString(), // Otomatik oluşturulma tarihi
-            updated_at: new Date().toISOString(),
-            status: 'active',
-            is_active: true
-          }
-          
-          await api.createEvent(newEventData)
-        } catch (dbError) {
-          // Fallback to localStorage
-          const newEvent = {
-            ...eventData,
-            id: `manual_${Date.now()}`,
-            organizer_name: eventData.organizer_name || 'Event Hubble',
-            scraped_at: new Date().toISOString(),
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            status: 'active'
-          }
-          const storedEvents = localStorage.getItem('manualEvents')
-          const manualEvents = storedEvents ? JSON.parse(storedEvents) : []
-          const updatedEvents = [...manualEvents, newEvent]
-          localStorage.setItem('manualEvents', JSON.stringify(updatedEvents))
-        }
-      }
+      const url = editingEvent 
+        ? `${API_BASE_URL}/api/events/${editingEvent.id}`
+        : `${API_BASE_URL}/api/events`
       
-      // Reload events to get updated data
-      await loadEvents()
-      setShowAddModal(false)
-      setEditingEvent(null)
+      const method = editingEvent ? 'PUT' : 'POST'
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData)
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        if (editingEvent) {
+          setEvents(events.map(event => 
+            event.id === editingEvent.id ? result.data : event
+          ))
+        } else {
+          setEvents([...events, result.data])
+        }
+        setShowAddModal(false)
+        setEditingEvent(null)
+      } else {
+        console.error('Save failed:', response.status)
+      }
     } catch (error) {
-      alert(language === 'TR' ? 'Etkinlik kaydedilirken hata oluştu' : 'Error saving event')
+      console.error('Error saving event:', error)
     }
   }
 
-  // Loading removed for better UX
+  const stats = [
+    {
+      title: language === 'TR' ? 'Toplam Etkinlik' : 'Total Events',
+      value: events.length,
+      icon: Calendar,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      title: language === 'TR' ? 'Aktif Etkinlik' : 'Active Events',
+      value: events.filter(event => event.status === 'active').length,
+      icon: Eye,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
+    },
+    {
+      title: language === 'TR' ? 'Kategoriler' : 'Categories',
+      value: [...new Set(events.map(event => event.category).filter(Boolean))].length,
+      icon: Tag,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    },
+    {
+      title: language === 'TR' ? 'Manuel Etkinlik' : 'Manual Events',
+      value: events.filter(event => event.source === 'manual').length,
+      icon: FileText,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50'
+    }
+  ]
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Admin Header */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo and Brand */}
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/admin/dashboard')}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                title={language === 'TR' ? 'Ana Panel' : 'Dashboard'}
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
               </button>
               <img src={logo} alt="EventHubble" className="h-8 w-auto" />
               <div>
@@ -221,7 +188,6 @@ const AdminEventManagementPage = () => {
               </div>
             </div>
 
-            {/* Language and Logout */}
             <div className="flex items-center space-x-4">
               <button
                 onClick={toggleLanguage}
@@ -230,6 +196,7 @@ const AdminEventManagementPage = () => {
                 <Globe className="h-4 w-4" />
                 <span className="text-sm font-medium">{language}</span>
               </button>
+              
               <button
                 onClick={handleLogout}
                 className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -245,189 +212,131 @@ const AdminEventManagementPage = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-text mb-2">
-                {language === 'TR' ? 'Etkinlik Yönetimi' : 'Event Management'}
-              </h1>
-              <p className="text-text/70 text-lg">
-                {language === 'TR' 
-                  ? 'Manuel olarak etkinlik ekleyin ve yönetin'
-                  : 'Add and manage events manually'
-                }
-              </p>
-            </div>
-            <button
-              onClick={handleAddEvent}
-              className="flex items-center space-x-2 bg-primary hover:bg-primary-light text-white px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              <Plus className="h-5 w-5" />
-              <span className="font-medium">{language === 'TR' ? 'Yeni Etkinlik Ekle' : 'Add New Event'}</span>
-            </button>
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {language === 'TR' ? 'Etkinlik Yönetimi' : 'Event Management'}
+            </h2>
+            <p className="text-gray-600">
+              {language === 'TR' ? 'Etkinliklerinizi manuel olarak ekleyin ve yönetin' : 'Add and manage events manually'}
+            </p>
           </div>
+          <button
+            onClick={handleAddEvent}
+            className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            <span>{language === 'TR' ? '+ Yeni Etkinlik' : '+ Add New Event'}</span>
+          </button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <Calendar className="h-6 w-6 text-primary" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Toplam Etkinlik' : 'Total Events'}</p>
-                <p className="text-2xl font-bold text-text">{events.length}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-green-500/10 rounded-lg">
-                <Tag className="h-6 w-6 text-green-500" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Aktif Etkinlik' : 'Active Events'}</p>
-                <p className="text-2xl font-bold text-text">{events.filter(e => e.status === 'active').length}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-blue-500/10 rounded-lg">
-                <Users className="h-6 w-6 text-blue-500" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Kategoriler' : 'Categories'}</p>
-                <p className="text-2xl font-bold text-text">{new Set(events.map(e => e.category)).size}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-orange-500/10 rounded-lg">
-                <FileText className="h-6 w-6 text-orange-500" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Manuel Etkinlik' : 'Manual Events'}</p>
-                <p className="text-2xl font-bold text-text">{events.filter(e => e.id.startsWith('manual_')).length}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Events Grid */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-text">
-            {language === 'TR' ? 'Tüm Etkinlikler' : 'All Events'}
-          </h2>
-        </div>
-          
-          {events.length > 0 ? (
-            <div className="divide-y divide-gray-100">
-              {events.map((event) => (
-                <div key={event.id} className="p-6 hover:bg-background-secondary transition-colors">
-                  <div className="flex items-start space-x-4">
-                    <img
-                      src={event.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop'}
-                      alt={event.title}
-                      className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <Tag className="h-4 w-4 text-primary" />
-                        <span className="text-sm text-primary font-medium bg-primary/10 px-2 py-1 rounded-full">
-                          {event.category}
-                        </span>
-                        <span className="text-sm text-green-600 font-medium bg-green-100 px-2 py-1 rounded-full">
-                          {event.platform}
-                        </span>
-
-                      </div>
-                      <h3 className="text-lg font-semibold text-text mb-2 line-clamp-2">
-                        {event.title}
-                      </h3>
-                      <p className="text-text/70 text-sm mb-3 line-clamp-2">
-                        {event.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4 text-sm text-text/60">
-                          <div className="flex items-center space-x-1">
-                            <Calendar className="h-4 w-4" />
-                            <span>{formatDate(event.start_date || event.date || event.created_at)}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Clock className="h-4 w-4" />
-                            <span>{event.time}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="h-4 w-4" />
-                            <span>{event.venue}, {event.city}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <DollarSign className="h-4 w-4" />
-                            <span>{event.price_min}₺ - {event.price_max}₺</span>
-                          </div>
-                        </div>
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => handleEditEvent(event)}
-                            className="flex items-center space-x-1 text-primary hover:text-primary-light text-sm font-medium hover:bg-primary/10 px-3 py-1 rounded-md transition-colors"
-                          >
-                            <Edit className="h-4 w-4" />
-                            <span>{language === 'TR' ? 'Düzenle' : 'Edit'}</span>
-                          </button>
-                          <button
-                            onClick={() => handleDeleteEvent(event.id)}
-                            className="flex items-center space-x-1 text-text-accent hover:text-primary-light text-sm font-medium hover:bg-text-accent/10 px-3 py-1 rounded-md transition-colors"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            <span>{language === 'TR' ? 'Sil' : 'Delete'}</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                    {isLoading ? (
+                      <div className="w-12 h-8 bg-gray-200 rounded animate-pulse"></div>
+                    ) : (
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    )}
+                  </div>
+                  <div className={`p-3 rounded-lg ${stat.bgColor}`}>
+                    <Icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Calendar className="mx-auto h-12 w-12 text-text/30" />
-              <h3 className="mt-4 text-lg font-medium text-text">
-                {language === 'TR' ? 'Henüz etkinlik yok' : 'No events yet'}
-              </h3>
-              <p className="mt-2 text-text/60">
-                {language === 'TR' 
-                  ? 'İlk manuel etkinliğinizi oluşturarak başlayın.'
-                  : 'Get started by creating your first manual event.'
-                }
-              </p>
-              <div className="mt-6">
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Events Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">
+              {language === 'TR' ? 'Tüm Etkinlikler' : 'All Events'}
+            </h3>
+          </div>
+          
+          <div className="p-6">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              </div>
+            ) : events.length === 0 ? (
+              <div className="text-center py-12">
+                <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {language === 'TR' ? 'Henüz etkinlik yok' : 'No events yet'}
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  {language === 'TR' ? 'İlk manuel etkinliğinizi oluşturarak başlayın.' : 'Get started by creating your first manual event.'}
+                </p>
                 <button
                   onClick={handleAddEvent}
-                  className="inline-flex items-center px-6 py-3 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-light transition-colors"
+                  className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                 >
-                  <Plus className="-ml-1 mr-2 h-5 w-5" />
-                  {language === 'TR' ? 'Yeni Etkinlik Ekle' : 'Add New Event'}
+                  <Plus className="h-4 w-4" />
+                  <span>{language === 'TR' ? '+ Yeni Etkinlik' : '+ Add New Event'}</span>
                 </button>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {events.map((event) => (
+                  <div key={event.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden">
+                      <img
+                        src={event.image_url || 'https://via.placeholder.com/400x200/6B7280/FFFFFF?text=Event'}
+                        alt={event.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">{event.title}</h4>
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{event.description}</p>
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                      <span>{formatDate(event.date)}</span>
+                      <span className={`px-2 py-1 rounded-full ${
+                        event.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {event.status === 'active' ? (language === 'TR' ? 'Aktif' : 'Active') : (language === 'TR' ? 'Pasif' : 'Inactive')}
+                      </span>
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleEditEvent(event)}
+                        className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                      >
+                        <Edit className="h-3 w-3" />
+                        <span className="text-xs">{language === 'TR' ? 'Düzenle' : 'Edit'}</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteEvent(event.id)}
+                        className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        <span className="text-xs">{language === 'TR' ? 'Sil' : 'Delete'}</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </main>
 
-
-
       {/* Event Modal */}
       {showAddModal && (
-        <EventModal 
-          event={editingEvent} 
-          onClose={() => setShowAddModal(false)} 
+        <EventModal
+          event={editingEvent}
+          onClose={() => {
+            setShowAddModal(false)
+            setEditingEvent(null)
+          }}
           onSave={handleSaveEvent}
           language={language}
         />

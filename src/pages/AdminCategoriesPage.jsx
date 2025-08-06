@@ -16,6 +16,7 @@ const AdminCategoriesPage = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const { language, setLanguage, toggleLanguage } = useLanguage()
   const [logo, setLogo] = useState('/assets/Logo.png')
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
   // Load logo
@@ -38,6 +39,7 @@ const AdminCategoriesPage = () => {
 
   const loadCategories = async () => {
     try {
+      setIsLoading(true)
       const response = await fetch(`${API_BASE_URL}/api/categories`)
       if (response.ok) {
         const result = await response.json()
@@ -47,16 +49,15 @@ const AdminCategoriesPage = () => {
       }
     } catch (error) {
       console.error('Error loading categories:', error)
+      setCategories([])
     } finally {
-      // Loading removed for better UX
+      setIsLoading(false)
     }
   }
 
   const handleLogout = () => {
     navigate('/admin/dashboard')
   }
-
-
 
   const handleAddCategory = () => {
     setEditingCategory(null)
@@ -78,14 +79,14 @@ const AdminCategoriesPage = () => {
         const response = await fetch(`${API_BASE_URL}/api/categories/${categoryId}`, {
           method: 'DELETE'
         })
-
+        
         if (response.ok) {
-          loadCategories()
-          alert(language === 'TR' ? 'Kategori başarıyla silindi!' : 'Category deleted successfully!')
+          setCategories(categories.filter(category => category.id !== categoryId))
+        } else {
+          console.error('Delete failed:', response.status)
         }
       } catch (error) {
         console.error('Error deleting category:', error)
-        alert(language === 'TR' ? 'Kategori silinirken hata oluştu!' : 'Error deleting category!')
       }
     }
   }
@@ -93,7 +94,7 @@ const AdminCategoriesPage = () => {
   const handleSaveCategory = async (categoryData) => {
     try {
       const url = editingCategory 
-        ? `${API_BASE_URL}/api/categories/${editingCategory.category_id}`
+        ? `${API_BASE_URL}/api/categories/${editingCategory.id}`
         : `${API_BASE_URL}/api/categories`
       
       const method = editingCategory ? 'PUT' : 'POST'
@@ -101,27 +102,30 @@ const AdminCategoriesPage = () => {
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(categoryData)
       })
-
+      
       if (response.ok) {
-        loadCategories()
+        const result = await response.json()
+        if (editingCategory) {
+          setCategories(categories.map(category => 
+            category.id === editingCategory.id ? result.data : category
+          ))
+        } else {
+          setCategories([...categories, result.data])
+        }
         setShowAddModal(false)
         setEditingCategory(null)
-        alert(editingCategory 
-          ? (language === 'TR' ? 'Kategori başarıyla güncellendi!' : 'Category updated successfully!')
-          : (language === 'TR' ? 'Kategori başarıyla eklendi!' : 'Category added successfully!')
-        )
+      } else {
+        console.error('Save failed:', response.status)
       }
     } catch (error) {
       console.error('Error saving category:', error)
-      alert(language === 'TR' ? 'Kategori kaydedilirken hata oluştu!' : 'Error saving category!')
     }
   }
 
-  // Helper function to organize categories by parent
   const getOrganizedCategories = () => {
     const parentCategories = categories.filter(cat => !cat.parent_id)
     const childCategories = categories.filter(cat => cat.parent_id)
@@ -132,24 +136,49 @@ const AdminCategoriesPage = () => {
     }))
   }
 
-  // Loading removed for better UX
-
-  const organizedCategories = getOrganizedCategories()
+  const stats = [
+    {
+      title: language === 'TR' ? 'Toplam Kategori' : 'Total Categories',
+      value: categories.length,
+      icon: Tag,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      title: language === 'TR' ? 'Aktif Kategori' : 'Active Categories',
+      value: categories.filter(cat => cat.is_active).length,
+      icon: Eye,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
+    },
+    {
+      title: language === 'TR' ? 'Ana Kategori' : 'Parent Categories',
+      value: categories.filter(cat => !cat.parent_id).length,
+      icon: Hash,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    },
+    {
+      title: language === 'TR' ? 'Alt Kategori' : 'Sub Categories',
+      value: categories.filter(cat => cat.parent_id).length,
+      icon: ChevronRight,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50'
+    }
+  ]
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Admin Header */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo and Brand */}
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/admin/dashboard')}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                title={language === 'TR' ? 'Ana Panel' : 'Dashboard'}
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
               </button>
               <img src={logo} alt="EventHubble" className="h-8 w-auto" />
               <div>
@@ -162,7 +191,6 @@ const AdminCategoriesPage = () => {
               </div>
             </div>
 
-            {/* Language and Logout */}
             <div className="flex items-center space-x-4">
               <button
                 onClick={toggleLanguage}
@@ -171,6 +199,7 @@ const AdminCategoriesPage = () => {
                 <Globe className="h-4 w-4" />
                 <span className="text-sm font-medium">{language}</span>
               </button>
+              
               <button
                 onClick={handleLogout}
                 className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -186,227 +215,143 @@ const AdminCategoriesPage = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-text mb-2">
-                {language === 'TR' ? 'Kategori Yönetimi' : 'Category Management'}
-              </h1>
-              <p className="text-text/70 text-lg">
-                {language === 'TR' 
-                  ? 'Etkinlik ve blog kategorilerini yönetin'
-                  : 'Manage event and blog categories'
-                }
-              </p>
-            </div>
-            <button
-              onClick={handleAddCategory}
-              className="flex items-center space-x-2 bg-primary hover:bg-primary-light text-white px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              <Plus className="h-5 w-5" />
-              <span className="font-medium">{language === 'TR' ? 'Yeni Kategori Ekle' : 'Add New Category'}</span>
-            </button>
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {language === 'TR' ? 'Kategori Yönetimi' : 'Category Management'}
+            </h2>
+            <p className="text-gray-600">
+              {language === 'TR' ? 'Etkinlik ve blog kategorilerini yönetin' : 'Manage event and blog categories'}
+            </p>
           </div>
+          <button
+            onClick={handleAddCategory}
+            className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            <span>{language === 'TR' ? '+ Yeni Kategori' : '+ Add New Category'}</span>
+          </button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <Tag className="h-6 w-6 text-primary" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                    {isLoading ? (
+                      <div className="w-12 h-8 bg-gray-200 rounded animate-pulse"></div>
+                    ) : (
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    )}
+                  </div>
+                  <div className={`p-3 rounded-lg ${stat.bgColor}`}>
+                    <Icon className={`h-6 w-6 ${stat.color}`} />
+                  </div>
+                </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Toplam Kategori' : 'Total Categories'}</p>
-                <p className="text-2xl font-bold text-text">{categories.length}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <Eye className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Aktif Kategori' : 'Active Categories'}</p>
-                <p className="text-2xl font-bold text-text">{categories.filter(cat => cat.is_active).length}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <Hash className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Ana Kategori' : 'Parent Categories'}</p>
-                <p className="text-2xl font-bold text-text">{categories.filter(cat => !cat.parent_id).length}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <ChevronRight className="h-6 w-6 text-purple-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-text/60">{language === 'TR' ? 'Alt Kategori' : 'Sub Categories'}</p>
-                <p className="text-2xl font-bold text-text">{categories.filter(cat => cat.parent_id).length}</p>
-              </div>
-            </div>
-          </div>
+            )
+          })}
         </div>
 
-        {/* Categories List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-text">
+        {/* Categories Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">
               {language === 'TR' ? 'Kategori Listesi' : 'Category List'}
-            </h2>
+            </h3>
           </div>
           
-          {categories.length > 0 ? (
-            <div className="divide-y divide-gray-100">
-              {organizedCategories.map((category) => (
-                <div key={category.id} className="p-6">
-                  {/* Parent Category */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-4">
-                      <div 
-                        className="w-6 h-6 rounded-full"
-                        style={{ backgroundColor: category.color_code || COLORS.PRIMARY }}
-                      ></div>
-                      <div>
-                        <h3 className="font-semibold text-text text-lg">
-                          {language === 'TR' ? category.name_tr : category.name_en}
-                        </h3>
-                        <p className="text-text/60 text-sm">
-                          {language === 'TR' ? category.description_tr : category.description_en}
+          <div className="p-6">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              </div>
+            ) : categories.length === 0 ? (
+              <div className="text-center py-12">
+                <Tag className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {language === 'TR' ? 'Henüz kategori yok' : 'No categories yet'}
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  {language === 'TR' ? 'İlk kategorinizi ekleyerek başlayın.' : 'Get started by adding your first category.'}
+                </p>
+                <button
+                  onClick={handleAddCategory}
+                  className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>{language === 'TR' ? '+ Yeni Kategori' : '+ Add New Category'}</span>
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {getOrganizedCategories().map((category) => (
+                  <div key={category.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="w-4 h-4 rounded-full"
+                          style={{ backgroundColor: category.color || '#6B7280' }}
+                        ></div>
+                        <h4 className="font-semibold text-gray-900">{category.name}</h4>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        category.is_active ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {category.is_active ? (language === 'TR' ? 'Aktif' : 'Active') : (language === 'TR' ? 'Pasif' : 'Inactive')}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">{category.description}</p>
+                    {category.children && category.children.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-xs text-gray-500 mb-2">
+                          {language === 'TR' ? 'Alt Kategoriler:' : 'Sub Categories:'}
                         </p>
-                        <div className="flex items-center space-x-4 mt-2">
-                          <span className="text-xs text-text/50">ID: {category.category_id}</span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            category.is_active 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                            {category.is_active 
-                              ? (language === 'TR' ? 'Aktif' : 'Active')
-                              : (language === 'TR' ? 'Pasif' : 'Inactive')
-                            }
-                          </span>
-                          <span className="text-xs text-text/50">
-                            {language === 'TR' ? 'Sıralama' : 'Order'}: {category.display_order}
-                          </span>
+                        <div className="flex flex-wrap gap-1">
+                          {category.children.map((child) => (
+                            <span key={child.id} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                              {child.name}
+                            </span>
+                          ))}
                         </div>
                       </div>
-                    </div>
-                    
+                    )}
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleEditCategory(category)}
-                        className="flex items-center space-x-1 text-primary hover:text-primary-light text-sm font-medium hover:bg-primary/10 px-3 py-1 rounded-md transition-colors"
+                        className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                       >
-                        <Edit className="h-4 w-4" />
-                        <span>{language === 'TR' ? 'Düzenle' : 'Edit'}</span>
+                        <Edit className="h-3 w-3" />
+                        <span className="text-xs">{language === 'TR' ? 'Düzenle' : 'Edit'}</span>
                       </button>
                       <button
-                        onClick={() => handleDeleteCategory(category.category_id)}
-                        className="flex items-center space-x-1 text-red-600 hover:text-red-800 text-sm font-medium hover:bg-red-50 px-3 py-1 rounded-md transition-colors"
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                       >
-                        <Trash2 className="h-4 w-4" />
-                        <span>{language === 'TR' ? 'Sil' : 'Delete'}</span>
+                        <Trash2 className="h-3 w-3" />
+                        <span className="text-xs">{language === 'TR' ? 'Sil' : 'Delete'}</span>
                       </button>
                     </div>
                   </div>
-
-                  {/* Child Categories */}
-                  {category.children && category.children.length > 0 && (
-                    <div className="ml-8 space-y-3 pl-4 border-l-2 border-gray-100">
-                      {category.children.map((child) => (
-                        <div key={child.id} className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div 
-                              className="w-4 h-4 rounded-full"
-                              style={{ backgroundColor: child.color_code || COLORS.PRIMARY }}
-                            ></div>
-                            <div>
-                              <h4 className="font-medium text-text">
-                                {language === 'TR' ? child.name_tr : child.name_en}
-                              </h4>
-                              <div className="flex items-center space-x-3 mt-1">
-                                <span className="text-xs text-text/50">ID: {child.category_id}</span>
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  child.is_active 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-red-100 text-red-800'
-                                }`}>
-                                  {child.is_active 
-                                    ? (language === 'TR' ? 'Aktif' : 'Active')
-                                    : (language === 'TR' ? 'Pasif' : 'Inactive')
-                                  }
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleEditCategory(child)}
-                              className="flex items-center space-x-1 text-primary hover:text-primary-light text-xs font-medium hover:bg-primary/10 px-2 py-1 rounded-md transition-colors"
-                            >
-                              <Edit className="h-3 w-3" />
-                              <span>{language === 'TR' ? 'Düzenle' : 'Edit'}</span>
-                            </button>
-                            <button
-                              onClick={() => handleDeleteCategory(child.category_id)}
-                              className="flex items-center space-x-1 text-red-600 hover:text-red-800 text-xs font-medium hover:bg-red-50 px-2 py-1 rounded-md transition-colors"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                              <span>{language === 'TR' ? 'Sil' : 'Delete'}</span>
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Tag className="mx-auto h-12 w-12 text-text/30" />
-              <h3 className="mt-4 text-lg font-medium text-text">
-                {language === 'TR' ? 'Henüz kategori yok' : 'No categories yet'}
-              </h3>
-              <p className="mt-2 text-text/60">
-                {language === 'TR' 
-                  ? 'İlk kategorinizi ekleyerek başlayın.'
-                  : 'Get started by adding your first category.'
-                }
-              </p>
-              <div className="mt-6">
-                <button
-                  onClick={handleAddCategory}
-                  className="inline-flex items-center px-6 py-3 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-light transition-colors"
-                >
-                  <Plus className="-ml-1 mr-2 h-5 w-5" />
-                  {language === 'TR' ? 'Yeni Kategori Ekle' : 'Add New Category'}
-                </button>
+                ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </main>
 
       {/* Category Modal */}
       {showAddModal && (
-        <CategoryModal 
-          category={editingCategory} 
-          onClose={() => setShowAddModal(false)} 
+        <CategoryModal
+          category={editingCategory}
+          onClose={() => {
+            setShowAddModal(false)
+            setEditingCategory(null)
+          }}
           onSave={handleSaveCategory}
           language={language}
           categories={categories}
