@@ -11,7 +11,7 @@ import { api } from '../services/api'
 
 const AdminDashboard = () => {
   const { language, toggleLanguage } = useLanguage()
-  const [logo, setLogo] = useState('/Logo.png')
+  const [logo, setLogo] = useState('/assets/Logo.png')
   const [stats, setStats] = useState({
     totalEvents: 0,
     totalBlogs: 0,
@@ -30,8 +30,8 @@ const AdminDashboard = () => {
 
   const loadLogo = async () => {
     try {
-              const logoUrl = await api.getLogo('main')
-      setLogo(logoUrl)
+                      const logoData = await api.getActiveLogo('main')
+        setLogo(logoData?.url || '/assets/Logo.png')
     } catch (error) {
       console.error('Logo loading error:', error)
     }

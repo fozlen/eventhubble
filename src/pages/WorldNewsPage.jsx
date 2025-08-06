@@ -11,7 +11,7 @@ import Footer from '../components/Footer'
 const WorldNewsPage = () => {
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
-  const [isDarkMode, setIsDarkMode] = useState(false)
+
   const [images, setImages] = useState({})
 
 
@@ -34,11 +34,7 @@ const WorldNewsPage = () => {
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
 
-  // Load dark mode from localStorage
-  useEffect(() => {
-    const savedDarkMode = localStorage.getItem('isDarkMode') === 'true'
-    setIsDarkMode(savedDarkMode)
-  }, [])
+
 
   // Load blog posts with React Query
   const { data: newsData = [] } = useQuery({
@@ -72,7 +68,7 @@ const WorldNewsPage = () => {
       return images[post.cover_image_id]
     }
     // Use API base URL for fallback
-    return logos.main || `${api.baseURL}/assets/Logo.png`
+    return logos.main || '/assets/Logo.png'
   }
 
   // Update page title based on language
@@ -83,11 +79,7 @@ const WorldNewsPage = () => {
     document.title = title
   }, [language])
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode
-    setIsDarkMode(newDarkMode)
-    localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
-  }
+
 
 
 
@@ -101,7 +93,7 @@ const WorldNewsPage = () => {
 
   // Get appropriate logo based on theme
   const getLogo = () => {
-    return logos.main || `${LogoService.API_BASE_URL}/assets/Logo.png`
+    return logos.main || '/assets/Logo.png'
   }
 
   return (
@@ -205,8 +197,8 @@ const WorldNewsPage = () => {
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       // Prevent infinite fallback loop
-                      if (!e.target.src.includes('Logo.png')) {
-                        e.target.src = `${LogoService.API_BASE_URL}/assets/Logo.png`
+                            if (!e.target.src.includes('Logo.png')) {
+        e.target.src = '/assets/Logo.png'
                       }
                     }}
                   />

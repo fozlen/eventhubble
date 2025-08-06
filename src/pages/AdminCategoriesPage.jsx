@@ -15,15 +15,15 @@ const AdminCategoriesPage = () => {
   const [editingCategory, setEditingCategory] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
   const { language, setLanguage, toggleLanguage } = useLanguage()
-  const [logo, setLogo] = useState('/Logo.png')
+  const [logo, setLogo] = useState('/assets/Logo.png')
   const navigate = useNavigate()
 
   // Load logo
   useEffect(() => {
     const loadLogo = async () => {
       try {
-        const logoUrl = await api.getLogo('main')
-        setLogo(logoUrl)
+        const logoData = await api.getActiveLogo('main')
+        setLogo(logoData?.url || '/assets/Logo.png')
       } catch (error) {
         console.error('Logo loading error:', error)
       }

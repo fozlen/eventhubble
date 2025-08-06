@@ -3,7 +3,7 @@ import { Facebook, Instagram, Twitter, Music } from 'lucide-react'
 import LogoService from '../services/logoService'
 
 const Footer = ({ language = "EN" }) => {
-  const [footerLogo, setFooterLogo] = React.useState('/Logo.png')
+  const [footerLogo, setFooterLogo] = React.useState('/assets/Logo.png')
 
   React.useEffect(() => {
     const loadLogo = async () => {
@@ -13,7 +13,7 @@ const Footer = ({ language = "EN" }) => {
       } catch (error) {
         console.error('Footer logo loading error:', error)
         // Fallback to static asset
-        setFooterLogo('/Logo.png')
+        setFooterLogo('/assets/Logo.png')
       }
     }
     loadLogo()

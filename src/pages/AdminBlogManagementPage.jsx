@@ -10,23 +10,22 @@ import { api } from '../services/api'
 import SearchableImageSelect from '../components/SearchableImageSelect'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
-const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
-const logo = `${API_BASE_URL}/assets/Logo.png`
+const logo = '/assets/Logo.png'
 
 const AdminBlogManagementPage = () => {
   const [blogPosts, setBlogPosts] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingPost, setEditingPost] = useState(null)
   const { language, toggleLanguage } = useLanguage()
-  const [logo, setLogo] = useState('/Logo.png')
+  const [logo, setLogo] = useState('/assets/Logo.png')
   const navigate = useNavigate()
 
   // Load logo
   useEffect(() => {
     const loadLogo = async () => {
       try {
-        const logoUrl = await api.getLogo('main')
-        setLogo(logoUrl)
+        const logoData = await api.getActiveLogo('main')
+        setLogo(logoData?.url || '/assets/Logo.png')
       } catch (error) {
         console.error('Logo loading error:', error)
       }

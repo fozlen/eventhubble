@@ -4,12 +4,8 @@ import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock
 import { useLanguage } from '../contexts/LanguageContext'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../services/api'
-// Image paths for API compatibility  
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
-const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
-const logo = `${API_BASE_URL}/assets/Logo.png`
-const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
-const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
+// Logo fallback
+const logo = '/assets/Logo.png'
 import MobileHeader from '../components/MobileHeader'
 import MobileNavigation from '../components/MobileNavigation'
 import Footer from '../components/Footer'
@@ -17,17 +13,14 @@ import Footer from '../components/Footer'
 
 const BlogDetailPage = () => {
   const { language, toggleLanguage } = useLanguage()
-  const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
+
   const [blogPost, setBlogPost] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [postImageUrl, setPostImageUrl] = useState('')
   const { id } = useParams()
   const navigate = useNavigate()
 
-  // Dark mode effect - artık gerekli değil
-  useEffect(() => {
-    document.documentElement.classList.remove('dark')
-  }, [])
+
 
   // Update page title based on language
   useEffect(() => {
@@ -108,22 +101,18 @@ const BlogDetailPage = () => {
         if (image) {
           setPostImageUrl(DatabaseService.getImageUrl(image))
         } else {
-          setPostImageUrl('/Logo.png') // Fallback
+          setPostImageUrl('/assets/Logo.png') // Fallback
         }
       } catch (error) {
         console.warn(`Failed to load image ${post.cover_image_id}:`, error)
-        setPostImageUrl('/Logo.png') // Fallback
+        setPostImageUrl('/assets/Logo.png') // Fallback
       }
     } else {
-      setPostImageUrl('/Logo.png') // Fallback
+      setPostImageUrl('/assets/Logo.png') // Fallback
     }
   }
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode
-    setIsDarkMode(newDarkMode)
-    localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
-  }
+
 
   // Language context handles language toggle
 
@@ -310,13 +299,13 @@ const BlogDetailPage = () => {
         <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           {/* Featured Image */}
           <img
-            src={postImageUrl || `${API_BASE_URL}/assets/Logo.png`}
+            src={postImageUrl || '/assets/Logo.png'}
             alt={blogPost.title}
             className="w-full h-64 md:h-96 object-cover"
             onError={(e) => {
               // Prevent infinite fallback loop
               if (!e.target.src.includes('Logo.png')) {
-                e.target.src = `${API_BASE_URL}/assets/Logo.png`
+                e.target.src = '/assets/Logo.png'
               }
             }}
           />

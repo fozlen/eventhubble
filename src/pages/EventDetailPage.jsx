@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Globe, User, ArrowLeft, Calendar, MapPin, Users, Star, Clock, Phone, Globe as GlobeIcon, Share2, Heart, ExternalLink } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
-// Image paths for API compatibility
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
-const newLogo = `${API_BASE_URL}/assets/eventhubble_new_logo.png`
-const logo = `${API_BASE_URL}/assets/Logo.png`
-const logoWithoutBg = `${API_BASE_URL}/assets/Logo w_out background.png`
-const mainLogo = `${API_BASE_URL}/assets/MainLogo.png`
+// Logo fallback
+const logo = '/assets/Logo.png'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../services/api'
 import MobileHeader from '../components/MobileHeader'
@@ -19,17 +15,14 @@ const EventDetailPage = () => {
   const { eventId } = useParams()
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
-  const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
+
 
   // Get logo
   const getLogo = () => {
-    return logo // Yeni logo kullanıyoruz
+    return logo
   }
 
-  // Dark mode effect - artık gerekli değil
-  useEffect(() => {
-    document.documentElement.classList.remove('dark')
-  }, [])
+
 
   // Update page title based on language and event
   useEffect(() => {
@@ -41,11 +34,7 @@ const EventDetailPage = () => {
     }
   }, [language, event])
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode
-    setIsDarkMode(newDarkMode)
-    localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
-  }
+
 
   // Language context handles language toggle
 

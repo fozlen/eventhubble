@@ -11,7 +11,7 @@ import Footer from '../components/Footer'
 const AboutPage = () => {
   const navigate = useNavigate()
   const { language, toggleLanguage } = useLanguage()
-  const [isDarkMode, setIsDarkMode] = useState(false) // No dark mode anymore, single theme
+
   const [logos, setLogos] = useState({})
 
   // Load logos
@@ -37,19 +37,14 @@ const AboutPage = () => {
     loadLogos()
   }, [])
 
-  // Dark mode effect - no longer needed
-  useEffect(() => {
-    document.documentElement.classList.remove('dark')
-  }, [])
+
 
   // Update page title based on language
   useEffect(() => {
     document.title = language === 'TR' ? 'Event Hubble | Hakkımızda' : 'Event Hubble | About Us'
   }, [language])
 
-  const toggleDarkMode = () => {
-    // No dark mode anymore, this function is not used
-  }
+
 
 
 
@@ -59,7 +54,7 @@ const AboutPage = () => {
 
   // Get logo
   const getLogo = () => {
-    return logos.main || LogoService.API_BASE_URL + '/assets/Logo.png'
+    return logos.main || '/assets/Logo.png'
   }
 
   return (

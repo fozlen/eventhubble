@@ -72,9 +72,9 @@ const HomePage = () => {
         ])
         
         setLogos({
-          main: mainLogo?.url,
-          transparent: transparentLogo?.url,
-          dark: darkLogo?.url
+          main: mainLogo?.url || '/assets/Logo.png',
+          transparent: transparentLogo?.url || '/assets/Logo.png',
+          dark: darkLogo?.url || '/assets/Logo.png'
         })
       } catch (error) {
         console.error('Logo loading error:', error)

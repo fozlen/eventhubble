@@ -21,7 +21,7 @@ import {
 
 // Image paths for API compatibility
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com/api' : 'http://localhost:3001/api')
-const logo = `${API_BASE_URL}/assets/Logo.png`
+const logo = '/assets/Logo.png'
 
 const CategoriesPage = () => {
   const { language, toggleLanguage } = useLanguage()
@@ -87,7 +87,7 @@ const CategoriesPage = () => {
 
   // Get logo function
   const getLogo = () => {
-    return import.meta.env.PROD ? '/Logo.png' : '/assets/Logo.png'
+    return '/assets/Logo.png'
   }
 
   // Load events for dynamic counts

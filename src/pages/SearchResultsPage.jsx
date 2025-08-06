@@ -15,7 +15,7 @@ const SearchResultsPage = () => {
   const { language, toggleLanguage } = useLanguage()
   const [events, setEvents] = useState([])
   const [filteredEvents, setFilteredEvents] = useState([])
-  const [isDarkMode, setIsDarkMode] = useState(false) // Artık dark mode yok, tek tema
+
   const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'price'
   const [showMap, setShowMap] = useState(false)
   const [logos, setLogos] = useState({})
@@ -27,7 +27,7 @@ const SearchResultsPage = () => {
 
   // Get logo
   const getLogo = () => {
-    return logos.main || LogoService.API_BASE_URL + '/assets/Logo.png'
+    return logos.main || '/assets/Logo.png'
   }
 
   // Load logos
@@ -53,10 +53,7 @@ const SearchResultsPage = () => {
     loadLogos()
   }, [])
 
-  // Dark mode effect - artık gerekli değil
-  useEffect(() => {
-    document.documentElement.classList.remove('dark')
-  }, [])
+
 
   // Update page title based on language
   useEffect(() => {
@@ -66,11 +63,7 @@ const SearchResultsPage = () => {
     document.title = title
   }, [language, searchTerm])
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode
-    setIsDarkMode(newDarkMode)
-    localStorage.setItem('isDarkMode', JSON.stringify(newDarkMode))
-  }
+
 
 
 
@@ -291,7 +284,7 @@ const SearchResultsPage = () => {
             {/* Sort Dropdown */}
             <div className="relative">
               <button
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                 onClick={() => {
                   const newSort = sortBy === 'date' ? 'name' : sortBy === 'name' ? 'price' : 'date'
                   setSortBy(newSort)
@@ -306,7 +299,7 @@ const SearchResultsPage = () => {
             {/* Show on Map Button */}
             <button
               onClick={() => setShowMap(!showMap)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
             >
               <Map size={16} />
               <span>{language === 'TR' ? 'Haritada Göster' : 'Show on Map'}</span>
@@ -410,7 +403,7 @@ const SearchResultsPage = () => {
                       <div className="flex items-center space-x-3">
                         <button
                           onClick={() => handleEventDetail(event.id)}
-                          className={`px-4 py-2 rounded-lg font-medium transition-colors ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                          className="px-4 py-2 rounded-lg font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200"
                         >
                           {language === 'TR' ? 'Detaylar' : 'Details'}
                         </button>
@@ -432,12 +425,12 @@ const SearchResultsPage = () => {
         ) : (
           <div className="text-center py-12">
             <div className="flex justify-center mb-4">
-              <Calendar className={isDarkMode ? 'text-gray-400' : 'text-gray-400'} size={48} />
+              <Calendar className="text-gray-400" size={48} />
             </div>
-            <h3 className={`text-xl font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                          <h3 className="text-xl font-semibold mb-2 text-gray-900">
               {language === 'TR' ? 'Etkinlik bulunamadı' : 'No events found'}
             </h3>
-            <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                          <p className="text-gray-600">
               {language === 'TR' 
                 ? 'Arama kriterlerinizi ayarlamayı deneyin veya farklı anahtar kelimeler kullanın.'
                 : 'Try adjusting your search criteria or use different keywords.'

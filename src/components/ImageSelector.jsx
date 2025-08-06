@@ -16,7 +16,7 @@ const ImageSelector = ({
   const publicImages = [
     {
       name: "EventHubble Logo",
-      url: "/Logo.png",
+      url: "/assets/Logo.png",
       category: "logo"
     },
     {
@@ -26,17 +26,17 @@ const ImageSelector = ({
     },
     {
       name: "EventHubble Main Logo",
-      url: "/MainLogo.png",
+      url: "/assets/MainLogo.png",
       category: "logo"
     },
     {
       name: "EventHubble Light Transparent Logo",
-      url: "/eventhubble_light_transparent_logo.png",
+      url: "/assets/eventhubble_light_transparent_logo.png",
       category: "logo"
     },
     {
       name: "EventHubble Dark Transparent Logo",
-      url: "/eventhubble_dark_transparent_logo.png",
+      url: "/assets/eventhubble_dark_transparent_logo.png",
       category: "logo"
     },
     {

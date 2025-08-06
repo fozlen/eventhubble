@@ -16,7 +16,7 @@ const AdminImagesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
   const { language } = useLanguage()
-  const [logo, setLogo] = useState('/Logo.png')
+  const [logo, setLogo] = useState('/assets/Logo.png')
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
 
@@ -37,8 +37,8 @@ const AdminImagesPage = () => {
 
   const loadLogo = async () => {
     try {
-              const logoUrl = await api.getLogo('main')
-      setLogo(logoUrl)
+                      const logoData = await api.getActiveLogo('main')
+        setLogo(logoData?.url || '/assets/Logo.png')
     } catch (error) {
       console.error('Logo loading error:', error)
     }

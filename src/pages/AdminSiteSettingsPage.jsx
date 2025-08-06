@@ -17,7 +17,7 @@ const AdminSiteSettingsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [isLoading, setIsLoading] = useState(true)
   const { language, toggleLanguage } = useLanguage()
-  const [logo, setLogo] = useState('/Logo.png')
+  const [logo, setLogo] = useState('/assets/Logo.png')
   const navigate = useNavigate()
 
   // Categories for filtering (based on actual database categories)
@@ -45,8 +45,8 @@ const AdminSiteSettingsPage = () => {
     setIsLoading(true)
     try {
       // Load logo
-        const logoUrl = await api.getLogo('main')
-        setLogo(logoUrl)
+        const logoData = await api.getActiveLogo('main')
+        setLogo(logoData?.url || '/assets/Logo.png')
 
       // Load site settings
               const settingsResponse = await api.getSettings()
