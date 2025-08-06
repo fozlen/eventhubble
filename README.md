@@ -1,186 +1,269 @@
-# EventHubble 🎪
+# EventHubble - Dynamic Admin Panel
 
-> **Her Deneyime Açılan Kapınız** - Your Gateway to Every Experience
+EventHubble is Turkey's smart event discovery platform with a fully dynamic admin panel system. This project has been completely transformed to eliminate localStorage dependencies and provide real-time, secure content management.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org/)
-[![Deploy Status](https://api.netlify.com/api/v1/badges/your-badge-id/deploy-status)](https://app.netlify.com/sites/eventhubble/deploys)
+## 🚀 New Features
 
-## 🌟 Overview
+### Enhanced Authentication & Security
+- **httpOnly Cookie Authentication**: Secure JWT storage with refresh tokens
+- **Role-Based Access Control**: Super Admin, Admin, Editor, Viewer roles
+- **Multi-Factor Authentication**: TOTP support for enhanced security
+- **CSRF Protection**: Built-in CSRF token validation
+- **Rate Limiting**: Configurable rate limiting for API endpoints
+- **Audit Logging**: Complete audit trail for all sensitive actions
 
-EventHubble'da, harika deneyimler keşfetmenin kolay olması gerektiğine inanıyoruz. Bu yüzden konserler, festivaller, spor etkinlikleri, buluşmalar, kültürel toplantılar ve hatta küresel gösterileri tek bir yerde bir araya getiriyoruz. Gizli değerlerden küresel gösterilere - her etkinlik, tek bir platformda.
+### Real-Time Features
+- **WebSocket Integration**: Real-time content updates and notifications
+- **Live Admin Dashboard**: Real-time user activity and system health
+- **Instant Content Sync**: Changes appear immediately across all connected clients
+- **Real-Time Notifications**: Toast notifications for all system events
 
-At EventHubble, we believe discovering great experiences should be effortless. We bring together concerts, festivals, sports events, meetups, cultural gatherings, and global spectacles all in one place. From hidden gems to global shows - every event, one platform.
+### Advanced State Management
+- **Zustand Stores**: Centralized state management with persistence
+- **React Query**: Server state management with caching and background updates
+- **Optimistic Updates**: Instant UI feedback with background sync
+- **Smart Caching**: Intelligent cache invalidation and background refetching
 
-### 🎯 Key Features
+### Enhanced Content Management
+- **Dynamic Blog System**: Rich text editor, SEO optimization, versioning
+- **Advanced Event Management**: Recurring events, ticketing, capacity management
+- **Media Library**: Cloudinary integration with drag & drop, tagging, optimization
+- **Category Management**: Hierarchical categories with custom icons and SEO
 
-- **🌍 Tüm Etkinlikler, Tek Platform**: Gizli değerlerden küresel gösterilere. Her etkinlik, tek bir yerde.
-- **🔍 Akıllı Arama, Daha İyi Planlar**: Konum, tarih, kategori veya fiyata göre kolayca filtreleyin
-- **🎯 Doğrudan Bilet Bağlantıları**: Güvenilir platformlara anında yönlendirme
-- **👀 Size Özel**: Tercihlerinize ve konumunuza göre kişiselleştirilmiş öneriler
-- **📱 Mobile-First Design**: Responsive interface optimized for mobile devices  
-- **🌐 Multilingual Support**: Full Turkish/English localization
-- **⚡ Real-time Updates**: Live event data with automatic refresh
-- **👥 Admin Dashboard**: Complete CRUD operations for event management
-- **📊 Analytics & Insights**: Event popularity tracking and statistics
-- **🎨 Modern UI/UX**: Clean, professional interface with dark/light themes
-- **🔍 Advanced Search & Filtering**: Category, location, date, and price filters
-- **📝 Blog System**: Integrated content management for event guides and news
-
-## 🚀 Live Demo
-
-- **🌍 Public Site**: [https://eventhubble.netlify.app](https://eventhubble.netlify.app)
-- **⚙️ Admin Panel**: [https://eventhubble.netlify.app/admin](https://eventhubble.netlify.app/admin)
-- **🔗 API Endpoint**: [https://eventhubble.onrender.com](https://eventhubble.onrender.com)
+### Performance Optimizations
+- **Multi-Layer Caching**: Browser, CDN, and Redis caching
+- **Image Optimization**: Automatic WebP conversion and responsive images
+- **Code Splitting**: Lazy loading for better performance
+- **Background Jobs**: Heavy operations run in background
 
 ## 🏗️ Architecture
 
+### Frontend (React + Vite)
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Backend API   │    │   Database      │
-│   (React/Vite)  │◄──►│   (Node.js)     │◄──►│   (Supabase)    │
-│   Netlify       │    │   Render        │    │   PostgreSQL    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+src/
+├── stores/           # Zustand state stores
+│   ├── authStore.js  # Authentication state
+│   └── appStore.js   # Application state
+├── hooks/            # React Query hooks
+│   └── useQueries.js # Server state management
+├── services/         # API and WebSocket services
+│   ├── api.js        # HTTP API client
+│   └── websocket.js  # Real-time communication
+└── components/       # Reusable components
+    └── NotificationSystem.jsx # Real-time notifications
 ```
 
-### 🛠️ Tech Stack
+### Backend (Express.js + Supabase)
+```
+backend/
+├── middleware/       # Authentication & security middleware
+│   └── auth.js       # JWT, CSRF, rate limiting
+├── services/         # Business logic
+│   └── supabaseService.js # Database operations
+├── routes/           # API endpoints
+└── server.js         # Main server with WebSocket
+```
 
-**Frontend:**
-- ⚛️ React 18 with Hooks
-- ⚡ Vite for build tooling
-- 🎨 Tailwind CSS for styling
-- 📱 Responsive design patterns
-- 🧭 React Router for navigation
+### Database (Supabase PostgreSQL)
+- **Enhanced Schema**: Audit logs, sessions, user roles, MFA
+- **Row Level Security**: Fine-grained access control
+- **Real-time Subscriptions**: Database change notifications
+- **Full-text Search**: Optimized search with Turkish language support
 
-**Backend:**
-- 🟢 Node.js with Express
-- 🗄️ Supabase (PostgreSQL) database
-- 🔄 Automated web scraping
-- 📡 RESTful API design
-- ⏰ Scheduled data updates
-
-**Infrastructure:**
-- 🌐 Netlify (Frontend hosting)
-- ☁️ Render (Backend hosting)
-- 🗃️ Supabase (Database & Auth)
-- 🔄 GitHub Actions (CI/CD)
-
-## 📦 Installation
+## 🛠️ Installation
 
 ### Prerequisites
+- Node.js 18+
+- PostgreSQL (via Supabase)
+- Redis (optional, for caching)
+- Cloudinary account
 
-- Node.js 18+ 
-- npm or yarn
-- Git
-
-### Local Development Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/fozlen/eventhubble.git
-   cd eventhubble
-   ```
-
-2. **Install frontend dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Install backend dependencies**
-   ```bash
-   cd backend
-   npm install
-   cd ..
-   ```
-
-4. **Environment Configuration**
-   ```bash
-   # Frontend (.env)
-   VITE_API_BASE_URL=http://localhost:3001
-   
-   # Backend (backend/.env)
-   PORT=3001
-   SUPABASE_URL=your_supabase_url
-   SUPABASE_ANON_KEY=your_supabase_key
-   NODE_ENV=development
-   ```
-
-5. **Start development servers**
-   ```bash
-   # Frontend (Port 5173)
-   npm run dev
-   
-   # Backend (Port 3001) - in separate terminal
-   cd backend && npm start
-   ```
-
-6. **Access the application**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:3001
-   - Admin Panel: http://localhost:5173/admin
-
-## 🚀 Deployment
-
-### Automated Deployment
-
-The project uses automatic deployment via GitHub integration:
-
-- **Frontend**: Automatically deploys to Netlify on `main` branch pushes
-- **Backend**: Automatically deploys to Render on `main` branch pushes
-
-### Manual Deployment
-
-See our comprehensive deployment guides:
-
-- 📘 [Netlify Setup](./docs/netlify-setup.md)
-- 📗 [Render Setup](./docs/deployment-setup.md)
-- 📙 [Database Setup](./docs/database-setup-complete.md)
-
-## 🎯 Usage
-
-### Public Users
-
-1. **Browse Events**: View categorized events with filters
-2. **Search**: Find specific events by name, venue, or category
-3. **Event Details**: View comprehensive event information
-4. **Blog**: Read event guides and Istanbul culture content
-
-### Admin Users
-
-1. **Login**: Access admin panel at `/admin`
-2. **Event Management**: Create, edit, delete events
-3. **Blog Management**: Manage blog posts and content
-4. **Analytics**: View event statistics and insights
-
-## 📊 Project Structure
-
+### Backend Setup
+```bash
+cd backend
+npm install
+cp env.example .env
+# Fill in your environment variables
+npm run dev
 ```
-EventHubble/
-├── 📁 src/                    # Frontend source code
-│   ├── 📁 components/         # Reusable UI components
-│   ├── 📁 pages/             # Page components
-│   ├── 📁 services/          # API services
-│   └── 📁 contexts/          # React contexts
-├── 📁 backend/               # Backend source code
-│   ├── 📄 uploadServer.js    # Main server file
-│   ├── 📄 supabaseService.js # Database service
-│   └── 📄 databaseService.js # Data layer
-├── 📁 docs/                  # Documentation
-├── 📁 database_imports/      # Sample data
-└── 📁 public/               # Static assets
+
+### Frontend Setup
+```bash
+npm install
+npm run dev
 ```
+
+### Database Setup
+```bash
+# Database setup completed manually
+# All SQL scripts have been cleaned up after successful setup
+# Database is now ready for admin panel content management
+```
+
+### Admin Panel Setup
+After manual database setup, the database will be clean with no dummy data:
+- **No test users** - Create your first admin user through the admin panel
+- **No sample content** - Add all categories, events, and blog posts through the admin panel
+- **No dummy images** - Upload your own logos and images through the admin panel
+- **Essential settings only** - Configure all site settings through the admin panel
+
+## 🔧 Configuration
+
+### Environment Variables
+
+#### Backend (.env)
+```env
+# Supabase
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# JWT
+JWT_SECRET=your_jwt_secret
+REFRESH_SECRET=your_refresh_secret
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Security
+CORS_ORIGIN=http://localhost:3000,http://localhost:5173
+RATE_LIMIT_MAX_REQUESTS=100
+```
+
+#### Frontend (.env)
+```env
+VITE_API_URL=http://localhost:3001
+VITE_WS_URL=ws://localhost:3001
+```
+
+## 🔐 Authentication Flow
+
+1. **Login**: User submits credentials
+2. **Token Generation**: Server creates access + refresh tokens
+3. **Cookie Storage**: Tokens stored in httpOnly cookies
+4. **CSRF Token**: Client receives CSRF token for API calls
+5. **Session Management**: Server tracks active sessions
+6. **Auto Refresh**: Tokens automatically refreshed before expiry
+
+## 📊 Real-Time Features
+
+### WebSocket Events
+- `content:updated` - Content changes (create/update/delete)
+- `notification` - System notifications
+- `system:maintenance` - Maintenance mode updates
+- `admin:user_activity` - Real-time user activity
+- `admin:analytics_update` - Live analytics data
+
+### State Synchronization
+- **Optimistic Updates**: UI updates immediately
+- **Background Sync**: Server state synchronized in background
+- **Conflict Resolution**: Automatic conflict detection and resolution
+- **Offline Support**: Graceful degradation when offline
+
+## 🎨 Admin Panel Features
+
+### Dashboard
+- Real-time analytics and metrics
+- Recent activity feed
+- System health monitoring
+- Quick action buttons
+
+### Content Management
+- **Blogs**: Rich editor, SEO tools, scheduling
+- **Events**: Multi-step wizard, recurring patterns, ticketing
+- **Categories**: Hierarchical management, custom icons
+- **Media**: Drag & drop upload, tagging, optimization
+
+### User Management
+- Role-based access control
+- MFA configuration
+- Session management
+- Activity monitoring
+
+### System Settings
+- Site configuration
+- Theme customization
+- Security settings
+- Feature flags
+
+## 🔒 Security Features
+
+### Authentication
+- JWT with httpOnly cookies
+- Refresh token rotation
+- Session management
+- Account lockout protection
+
+### Authorization
+- Role-based access control
+- Resource-level permissions
+- API endpoint protection
+- CSRF protection
+
+### Data Protection
+- Input validation and sanitization
+- SQL injection prevention
+- XSS protection
+- Rate limiting
+
+### Audit & Compliance
+- Complete audit trail
+- GDPR compliance tools
+- Data export/import
+- Privacy controls
+
+## 🚀 Performance
+
+### Caching Strategy
+- **Browser Cache**: Static assets and API responses
+- **CDN Cache**: Images and media files
+- **Redis Cache**: Database queries and sessions
+- **Memory Cache**: Application state
+
+### Optimization
+- **Image Optimization**: Automatic WebP conversion
+- **Code Splitting**: Lazy loading of components
+- **Bundle Optimization**: Tree shaking and minification
+- **Database Optimization**: Indexed queries and materialized views
+
+## 📈 Monitoring & Analytics
+
+### Real-Time Metrics
+- User activity tracking
+- Content performance
+- System health monitoring
+- Error tracking
+
+### Analytics Integration
+- Google Analytics 4
+- Custom event tracking
+- Performance monitoring
+- User behavior analysis
+
+## 🔄 Migration Guide
+
+### From Old System
+1. **Database Migration**: Run enhanced schema
+2. **Authentication Update**: Migrate to new auth system
+3. **State Management**: Replace localStorage with Zustand
+4. **API Integration**: Update to new endpoints
+5. **Real-Time Features**: Add WebSocket integration
+
+### Breaking Changes
+- Authentication now uses httpOnly cookies
+- API responses follow new standardized format
+- State management moved to Zustand stores
+- Real-time updates require WebSocket connection
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](./docs/contributing.md) for details.
-
-### Development Workflow
-
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## 📄 License
 
@@ -188,18 +271,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- 📖 [Documentation](./docs/README.md)
-- 🐛 [Issue Tracker](https://github.com/fozlen/eventhubble/issues)
-- 💬 [Discussions](https://github.com/fozlen/eventhubble/discussions)
-
-## 👨‍💻 Author
-
-**Furkan Özlen**
-- GitHub: [@fozlen](https://github.com/fozlen)
-- Project: [EventHubble](https://github.com/fozlen/eventhubble)
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Contact the development team
 
 ---
 
-<div align="center">
-  <strong>Made with ❤️ for Istanbul's event community</strong>
-</div>
+**EventHubble** - Your Gateway to Every Experience 🎉

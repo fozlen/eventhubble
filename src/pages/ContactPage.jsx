@@ -1,380 +1,298 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Mail, Phone, MapPin, Send, User, MessageSquare, Globe, ArrowLeft, Clock } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import apiService from '../services/api'
 import MobileHeader from '../components/MobileHeader'
-import MobileNavigation from '../components/MobileNavigation'
 import Footer from '../components/Footer'
-import LogoService from '../services/logoService'
-import DatabaseService from '../services/databaseService'
+import { Mail, Phone, MapPin, Send, Loader2, CheckCircle } from 'lucide-react'
 
 const ContactPage = () => {
+  const { language } = useLanguage()
   const navigate = useNavigate()
-  const { language, toggleLanguage } = useLanguage()
-  const [logo, setLogo] = useState('/assets/Logo.png')
-  const [contactSettings, setContactSettings] = useState({})
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: ''
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
 
-  // Load logo and contact settings
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Load logo
-        const logoUrl = await LogoService.getLogo('main')
-        setLogo(logoUrl)
-
-        // Load contact settings from database
-        const settingsResponse = await DatabaseService.getSiteSettings('contact')
-        const parsedSettings = {}
-        
-        if (settingsResponse.success && settingsResponse.raw_data) {
-          settingsResponse.raw_data.forEach(setting => {
-            parsedSettings[setting.setting_key] = setting.setting_value
-          })
-        }
-        
-        setContactSettings(parsedSettings)
-      } catch (error) {
-        console.error('Data loading error:', error)
-        // Fallback values if database fails
-        setContactSettings({
-          contact_email_main: 'info@eventhubble.com',
-          contact_email_support: 'support@eventhubble.com',
-          contact_phone_main: '+90 (212) 123 45 67',
-          contact_phone_mobile: '+90 (532) 123 45 67',
-          contact_address_tr: 'Maslak Mahallesi, Büyükdere Caddesi No:123\nŞişli, İstanbul, Türkiye',
-          contact_address_en: 'Maslak District, Büyükdere Street No:123\nŞişli, Istanbul, Turkey',
-          business_hours_weekdays: '09:00 - 18:00',
-          business_hours_saturday: '10:00 - 16:00',
-          business_hours_sunday: 'closed'
-        })
-      }
-    }
-    loadData()
-  }, [])
-
-  // Update page title
-  useEffect(() => {
-    document.title = language === 'TR' ? 'EventHubble | İletişim' : 'EventHubble | Contact'
-  }, [language])
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsSubmitting(true)
-    
-    try {
-      // Submit contact form to database
-      const submitData = {
-        ...formData,
-        language
-      }
+    setLoading(true)
+    setError('')
 
-      // Use DatabaseService to submit contact form
-      await DatabaseService.submitContactForm(submitData)
+    try {
+      await apiService.submitContact(formData)
+      setSuccess(true)
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      })
       
-      setSubmitStatus('success')
-      setFormData({ name: '', email: '', subject: '', message: '' })
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setSuccess(false)
+      }, 5000)
     } catch (error) {
-      console.error('Contact form submission error:', error)
-      setSubmitStatus('error')
+      console.error('Contact form error:', error)
+      setError(language === 'TR' 
+        ? 'Mesajınız gönderilemedi. Lütfen tekrar deneyin.'
+        : 'Failed to send message. Please try again.')
     } finally {
-      setIsSubmitting(false)
+      setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24 sm:pb-0">
-      {/* Mobile Header */}
-      <div className="block sm:hidden">
-        <MobileHeader
-          onSearchClick={() => {}}
-          onMenuClick={() => {}}
-          logo={logo}
-          language={language}
-          toggleLanguage={toggleLanguage}
-        />
-        <div className="h-16"></div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+      {/* Header */}
+      <MobileHeader />
 
-      {/* Desktop Header */}
-      <header className="hidden sm:block bg-primary border-b border-primary/20 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-4 sm:gap-0">
-            {/* Logo and Brand */}
-            <div className="flex justify-center sm:justify-start w-full sm:w-auto">
-              <button
-                onClick={() => navigate('/')}
-                className="flex items-center space-x-2 md:space-x-4 hover:opacity-80 transition-opacity duration-200"
-              >
-                <img src={logo} alt="EventHubble" className="h-8 md:h-10 w-auto" />
-                <span className="text-lg md:text-xl font-bold">
-                  <span className="text-primary-cream">Event</span>
-                  <span className="text-primary-light"> Hubble</span>
-                </span>
-              </button>
-            </div>
-            
-            {/* Navigation Menu */}
-            <nav className="flex justify-center items-center space-x-4 sm:space-x-8 flex-wrap">
-              <button 
-                onClick={() => navigate('/')}
-                className="text-primary-cream hover:text-white transition-colors duration-200 font-medium"
-              >
-                {language === 'TR' ? 'Ana Sayfa' : 'Home'}
-              </button>
-              <button 
-                onClick={() => navigate('/about')}
-                className="text-primary-cream hover:text-white transition-colors duration-200 font-medium"
-              >
-                {language === 'TR' ? 'Hakkımızda' : 'About'}
-              </button>
-              <button 
-                onClick={() => navigate('/contact')}
-                className="text-white border-b-2 border-primary-cream transition-colors duration-200 font-medium"
-              >
-                {language === 'TR' ? 'İletişim' : 'Contact'}
-              </button>
-            </nav>
-
-            {/* Language Toggle */}
-            <div className="flex justify-center sm:justify-end items-center space-x-4 w-full sm:w-auto">
-              <button
-                onClick={toggleLanguage}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-primary-light/20 hover:bg-primary-light/30 transition-colors duration-200"
-              >
-                <Globe className="h-4 w-4 text-primary-cream" />
-                <span className="text-primary-cream font-medium">{language}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Back Button for Mobile */}
-      <div className="block sm:hidden p-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center space-x-2 text-text hover:text-primary transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5" />
-          <span>{language === 'TR' ? 'Geri' : 'Back'}</span>
-        </button>
-      </div>
-
-      <main className="max-w-6xl mx-auto px-4 py-8 md:py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-text">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-20 px-4">
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
             {language === 'TR' ? 'İletişim' : 'Contact Us'}
           </h1>
-          <p className="text-lg text-text/70 max-w-2xl mx-auto">
+          <p className="text-xl opacity-90">
             {language === 'TR' 
-              ? 'Sorularınız, önerileriniz veya iş birliği teklifleriniz için bizimle iletişime geçin.'
-              : 'Get in touch with us for questions, suggestions, or collaboration opportunities.'}
+              ? 'Sorularınız için buradayız' 
+              : 'We\'re here to answer your questions'}
           </p>
         </div>
+      </section>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <div className="bg-background-secondary rounded-lg p-6 md:p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-text">
-              {language === 'TR' ? 'Mesaj Gönder' : 'Send Message'}
-            </h2>
-            
-            {submitStatus === 'success' && (
-              <div className="mb-6 p-4 bg-green-100 border border-green-300 rounded-lg text-green-700">
-                {language === 'TR' ? 'Mesajınız başarıyla gönderildi!' : 'Your message was sent successfully!'}
-              </div>
-            )}
-            
-            {submitStatus === 'error' && (
-              <div className="mb-6 p-4 bg-red-100 border border-red-300 rounded-lg text-red-700">
-                {language === 'TR' ? 'Mesaj gönderilirken hata oluştu.' : 'Error sending message.'}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2 text-text">
-                  {language === 'TR' ? 'Ad Soyad' : 'Full Name'}
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-5 w-5 text-text/50" />
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder={language === 'TR' ? 'Adınızı yazın' : 'Enter your name'}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2 text-text">
-                  {language === 'TR' ? 'E-posta' : 'Email'}
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-5 w-5 text-text/50" />
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder={language === 'TR' ? 'E-posta adresinizi yazın' : 'Enter your email'}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2 text-text">
-                  {language === 'TR' ? 'Konu' : 'Subject'}
-                </label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder={language === 'TR' ? 'Mesaj konusunu yazın' : 'Enter subject'}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2 text-text">
-                  {language === 'TR' ? 'Mesaj' : 'Message'}
-                </label>
-                <div className="relative">
-                  <MessageSquare className="absolute left-3 top-3 h-5 w-5 text-text/50" />
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows="6"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                    placeholder={language === 'TR' ? 'Mesajınızı yazın...' : 'Write your message...'}
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-primary text-white py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors duration-200 font-medium flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
-                ) : (
-                  <>
-                    <Send className="h-5 w-5" />
-                    <span>{language === 'TR' ? 'Mesaj Gönder' : 'Send Message'}</span>
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-
-          {/* Contact Information */}
-          <div className="space-y-8">
-            <div className="bg-background-secondary rounded-lg p-6 md:p-8">
-              <h2 className="text-2xl font-semibold mb-6 text-text">
-                {language === 'TR' ? 'İletişim Bilgileri' : 'Contact Information'}
+      {/* Contact Content */}
+      <section className="py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Information */}
+            <div>
+              <h2 className="text-3xl font-bold mb-8 text-gray-900">
+                {language === 'TR' ? 'Bize Ulaşın' : 'Get in Touch'}
               </h2>
               
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
-                  <Mail className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-6 h-6 text-purple-600" />
+                  </div>
                   <div>
-                    <h3 className="font-medium text-text mb-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
                       {language === 'TR' ? 'E-posta' : 'Email'}
                     </h3>
-                    <p className="text-text/70">{contactSettings.contact_email_main || 'info@eventhubble.com'}</p>
-                    <p className="text-text/70">{contactSettings.contact_email_support || 'support@eventhubble.com'}</p>
+                    <p className="text-gray-600">info@eventhubble.com</p>
+                    <p className="text-gray-600">support@eventhubble.com</p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <Phone className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-purple-600" />
+                  </div>
                   <div>
-                    <h3 className="font-medium text-text mb-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
                       {language === 'TR' ? 'Telefon' : 'Phone'}
                     </h3>
-                    <p className="text-text/70">{contactSettings.contact_phone_main || '+90 (212) 123 45 67'}</p>
-                    <p className="text-text/70">{contactSettings.contact_phone_mobile || '+90 (532) 123 45 67'}</p>
+                    <p className="text-gray-600">+90 555 000 0000</p>
+                    <p className="text-gray-600">+90 555 111 1111</p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-4">
-                  <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-6 h-6 text-purple-600" />
+                  </div>
                   <div>
-                    <h3 className="font-medium text-text mb-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
                       {language === 'TR' ? 'Adres' : 'Address'}
                     </h3>
-                    <p className="text-text/70 whitespace-pre-line">
+                    <p className="text-gray-600">
                       {language === 'TR' 
-                        ? (contactSettings.contact_address_tr || 'Maslak Mahallesi, Büyükdere Caddesi No:123\nŞişli, İstanbul, Türkiye')
-                        : (contactSettings.contact_address_en || 'Maslak District, Büyükdere Street No:123\nŞişli, Istanbul, Turkey')
-                      }
+                        ? 'Levent, Büyükdere Cad. No:123'
+                        : 'Levent, Buyukdere St. No:123'}
+                    </p>
+                    <p className="text-gray-600">
+                      {language === 'TR' 
+                        ? '34394 Şişli/İstanbul, Türkiye'
+                        : '34394 Sisli/Istanbul, Turkey'}
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-background-secondary rounded-lg p-6 md:p-8">
-              <h2 className="text-2xl font-semibold mb-4 text-text">
-                {language === 'TR' ? 'Çalışma Saatleri' : 'Business Hours'}
-              </h2>
-              <div className="space-y-2 text-text/70">
-                <div className="flex justify-between">
-                  <span>{language === 'TR' ? 'Pazartesi - Cuma' : 'Monday - Friday'}</span>
-                  <span>{contactSettings.business_hours_weekdays || '09:00 - 18:00'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>{language === 'TR' ? 'Cumartesi' : 'Saturday'}</span>
-                  <span>{contactSettings.business_hours_saturday || '10:00 - 16:00'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>{language === 'TR' ? 'Pazar' : 'Sunday'}</span>
-                  <span>
-                    {contactSettings.business_hours_sunday === 'closed' 
-                      ? (language === 'TR' ? 'Kapalı' : 'Closed')
-                      : (contactSettings.business_hours_sunday || (language === 'TR' ? 'Kapalı' : 'Closed'))
-                    }
-                  </span>
+              {/* Office Hours */}
+              <div className="mt-12 p-6 bg-purple-50 rounded-xl">
+                <h3 className="text-xl font-semibold mb-4 text-gray-900">
+                  {language === 'TR' ? 'Çalışma Saatleri' : 'Office Hours'}
+                </h3>
+                <div className="space-y-2 text-gray-600">
+                  <p>
+                    <span className="font-medium">
+                      {language === 'TR' ? 'Pazartesi - Cuma:' : 'Monday - Friday:'}
+                    </span>{' '}
+                    09:00 - 18:00
+                  </p>
+                  <p>
+                    <span className="font-medium">
+                      {language === 'TR' ? 'Cumartesi:' : 'Saturday:'}
+                    </span>{' '}
+                    10:00 - 16:00
+                  </p>
+                  <p>
+                    <span className="font-medium">
+                      {language === 'TR' ? 'Pazar:' : 'Sunday:'}
+                    </span>{' '}
+                    {language === 'TR' ? 'Kapalı' : 'Closed'}
+                  </p>
                 </div>
               </div>
             </div>
+
+            {/* Contact Form */}
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">
+                {language === 'TR' ? 'Mesaj Gönderin' : 'Send Message'}
+              </h2>
+
+              {success && (
+                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <p className="text-green-700">
+                    {language === 'TR' 
+                      ? 'Mesajınız başarıyla gönderildi!'
+                      : 'Your message has been sent successfully!'}
+                  </p>
+                </div>
+              )}
+
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-700">{error}</p>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === 'TR' ? 'Adınız' : 'Your Name'} *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder={language === 'TR' ? 'Ad Soyad' : 'Full Name'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === 'TR' ? 'E-posta' : 'Email'} *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder={language === 'TR' ? 'ornek@email.com' : 'example@email.com'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === 'TR' ? 'Konu' : 'Subject'}
+                  </label>
+                  <input
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder={language === 'TR' ? 'Mesajınızın konusu' : 'Message subject'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === 'TR' ? 'Mesajınız' : 'Your Message'} *
+                  </label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    rows={6}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    placeholder={language === 'TR' 
+                      ? 'Mesajınızı buraya yazın...'
+                      : 'Write your message here...'}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>
+                        {language === 'TR' ? 'Gönderiliyor...' : 'Sending...'}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      <span>
+                        {language === 'TR' ? 'Gönder' : 'Send'}
+                      </span>
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <p className="mt-4 text-sm text-gray-500">
+                * {language === 'TR' ? 'Zorunlu alanlar' : 'Required fields'}
+              </p>
+            </div>
+          </div>
+
+          {/* Map Section */}
+          <div className="mt-16">
+            <h2 className="text-3xl font-bold mb-8 text-center text-gray-900">
+              {language === 'TR' ? 'Konumumuz' : 'Our Location'}
+            </h2>
+            <div className="bg-gray-200 rounded-xl h-96 flex items-center justify-center">
+              <p className="text-gray-600">
+                {language === 'TR' 
+                  ? 'Harita yakında eklenecek'
+                  : 'Map will be added soon'}
+              </p>
+            </div>
           </div>
         </div>
-      </main>
+      </section>
 
       {/* Footer */}
       <Footer language={language} />
-
-      {/* Mobile Navigation */}
-      <MobileNavigation language={language} />
     </div>
   )
 }

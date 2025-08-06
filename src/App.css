@@ -1,14 +1,6 @@
-/* App.css - Basit stiller */
+/* App.css - Global styles for Event Hubble */
+
+/* Remove center alignment globally - only use where needed */
 .App {
-  text-align: center;
-}
-
-.App-header {
-  background-color: #282c34;
-  padding: 20px;
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
+  min-height: 100vh;
 }

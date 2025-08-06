@@ -1,201 +1,175 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Eye, EyeOff, LogIn } from 'lucide-react'
-import LogoService from '../services/logoService'
+import useAuthStore from '../stores/authStore'
+import useAppStore from '../stores/appStore'
+import { Lock, Mail, Eye, EyeOff, Loader2 } from 'lucide-react'
 
 const AdminLoginPage = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'EN'
-  })
-  const [logo, setLogo] = useState('/Logo.png')
   const navigate = useNavigate()
+  const { 
+    isAuthenticated, 
+    login, 
+    isLoading, 
+    error, 
+    clearError 
+  } = useAuthStore()
+  
+  const { addNotification } = useAppStore()
+  
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
+  const [showPassword, setShowPassword] = useState(false)
 
-  // Load logo
-  React.useEffect(() => {
-    const loadLogo = async () => {
-      try {
-        const logoUrl = await LogoService.getLogo('main')
-        setLogo(logoUrl)
-      } catch (error) {
-        console.error('Logo loading error:', error)
-      }
-    }
-    loadLogo()
-  }, [])
-
-  // Admin credentials from environment variables
-  const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || 'admin'
-  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123'
-
-  const handleLogin = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    // Simulate loading time
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      localStorage.setItem('adminAuthenticated', 'true')
-      localStorage.setItem('adminLoginTime', Date.now().toString())
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
       navigate('/admin/dashboard')
-    } else {
-      setError(language === 'TR' ? 'Geçersiz kullanıcı adı veya şifre!' : 'Invalid username or password!')
     }
-    
-    setLoading(false)
+  }, [isAuthenticated, navigate])
+
+  // Clear error when component unmounts
+  useEffect(() => {
+    return () => {
+      clearError()
+    }
+  }, [clearError])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    clearError()
+
+    try {
+      const result = await login(formData.email, formData.password)
+      
+      if (result.success) {
+        addNotification({
+          type: 'success',
+          title: 'Login Successful',
+          message: 'Welcome to the admin panel!',
+          duration: 3000
+        })
+        // Navigation will be handled by useEffect
+      } else {
+        addNotification({
+          type: 'error',
+          title: 'Login Failed',
+          message: result.error || 'Invalid credentials',
+          duration: 5000
+        })
+      }
+    } catch (error) {
+      console.error('Login error:', error)
+      addNotification({
+        type: 'error',
+        title: 'Login Error',
+        message: error.message || 'An unexpected error occurred',
+        duration: 5000
+      })
+    }
   }
 
-  const toggleLanguage = () => {
-    const newLanguage = language === 'TR' ? 'EN' : 'TR'
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Admin Header */}
-      <header className="bg-primary shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo and Brand */}
-            <div className="flex items-center space-x-3">
-              <img src={logo} alt="EventHubble" className="h-8 w-auto" />
-              <div>
-                <span className="text-xl font-bold">
-                  <span className="text-white">Event</span>
-                  <span className="text-primary-light"> Hubble</span>
-                </span>
-                <span className="ml-2 text-sm text-white/80">Admin Panel</span>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50">
+      <div className="max-w-md w-full mx-4">
+        <div className="bg-white rounded-lg shadow-xl p-8">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Event Hubble</h1>
+            <p className="text-gray-600 mt-2">Admin Panel</p>
+          </div>
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  disabled={isLoading}
+                  className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="admin@eventhubble.com"
+                />
+                <Mail className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
               </div>
             </div>
 
-            {/* Back to Site */}
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  disabled={isLoading}
+                  className="w-full px-4 py-3 pl-12 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="••••••••"
+                />
+                <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-4 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="mt-8 text-center">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors"
+              disabled={isLoading}
+              className="text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50"
             >
-              <ArrowLeft className="h-4 w-4" />
-              <span className="text-sm">{language === 'TR' ? 'Siteye Dön' : 'Back to Site'}</span>
+              ← Back to Home
             </button>
           </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-xl shadow-2xl border border-gray-100 p-8">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <div className="w-20 h-20 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                <LogIn className="h-10 w-10 text-primary" />
-              </div>
-              <h1 className="text-2xl font-bold text-text mb-2">
-                {language === 'TR' ? 'Admin Girişi' : 'Admin Login'}
-              </h1>
-              <p className="text-text/60">
-                {language === 'TR' 
-                  ? 'Yönetim paneline erişmek için giriş yapın'
-                  : 'Sign in to access the admin panel'
-                }
-              </p>
-            </div>
-
-            {/* Login Form */}
-            <form onSubmit={handleLogin} className="space-y-6">
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-red-600 text-sm font-medium">{error}</p>
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Kullanıcı Adı' : 'Username'}
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                  placeholder={language === 'TR' ? 'Kullanıcı adınızı girin' : 'Enter your username'}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  {language === 'TR' ? 'Şifre' : 'Password'}
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white text-text placeholder-text/40"
-                    placeholder={language === 'TR' ? 'Şifrenizi girin' : 'Enter your password'}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text/40 hover:text-text/60"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-              >
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    <span>{language === 'TR' ? 'Giriş yapılıyor...' : 'Signing in...'}</span>
-                  </>
-                ) : (
-                  <>
-                    <LogIn className="h-5 w-5" />
-                    <span>{language === 'TR' ? 'Giriş Yap' : 'Sign In'}</span>
-                  </>
-                )}
-              </button>
-            </form>
-
-            {/* Language Toggle */}
-            <div className="mt-6 pt-6 border-t border-gray-100">
-              <button
-                onClick={toggleLanguage}
-                className="w-full text-center text-sm text-text/60 hover:text-text transition-colors"
-              >
-                {language === 'TR' ? '🇺🇸 Switch to English' : '🇹🇷 Türkçe\'ye geç'}
-              </button>
-            </div>
-          </div>
-
-          {/* Demo Credentials */}
-          {!import.meta.env.PROD && (
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-blue-800 text-sm font-medium mb-2">
-                {language === 'TR' ? 'Demo Bilgileri:' : 'Demo Credentials:'}
-              </p>
-              <p className="text-blue-700 text-sm">
-                <strong>{language === 'TR' ? 'Kullanıcı' : 'Username'}:</strong> {ADMIN_USERNAME}
-              </p>
-              <p className="text-blue-700 text-sm">
-                <strong>{language === 'TR' ? 'Şifre' : 'Password'}:</strong> {ADMIN_PASSWORD}
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>

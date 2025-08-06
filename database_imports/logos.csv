@@ -1,7 +1,0 @@
-logo_id,filename,title,alt_text,file_path,file_size,mime_type,is_active,display_order,created_at,updated_at
-main,Logo.png,EventHubble Ana Logo,EventHubble resmi logosu,/Logo.png,263000,image/png,true,1,2024-01-15 10:00:00,2024-01-15 10:00:00
-dark,eventhubble_dark_transparent_logo.png,EventHubble Koyu Logo,Koyu tema için EventHubble logosu,/eventhubble_dark_transparent_logo.png,938000,image/png,true,2,2024-01-15 10:05:00,2024-01-15 10:05:00
-light,eventhubble_light_transparent_logo.png,EventHubble Açık Logo,Açık tema için EventHubble logosu,/eventhubble_light_transparent_logo.png,841000,image/png,true,3,2024-01-15 10:10:00,2024-01-15 10:10:00
-large,MainLogo.png,EventHubble Büyük Logo,Büyük boyut ana logo,/MainLogo.png,1300000,image/png,true,4,2024-01-15 10:15:00,2024-01-15 10:15:00
-favicon,favicon.ico,EventHubble Favicon,Browser favicon ikonu,/favicon.ico,263000,image/x-icon,true,5,2024-01-15 10:20:00,2024-01-15 10:20:00
-apple_touch,apple-touch-icon.png,Apple Touch İkon,iOS cihazlar için ikon,/apple-touch-icon.png,263000,image/png,true,6,2024-01-15 10:25:00,2024-01-15 10:25:00 

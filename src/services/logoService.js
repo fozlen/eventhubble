@@ -1,144 +1,83 @@
-// Logo service for API-based logo management with local fallbacks
+// Logo Service for Event Hubble - PRD Compliant
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
+
 class LogoService {
-  // API Base URL configuration - standardized
-  static API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://eventhubble.onrender.com' : 'http://localhost:3001')
-
-  // Logo cache for better performance
-  static logoCache = new Map()
-  static cacheExpiry = 30 * 1000 // 30 seconds for faster updates
-  
-  // Cache logos in localStorage to avoid repeated API calls
-  static async getLogo(type = 'main') {
-    const cacheKey = `logo_${type}`
-    const cacheExpiryKey = `logo_${type}_expiry`
-    
-    try {
-      // Check if we have a cached version
-      const cachedLogo = localStorage.getItem(cacheKey)
-      const expiryTime = localStorage.getItem(cacheExpiryKey)
-      
-      // If cached and not expired, return cached version
-      if (cachedLogo && expiryTime && Date.now() < parseInt(expiryTime)) {
-        return cachedLogo
-      }
-      
-             // Try to get logo from API first  
-       try {
-         const logoUrl = `${this.API_BASE_URL}/api/logos/${type}`
-         const response = await fetch(logoUrl, {
-           method: 'GET',
-           headers: {
-             'Accept': 'application/json',
-           },
-         })
-         
-         if (response.ok) {
-           const logoData = await response.json()
-           if (logoData.success && logoData.logo && logoData.logo.file_path) {
-             // Use the file_path from database (can be base64 or URL)
-             let logoPath = logoData.logo.file_path
-             
-             // If it's base64, use as-is
-             if (logoPath.startsWith('data:')) {
-               logoPath = logoPath
-             } 
-             // If it's already a full URL, use as-is
-             else if (logoPath.startsWith('http')) {
-               logoPath = logoPath
-             }
-             // If it's a relative path, prepend backend URL
-             else {
-               logoPath = `${this.API_BASE_URL}${logoPath}`
-             }
-             
-             // Cache for 24 hours
-             const expiry = Date.now() + (24 * 60 * 60 * 1000)
-             localStorage.setItem(cacheKey, logoPath)
-             localStorage.setItem(cacheExpiryKey, expiry.toString())
-             
-             return logoPath
-           }
-         }
-       } catch (apiError) {
-         console.warn('Logo API error:', apiError)
-         // Continue to fallback
-       }
-      
-      // Fallback to static assets from backend if API fails
-      try {
-        const staticLogoUrl = `${this.API_BASE_URL}/assets/${this.getLogoFilename(type)}`
-        const response = await fetch(staticLogoUrl)
-        
-        if (response.ok) {
-          return staticLogoUrl
-        }
-      } catch (staticError) {
-        console.warn('Static logo error:', staticError)
-      }
-      
-      // Final fallback to local public assets
-      return `/${this.getLogoFilename(type)}`
-      
-    } catch (error) {
-      console.warn('Logo service error:', error)
-      
-      // Return cached version if available (even if expired)
-      const cachedLogo = localStorage.getItem(cacheKey)
-      if (cachedLogo) {
-        return cachedLogo
-      }
-      
-      // Ultimate fallback to local public asset
-      return `/${this.getLogoFilename(type)}`
-    }
-  }
-  
-  static getLogoFilename(type) {
-    // Only logos that exist in database
-    const logos = {
-      main: 'Logo.png',           // ✅ Exists in DB
-      large: 'MainLogo.png',      // ✅ Exists in DB  
-      transparent: 'Logo w_out background.png'  // ✅ Exists in DB
-    }
-    return logos[type] || 'Logo.png'  // Default to main logo
-  }
-  
-  // Clear logo cache
-  static clearCache() {
-    const keys = Object.keys(localStorage)
-    keys.forEach(key => {
-      if (key.startsWith('logo_')) {
-        localStorage.removeItem(key)
-      }
-    })
+  constructor() {
+    this.API_BASE_URL = API_BASE_URL
+    this.cache = new Map()
   }
 
-  // Force refresh a specific logo
-  static async refreshLogo(type = 'main') {
-    const cacheKey = `logo_${type}`
-    const cacheExpiryKey = `logo_${type}_expiry`
-    
-    // Clear cache for this logo
-    localStorage.removeItem(cacheKey)
-    localStorage.removeItem(cacheExpiryKey)
-    
-    // Reload logo
-    return await this.getLogo(type)
-  }
-  
-  // Preload only existing logos for better performance
-  static async preloadLogos() {
-    // Only load logos that exist in database
-    const logoTypes = ['main', 'large', 'transparent']
-    
+  // Get logo by variant (large, transparent, dark)
+  async getLogo(variant) {
     try {
-      await Promise.allSettled(
-        logoTypes.map(type => this.getLogo(type))
-      )
+      // Check cache first
+      if (this.cache.has(variant)) {
+        return this.cache.get(variant)
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/logos?variant=${variant}&active=true`)
+      const result = await response.json()
+      
+      if (result.success && result.data && result.data.length > 0) {
+        const logo = result.data[0]
+        const logoUrl = logo.url
+        this.cache.set(variant, logoUrl)
+        return logoUrl
+      }
+      
+      // Return fallback URL if not found
+      return `${API_BASE_URL}/assets/Logo.png`
     } catch (error) {
-      console.warn('Logo preloading error:', error)
+      console.error('Error fetching logo:', error)
+      return `${API_BASE_URL}/assets/Logo.png`
     }
+  }
+
+  // Get all logos
+  async getAllLogos() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/logos`)
+      const result = await response.json()
+      
+      if (result.success) {
+        return result.data || []
+      }
+      
+      return []
+    } catch (error) {
+      console.error('Error fetching all logos:', error)
+      return []
+    }
+  }
+
+  // Get active logos by variant
+  async getActiveLogos() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/logos?active=true`)
+      const result = await response.json()
+      
+      if (result.success) {
+        const logos = {}
+        result.data.forEach(logo => {
+          logos[logo.variant] = logo.url
+        })
+        return logos
+      }
+      
+      return {}
+    } catch (error) {
+      console.error('Error fetching active logos:', error)
+      return {}
+    }
+  }
+
+  // Clear cache
+  clearCache() {
+    this.cache.clear()
   }
 }
 
-export default LogoService 
+// Create and export singleton instance
+const logoService = new LogoService()
+export default logoService 
