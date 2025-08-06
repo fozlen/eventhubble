@@ -221,10 +221,10 @@ const HomePage = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-gray-600">
+          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-text">
             {language === 'TR' ? 'Etkinlikler yükleniyor...' : 'Loading events...'}
           </p>
         </div>
@@ -233,7 +233,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+    <div className="min-h-screen bg-background">
       {/* Mobile Header */}
       <MobileHeader 
         logo={logos.main}
@@ -243,7 +243,7 @@ const HomePage = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-purple-600 to-pink-600 text-white py-20 px-4">
+      <section className="relative bg-primary text-white py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             {language === 'TR' 
@@ -270,24 +270,24 @@ const HomePage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-8 bg-white shadow-sm">
+      <section className="py-8 bg-background-secondary shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-3xl font-bold text-purple-600">{filteredEvents.length}+</div>
-              <div className="text-gray-600">
+              <div className="text-3xl font-bold text-primary">{filteredEvents.length}+</div>
+              <div className="text-text">
                 {language === 'TR' ? 'Etkinlik' : 'Events'}
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-pink-600">{categories.length}</div>
-              <div className="text-gray-600">
+              <div className="text-3xl font-bold text-primary-light">{categories.length}</div>
+              <div className="text-text">
                 {language === 'TR' ? 'Kategori' : 'Categories'}
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-purple-600">{cities.length}</div>
-              <div className="text-gray-600">
+              <div className="text-3xl font-bold text-primary-accents">{cities.length}</div>
+              <div className="text-text">
                 {language === 'TR' ? 'Şehir' : 'Cities'}
               </div>
             </div>
@@ -298,7 +298,7 @@ const HomePage = () => {
       {/* Categories Section */}
       <section className="py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">
+          <h2 className="text-3xl font-bold text-center mb-8 text-text">
             {language === 'TR' ? 'Kategoriler' : 'Categories'}
           </h2>
           
@@ -311,12 +311,12 @@ const HomePage = () => {
                   onClick={() => handleCategoryFilter(category.category_id)}
                   className={`p-6 rounded-xl transition-all ${
                     selectedCategory === category.category_id
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg scale-105'
-                      : 'bg-white hover:shadow-lg hover:scale-105'
+                      ? 'bg-primary text-white shadow-lg scale-105'
+                      : 'bg-background-secondary hover:shadow-lg hover:scale-105'
                   }`}
                 >
                   <Icon className={`w-8 h-8 mx-auto mb-2 ${
-                    selectedCategory === category.category_id ? 'text-white' : 'text-purple-600'
+                    selectedCategory === category.category_id ? 'text-white' : 'text-primary'
                   }`} />
                   <div className="font-semibold">{category.name}</div>
                   <div className="text-sm opacity-75">
@@ -330,13 +330,13 @@ const HomePage = () => {
       </section>
 
       {/* Filters and Sorting */}
-      <section className="py-4 px-4 bg-white sticky top-0 z-10 shadow-sm">
+      <section className="py-4 px-4 bg-background-secondary sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50"
+                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-background transition-colors"
               >
                 <Filter className="w-4 h-4" />
                 {language === 'TR' ? 'Filtreler' : 'Filters'}
@@ -345,7 +345,7 @@ const HomePage = () => {
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
               >
                 <option value="">
                   {language === 'TR' ? 'Tüm Şehirler' : 'All Cities'}
@@ -360,7 +360,7 @@ const HomePage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
               >
                 <option value="date">
                   {language === 'TR' ? 'Tarihe Göre' : 'By Date'}
@@ -376,13 +376,21 @@ const HomePage = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded ${viewMode === 'grid' ? 'bg-purple-600 text-white' : 'bg-gray-200'}`}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === 'grid' 
+                      ? 'bg-primary text-white' 
+                      : 'bg-background hover:bg-gray-100'
+                  }`}
                 >
                   <Grid className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded ${viewMode === 'list' ? 'bg-purple-600 text-white' : 'bg-gray-200'}`}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === 'list' 
+                      ? 'bg-primary text-white' 
+                      : 'bg-background hover:bg-gray-100'
+                  }`}
                 >
                   <List className="w-4 h-4" />
                 </button>
@@ -395,7 +403,7 @@ const HomePage = () => {
       {/* Events Section */}
       <section className="py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">
+          <h2 className="text-3xl font-bold text-center mb-8 text-text">
             {selectedCategory 
               ? categories.find(c => c.category_id === selectedCategory)?.name
               : language === 'TR' ? 'Tüm Etkinlikler' : 'All Events'}
@@ -406,14 +414,14 @@ const HomePage = () => {
               <p className="text-red-600 mb-4">{error}</p>
               <button
                 onClick={() => window.location.reload()}
-                className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 {language === 'TR' ? 'Tekrar Dene' : 'Try Again'}
               </button>
             </div>
           ) : filteredEvents.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-600 text-lg">
+              <p className="text-text/70 text-lg">
                 {language === 'TR' 
                   ? 'Henüz etkinlik bulunmuyor.' 
                   : 'No events found.'}
@@ -452,11 +460,11 @@ const HomePage = () => {
       {/* Mobile Menu Overlay */}
       {showMobileMenu && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden">
-          <div className="bg-white w-80 h-full">
+          <div className="bg-background w-80 h-full">
             <div className="p-4">
               <button
                 onClick={() => setShowMobileMenu(false)}
-                className="text-gray-600 hover:text-gray-900"
+                className="text-text hover:text-primary transition-colors"
               >
                 ✕
               </button>
