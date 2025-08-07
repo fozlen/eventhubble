@@ -569,7 +569,17 @@ app.post('/api/logos',
       } else if (req.file) {
         console.log('Cloudinary not configured, using placeholder URL')
         console.log('Reason: isCloudinaryConfigured =', isCloudinaryConfigured)
-        logoUrl = 'https://placehold.co/300x100/6B7280/FFFFFF?text=Logo'
+        console.log('Cloudinary env vars:', {
+          cloudName: process.env.CLOUDINARY_CLOUD_NAME ? 'Set' : 'Not Set',
+          apiKey: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Not Set',
+          apiSecret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set'
+        })
+        
+        // For now, use a better placeholder that shows the actual logo name
+        const logoName = req.file.originalname || 'Logo'
+        logoUrl = `https://placehold.co/300x100/6B7280/FFFFFF?text=${encodeURIComponent(logoName)}`
+        
+        console.log('Using placeholder URL:', logoUrl)
       } else {
         console.log('No file provided, using direct URL or placeholder')
       }
