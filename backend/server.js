@@ -93,7 +93,8 @@ app.get('/health', (req, res) => {
     version: '2.0.0',
     timestamp: new Date().toISOString(),
     cors: 'enabled',
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    cloudinaryConfigured: isCloudinaryConfigured
   })
 })
 
@@ -106,7 +107,8 @@ app.get('/api/test', (req, res) => {
     cloudinaryConfigured: isCloudinaryConfigured,
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME ? 'Set' : 'Not Set',
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Not Set',
-    cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set'
+    cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set',
+    cloudinaryCloudNameValue: process.env.CLOUDINARY_CLOUD_NAME || 'Not Set'
   })
 })
 
@@ -518,6 +520,9 @@ app.post('/api/logos',
         buffer: req.file.buffer ? 'Buffer present' : 'No buffer'
       } : 'No file')
       console.log('Cloudinary configured:', isCloudinaryConfigured)
+      console.log('Cloudinary cloud name:', process.env.CLOUDINARY_CLOUD_NAME)
+      console.log('File provided:', !!req.file)
+      console.log('Direct URL provided:', !!req.body.url)
 
       let logoUrl = req.body.url // Direct URL if provided
 
@@ -555,7 +560,10 @@ app.post('/api/logos',
         }
       } else if (req.file) {
         console.log('Cloudinary not configured, using placeholder URL')
+        console.log('Reason: isCloudinaryConfigured =', isCloudinaryConfigured)
         logoUrl = 'https://placehold.co/300x100/6B7280/FFFFFF?text=Logo'
+      } else {
+        console.log('No file provided, using direct URL or placeholder')
       }
 
       const logoData = {
