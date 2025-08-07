@@ -298,10 +298,6 @@ app.post('/api/auth/login', async (req, res) => {
     console.log('Access token length:', tokens.accessToken.length)
     console.log('Refresh token length:', tokens.refreshToken.length)
     
-    // Generate CSRF token
-    const csrfToken = crypto.randomBytes(32).toString('hex')
-    console.log('CSRF token length:', csrfToken.length)
-    
     // Get client information
     const ipAddress = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'] || '127.0.0.1'
     const userAgent = req.headers['user-agent'] || 'Unknown'
@@ -314,13 +310,11 @@ app.post('/api/auth/login', async (req, res) => {
       const refreshTokenHash = await hashToken(tokens.refreshToken)
       
       await supabaseService.createSession(user.id, tokenHash, refreshTokenHash, {
-        csrf_token: csrfToken,
         ip_address: ipAddress,
         user_agent: userAgent
       })
       
       console.log('Session created successfully for user:', user.id)
-      console.log('CSRF token stored in session:', csrfToken.substring(0, 20) + '...')
     } catch (sessionError) {
       console.error('Error creating session:', sessionError)
       // Continue with login even if session creation fails
@@ -345,8 +339,7 @@ app.post('/api/auth/login', async (req, res) => {
           full_name: user.full_name || null,
           role: user.role,
           avatar_url: user.avatar_url || null
-        },
-        csrfToken
+        }
       }
     })
   } catch (error) {

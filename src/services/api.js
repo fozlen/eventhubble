@@ -4,12 +4,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ||
 
 class ApiService {
   constructor() {
-    this.csrfToken = null
-  }
-
-  // Set CSRF token
-  setCsrfToken(token) {
-    this.csrfToken = token
+    // Cookie tabanlı auth kullanıyoruz, CSRF token'a gerek yok
   }
 
   // Get headers with auth
@@ -21,9 +16,8 @@ class ApiService {
       headers['Content-Type'] = 'application/json'
     }
     
-    if (includeAuth && this.csrfToken) {
-      headers['X-CSRF-Token'] = this.csrfToken
-    }
+    // Cookie tabanlı auth için header'a bir şey eklemeye gerek yok
+    // credentials: 'include' ile cookie'ler otomatik gönderiliyor
     
     return headers
   }
@@ -81,13 +75,8 @@ class ApiService {
     
     console.log('=== LOGIN RESPONSE ===')
     console.log('Success:', result.success)
-    console.log('CSRF Token present:', !!result.data?.csrfToken)
     console.log('User data:', result.data?.user)
-    
-    if (result.success && result.data.csrfToken) {
-      this.setCsrfToken(result.data.csrfToken)
-      console.log('CSRF token set in API service')
-    }
+    console.log('Cookie-based authentication ready')
     
     return result
   }
@@ -152,7 +141,7 @@ class ApiService {
 
   async createLogo(formData) {
     console.log('=== LOGO UPLOAD REQUEST ===')
-    console.log('CSRF Token present:', !!this.csrfToken)
+    console.log('Cookie-based authentication ready')
     console.log('FormData entries count:', formData.entries().length)
     
     try {
@@ -160,11 +149,7 @@ class ApiService {
       const url = `${API_BASE_URL}/api/logos`
       const response = await fetch(url, {
         method: 'POST',
-        credentials: 'include',
-        headers: {
-          'X-CSRF-Token': this.csrfToken || '',
-          ...this.getHeaders(true, true) // Add authentication headers for FormData
-        },
+        credentials: 'include', // Cookie'leri otomatik gönder
         body: formData
       })
 
@@ -287,10 +272,7 @@ class ApiService {
 
     const response = await fetch(`${API_BASE_URL}/api/images/upload`, {
       method: 'POST',
-      credentials: 'include',
-      headers: {
-        'X-CSRF-Token': this.csrfToken
-      },
+      credentials: 'include', // Cookie'leri otomatik gönder
       body: formData
     })
     

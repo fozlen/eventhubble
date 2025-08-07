@@ -45,18 +45,15 @@ const useAuthStore = create(
           console.log('Login response:', response)
           
           if (response.success) {
-            console.log('Login successful, setting CSRF token:', response.data.csrfToken)
+            console.log('Login successful, cookie-based authentication ready')
             set((state) => {
               state.user = response.data.user
               state.isAuthenticated = true
-              state.csrfToken = response.data.csrfToken
               state.isLoading = false
               state.error = null
             })
             
-            // Also set CSRF token in API service
-            apiService.setCsrfToken(response.data.csrfToken)
-            console.log('CSRF token set in API service')
+            console.log('Cookie-based authentication set')
             
             return { success: true }
           } else {
@@ -86,7 +83,6 @@ const useAuthStore = create(
           set((state) => {
             state.user = null
             state.isAuthenticated = false
-            state.csrfToken = null
             state.error = null
             state.isLoading = false
           })
@@ -101,7 +97,6 @@ const useAuthStore = create(
             set((state) => {
               state.user = response.data.user
               state.isAuthenticated = true
-              state.csrfToken = response.data.csrfToken
               state.error = null
             })
             return { success: true }
@@ -109,7 +104,6 @@ const useAuthStore = create(
             set((state) => {
               state.user = null
               state.isAuthenticated = false
-              state.csrfToken = null
               state.error = response.error
             })
             return { success: false, error: response.error }
@@ -118,7 +112,6 @@ const useAuthStore = create(
           set((state) => {
             state.user = null
             state.isAuthenticated = false
-            state.csrfToken = null
             state.error = error.message
           })
           return { success: false, error: error.message }
