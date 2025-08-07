@@ -314,11 +314,13 @@ app.post('/api/auth/login', async (req, res) => {
       const refreshTokenHash = await hashToken(tokens.refreshToken)
       
       await supabaseService.createSession(user.id, tokenHash, refreshTokenHash, {
+        csrf_token: csrfToken,
         ip_address: ipAddress,
         user_agent: userAgent
       })
       
       console.log('Session created successfully for user:', user.id)
+      console.log('CSRF token stored in session:', csrfToken.substring(0, 20) + '...')
     } catch (sessionError) {
       console.error('Error creating session:', sessionError)
       // Continue with login even if session creation fails

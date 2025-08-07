@@ -253,6 +253,7 @@ class SupabaseService {
           user_id: userId,
           token_hash: tokenHash,
           refresh_token_hash: refreshTokenHash,
+          csrf_token: clientInfo.csrf_token || null,
           expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
           ip_address: clientInfo.ip_address || '127.0.0.1',
           user_agent: clientInfo.user_agent || 'Unknown',
@@ -285,6 +286,23 @@ class SupabaseService {
     } catch (error) {
       console.error('Error fetching session:', error)
       throw error
+    }
+  }
+
+  async getSessionByCsrfToken(csrfToken) {
+    try {
+      const { data, error } = await supabase
+        .from('sessions')
+        .select('*')
+        .eq('csrf_token', csrfToken)
+        .eq('is_active', true)
+        .single()
+
+      if (error) throw error
+      return data
+    } catch (error) {
+      console.error('Error fetching session by CSRF token:', error)
+      return null
     }
   }
 

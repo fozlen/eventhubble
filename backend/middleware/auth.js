@@ -27,18 +27,50 @@ const authMiddleware = (requiredRoles = []) => {
       console.log('=== AUTH MIDDLEWARE START ===')
       console.log('Required roles:', requiredRoles)
       console.log('Cookies:', req.cookies)
+      console.log('Headers:', req.headers)
       
-      // Get token from httpOnly cookie
-      const accessToken = req.cookies?.accessToken
+      let accessToken = req.cookies?.accessToken
+      let authMethod = 'cookie'
+
+      // If no cookie token, try CSRF token from header
+      if (!accessToken) {
+        const csrfToken = req.headers['x-csrf-token']
+        if (csrfToken) {
+          console.log('No cookie token, checking CSRF token:', csrfToken.substring(0, 20) + '...')
+          
+          try {
+            const session = await supabaseService.getSessionByCsrfToken(csrfToken)
+            if (session && session.is_active && new Date() < new Date(session.expires_at)) {
+              // Decode the token hash to get the actual token
+              // For now, we'll need to get the user from the session
+              const user = await supabaseService.getUserById(session.user_id)
+              if (user && user.is_active) {
+                // Create a temporary access token for this request
+                accessToken = jwt.sign(
+                  { id: user.id, email: user.email, role: user.role, type: 'access' },
+                  JWT_SECRET,
+                  { expiresIn: '1h' }
+                )
+                authMethod = 'csrf'
+                console.log('CSRF token validated, created temporary access token')
+              }
+            } else {
+              console.log('CSRF token invalid or session expired')
+            }
+          } catch (csrfError) {
+            console.error('Error validating CSRF token:', csrfError)
+          }
+        }
+      }
       
       console.log('=== TOKEN DEBUG ===')
-      console.log('All cookies:', req.cookies)
+      console.log('Auth method:', authMethod)
       console.log('Access token present:', !!accessToken)
       console.log('Access token length:', accessToken?.length)
       console.log('Access token preview:', accessToken ? `${accessToken.substring(0, 20)}...` : 'None')
       
       if (!accessToken) {
-        console.log('No access token found')
+        console.log('No access token found from either method')
         return res.status(401).json({ 
           success: false, 
           error: 'Access token required',
@@ -105,6 +137,7 @@ const authMiddleware = (requiredRoles = []) => {
 
       console.log('=== AUTH MIDDLEWARE SUCCESS ===')
       console.log('User added to request:', req.user)
+      console.log('Authentication method used:', authMethod)
       next()
     } catch (error) {
       console.error('Auth middleware error:', error)
