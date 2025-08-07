@@ -78,9 +78,7 @@ const AppInitializer = ({ children }) => {
   const { 
     isAuthenticated, 
     user, 
-    checkAuth, 
-    setCsrfToken,
-    csrfToken 
+    checkAuth 
   } = useAuthStore()
   
   const { 
@@ -102,17 +100,14 @@ const AppInitializer = ({ children }) => {
     // Check authentication status on app start
     const initializeAuth = async () => {
       try {
-        const result = await checkAuth()
-        if (result.success && result.data?.csrfToken) {
-          setCsrfToken(result.data.csrfToken)
-        }
+        await checkAuth()
       } catch (error) {
         console.error('Auth initialization failed:', error)
       }
     }
 
     initializeAuth()
-  }, [checkAuth, setCsrfToken])
+  }, [checkAuth])
 
   useEffect(() => {
 

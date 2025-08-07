@@ -36,8 +36,7 @@ app.post('/api/auth/login', (req, res) => {
         email: email,
         role: 'admin',
         full_name: 'Test Admin'
-      },
-      csrfToken: 'test-csrf-token-' + Date.now()
+      }
     }
   })
 })

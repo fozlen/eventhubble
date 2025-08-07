@@ -11,7 +11,6 @@ const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
       error: null,
-      csrfToken: null,
 
       // Actions
       setUser: (user) => set((state) => {
@@ -29,9 +28,7 @@ const useAuthStore = create(
         state.isLoading = false
       }),
 
-      setCsrfToken: (token) => set((state) => {
-        state.csrfToken = token
-      }),
+
 
       login: async (email, password) => {
         set((state) => {

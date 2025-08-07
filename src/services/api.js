@@ -87,7 +87,6 @@ class ApiService {
       auth: true
     })
     
-    this.setCsrfToken(null)
     return result
   }
 
@@ -97,17 +96,13 @@ class ApiService {
       auth: true
     })
     
-    if (result.success && result.data.csrfToken) {
-      this.setCsrfToken(result.data.csrfToken)
-    }
-    
     return result
   }
 
   async getCurrentUser() {
     try {
       console.log('=== GET CURRENT USER START ===')
-      console.log('CSRF Token:', this.csrfToken)
+      console.log('Cookie-based authentication ready')
       
       const result = await this.request('/api/auth/me', {
         auth: true
