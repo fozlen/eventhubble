@@ -563,8 +563,14 @@ app.post('/api/logos',
           console.log('Cloudinary upload successful:', logoUrl)
         } catch (cloudinaryError) {
           console.error('Cloudinary upload failed:', cloudinaryError)
+          console.error('Cloudinary error details:', {
+            message: cloudinaryError.message,
+            code: cloudinaryError.code,
+            status: cloudinaryError.status
+          })
           // Fallback to placeholder
-          logoUrl = 'https://placehold.co/300x100/6B7280/FFFFFF?text=Logo'
+          const logoName = req.file.originalname || 'Logo'
+          logoUrl = `https://placehold.co/300x100/6B7280/FFFFFF?text=${encodeURIComponent(logoName)}`
         }
       } else if (req.file) {
         console.log('Cloudinary not configured, using placeholder URL')
