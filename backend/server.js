@@ -22,7 +22,10 @@ const PORT = process.env.PORT || 3001
 // Cloudinary Configuration
 const isCloudinaryConfigured = !!(process.env.CLOUDINARY_CLOUD_NAME && 
                                process.env.CLOUDINARY_API_KEY && 
-                               process.env.CLOUDINARY_API_SECRET)
+                               process.env.CLOUDINARY_API_SECRET && 
+                               process.env.CLOUDINARY_CLOUD_NAME !== '' &&
+                               process.env.CLOUDINARY_API_KEY !== '' &&
+                               process.env.CLOUDINARY_API_SECRET !== '')
 
 if (isCloudinaryConfigured) {
   cloudinary.config({
@@ -110,7 +113,10 @@ app.get('/api/test', (req, res) => {
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set',
     cloudinaryCloudNameValue: process.env.CLOUDINARY_CLOUD_NAME || 'Not Set',
     cloudinaryApiKeyValue: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Not Set',
-    cloudinaryApiSecretValue: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set'
+    cloudinaryApiSecretValue: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set',
+    cloudinaryCloudNameLength: process.env.CLOUDINARY_CLOUD_NAME ? process.env.CLOUDINARY_CLOUD_NAME.length : 0,
+    cloudinaryApiKeyLength: process.env.CLOUDINARY_API_KEY ? process.env.CLOUDINARY_API_KEY.length : 0,
+    cloudinaryApiSecretLength: process.env.CLOUDINARY_API_SECRET ? process.env.CLOUDINARY_API_SECRET.length : 0
   })
 })
 
