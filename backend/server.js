@@ -20,9 +20,9 @@ const app = express()
 const PORT = process.env.PORT || 3001
 
 // Cloudinary Configuration
-const isCloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME && 
+const isCloudinaryConfigured = !!(process.env.CLOUDINARY_CLOUD_NAME && 
                                process.env.CLOUDINARY_API_KEY && 
-                               process.env.CLOUDINARY_API_SECRET
+                               process.env.CLOUDINARY_API_SECRET)
 
 if (isCloudinaryConfigured) {
   cloudinary.config({
@@ -108,7 +108,9 @@ app.get('/api/test', (req, res) => {
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME ? 'Set' : 'Not Set',
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Not Set',
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set',
-    cloudinaryCloudNameValue: process.env.CLOUDINARY_CLOUD_NAME || 'Not Set'
+    cloudinaryCloudNameValue: process.env.CLOUDINARY_CLOUD_NAME || 'Not Set',
+    cloudinaryApiKeyValue: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Not Set',
+    cloudinaryApiSecretValue: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Not Set'
   })
 })
 
